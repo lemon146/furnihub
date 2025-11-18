@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* CSS Variables */
+:root {
+  /* Brand Colors */
+  --color-primary: #B88E2F;
+
+  /* Background Colors */
+  --color-bg-1: #FCF8F3;
+  --color-bg-2: #FFF3E3;
+
+  /* Card & Surface */
+  --color-card-bg: #F4F5F7;
+
+  /* Text Colors */
+  --text-white: #ffffff;
+  --text-grey-1: #3A3A3A;
+  --text-grey-2: #616161;
+  --text-grey-3: #9F9F9F;
+  --text-black: #000000;
+
+  /* Font */
+  --font-main: "Poppins", sans-serif;
+}
+
+/* Body */
+body {
+  background: #ffffff;
+  color: var(--text-grey-1);
+  font-family: var(--font-main);
+}
+
+
+/* Background utilities */
+.bg-1 { background-color: var(--color-bg-1); }
+.bg-2 { background-color: var(--color-bg-2); }
+.bg-card { background-color: var(--color-card-bg); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-white { background-color: var(--text-white); }
+.bg-black { background-color: var(--text-black); }
+
+/* Text color utilities */
+.text-primary { color: var(--color-primary); }
+.text-black { color: var(--text-black); }
+.text-white { color: var(--text-white); }
+.text-grey-1 { color: var(--text-grey-1); }
+.text-grey-2 { color: var(--text-grey-2); }
+.text-grey-3 { color: var(--text-grey-3); }
+
+
+/* Hover utilities for backgrounds */
+.hover-bg-primary:hover { background-color: var(--color-primary); cursor: pointer; }
+.hover-bg-1:hover { background-color: var(--color-bg-1); cursor: pointer; }
+.hover-bg-2:hover { background-color: var(--color-bg-2); cursor: pointer; }
+.hover-bg-card:hover { background-color: var(--color-card-bg); cursor: pointer; }
