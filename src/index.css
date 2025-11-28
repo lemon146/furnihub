@@ -18,6 +18,7 @@
   --text-grey-2: #616161;
   --text-grey-3: #9F9F9F;
   --text-black: #000000;
+  --neutral-400: #a3a3a3;
 
   /* Font */
   --font-main: "Poppins", sans-serif;
@@ -26,7 +27,7 @@
 /* Body */
 body {
   background: #ffffff;
-  color: var(--text-grey-1);
+  color: var(--text-black);
   font-family: var(--font-main);
 }
 
@@ -53,3 +54,80 @@ body {
 .hover-bg-1:hover { background-color: var(--color-bg-1); cursor: pointer; }
 .hover-bg-2:hover { background-color: var(--color-bg-2); cursor: pointer; }
 .hover-bg-card:hover { background-color: var(--color-card-bg); cursor: pointer; }
+
+/* text:hover */
+.hover-text-neutral {
+  transition: all 150ms ease-in-out;
+}
+
+.hover-text-neutral:hover {
+  color: var(--neutral-400);
+  cursor: pointer;
+}
+
+/* Base button */
+.btn {
+  padding: 0.6rem 1.4rem;
+  font-weight: 500;
+  border-radius: 0.375rem; /* rounded-md */
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
+  display: inline-block;
+  font-family: var(--font-main);
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--text-white);
+}
+
+.btn-primary:hover {
+  background-color: #a67f29; /* slightly darker for hover */
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--color-bg-2);
+  color: var(--text-grey-1);
+}
+
+.btn-secondary:hover {
+  background-color: #f2e4cf;
+}
+
+/* Outline Button */
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary);
+  color: var(--text-white);
+}
+
+/* Light Button */
+.btn-light {
+  background-color: var(--text-white);
+  color: var(--text-black);
+  border: 1px solid #e5e5e5;
+}
+
+.btn-light:hover {
+  background-color: #f2f2f2;
+}
+
+/* Dark Button */
+.btn-dark {
+  background-color: var(--text-black);
+  color: var(--text-white);
+}
+
+.btn-dark:hover {
+  background-color: #2c2c2c;
+}
+
+
+
