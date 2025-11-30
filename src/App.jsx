@@ -1,3 +1,4 @@
+import Browser from "./components/Browser";
 import Hero from "./components/Hero";
 import Nav from "./components/Nav";
 
@@ -6,6 +7,7 @@ const App = () => {
     <>
       <Nav />
       <Hero />
+      <Browser />
     </>
   );
 };
