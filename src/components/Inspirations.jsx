@@ -37,7 +37,7 @@ export default function Inspirations() {
           />
           <div className="absolute bottom-4 left-4 flex items-end ">
             {/* Text Box */}
-            <div className="bg-white/70 backdrop-blur-md p-4 md:p-7  shadow flex flex-col gap-1">
+            <div className="bg-white/30 backdrop-blur-sm p-4 md:p-7  shadow flex flex-col gap-1">
               <p className="text-xs md:text-sm text-gray-600">01 — Bed Room</p>
               <h3 className="text-base md:text-lg font-semibold text-gray-800">
                 Inner Peace
@@ -45,14 +45,14 @@ export default function Inspirations() {
             </div>
 
             {/* Arrow Button */}
-            <button className="bg-[#B88E2F] hover:bg-[#9c7926] text-white p-3 md:p-4  transition-all backdrop-blur-md bg-opacity-90 cursor-pointer">
+            <button className="bg-[#B88E2F] backdrop-blur-sm hover:bg-[#9c7926] text-white p-3 md:p-4  transition-all  bg-opacity-90 cursor-pointer">
               ➜
             </button>
           </div>
         </div>
 
         {/* Carousel Card */}
-        <div className="lg:col-span-1 w-full flex flex-col items-start gap-4 h-100">
+        <div className="lg:col-span-1 w-full flex flex-col items-start gap-3 h-130">
           <div className="relative w-full overflow-hidden  shadow-md">
             <div
               className="whitespace-nowrap transition-all duration-500"
