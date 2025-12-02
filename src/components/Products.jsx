@@ -62,6 +62,20 @@ const Products = () => {
           </div>
         ))}
       </div>
+      <div className="flex justify-center items-center w-full mt-5 p-4">
+        <button
+          class="border border-[#B88E2F] 
+         text-[#B88E2F] 
+         cursor-pointer 
+         transition-all
+         px-6 py-2 
+         sm:px-8 sm:py-3 
+         md:px-10 md:py-3.5
+         hover:bg-[#B88E2F] hover:text-white"
+        >
+          See More
+        </button>
+      </div>
     </section>
   );
 };
