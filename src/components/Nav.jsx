@@ -62,7 +62,7 @@ const Nav = () => {
           )}
         </button>
         {mobileMenu && (
-          <div className="md:hidden absolute top-20 left-0 right-0 bg-white p-3 z-50">
+          <div className="md:hidden fixed top-20 left-0 right-0 bg-white p-3 z-50 ">
             <ul className="flex flex-col justify-between items-center gap-4 font-medium">
               <li className="">
                 <a href="#" className="hover-text-neutral">

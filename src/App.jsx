@@ -1,4 +1,5 @@
 import Browser from "./components/Browser";
+import FuniroFurniture from "./components/FuniroFurniture";
 import Hero from "./components/Hero";
 import Inspirations from "./components/Inspirations";
 import Nav from "./components/Nav";
@@ -12,6 +13,7 @@ const App = () => {
       <Browser />
       <Products />
       <Inspirations />
+      <FuniroFurniture />
     </>
   );
 };
