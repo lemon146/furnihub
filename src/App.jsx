@@ -1,22 +1,17 @@
-import Browser from "./components/Browser";
-import Footers from "./components/Footers";
-import FuniroFurniture from "./components/FuniroFurniture";
-import Hero from "./components/Hero";
-import Inspirations from "./components/Inspirations";
-import Nav from "./components/Nav";
-import Products from "./components/Products";
+import { Route, Routes } from "react-router-dom";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Home from "./pages/Home";
+import Shop from "./pages/Shop";
 
 const App = () => {
   return (
-    <>
-      <Nav />
-      <Hero />
-      <Browser />
-      <Products />
-      <Inspirations />
-      <FuniroFurniture />
-      <Footers />
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/shop" element={<Shop />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/about" element={<About />} />
+    </Routes>
   );
 };
 
