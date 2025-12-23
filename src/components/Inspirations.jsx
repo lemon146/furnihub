@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import img1 from "../assets/images/inspirations/img1.png";
-import { productImages } from "../utils/images";
+import { Products_demo } from "../utils/products_data";
 
 export default function Inspirations() {
   const slides = ["/room2.jpg", "/room3.jpg", "/room4.jpg"];
@@ -58,7 +58,7 @@ export default function Inspirations() {
               className="whitespace-nowrap transition-all duration-500"
               style={{ transform: `translateX(-${index * 100}%)` }}
             >
-              {productImages.map((items, i) => (
+              {Products_demo.map((items, i) => (
                 <img
                   key={i}
                   src={items.img}

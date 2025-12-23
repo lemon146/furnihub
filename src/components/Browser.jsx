@@ -1,37 +1,36 @@
-import img3 from "../assets/images/categories/img3.png";
-import img2 from "../assets/images/categories/img4.png";
-import img1 from "../assets/images/categories/img5.png";
+import { Link } from "react-router-dom";
+import { categories } from "../utils/products_data";
 const Browser = () => {
   return (
-    <section className="p-10">
+    <section className="p-10 relative">
       <h2 className="text-heading">Browse The Range</h2>
 
       <p
-        className="font-poppins font-normal 
-             text-[16px] sm:text-[18px] md:text-[20px] 
-             leading-[100%] tracking-[0px] text-center mt-2 mb-4 text-grey-1"
+        className="font-poppins font-normal
+    text-[16px] sm:text-[18px] md:text-[20px]
+    text-center mt-2 mb-6 text-grey-1"
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Explore our wide range of modern furniture collections.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center mt-8">
-        <div className="list flex items-center flex-col justify-center">
-          <img src={img1} alt="img1.png" className="rounded-md" />
-          <p className="text-center font-semibold text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px] leading-[100%] mt-5 text-grey-1">
-            Dining
-          </p>
-        </div>
-        <div className="list">
-          <img src={img2} alt="img1.png" className="rounded-md" />
-          <p className="text-center font-semibold text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px] leading-[100%] mt-5 text-grey-1">
-            Bedroom
-          </p>
-        </div>
-        <div className="list">
-          <img src={img3} alt="img1.png" className="rounded-md" />
-          <p className="text-center font-semibold text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px] leading-[100%] mt-5 text-grey-1">
-            Living
-          </p>
-        </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 place-items-center mt-8">
+        {categories.map((cat) => (
+          <Link
+            key={cat.name}
+            to={cat.path}
+            className="flex flex-col items-center group cursor-pointer"
+          >
+            <img
+              src={cat.img}
+              alt={cat.name}
+              className="rounded-md group-hover:scale-105 transition duration-300"
+            />
+
+            <p className="mt-5 font-semibold text-[20px] text-grey-1">
+              {cat.name}
+            </p>
+          </Link>
+        ))}
       </div>
     </section>
   );
