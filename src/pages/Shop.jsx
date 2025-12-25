@@ -1,23 +1,50 @@
+"use client";
+
+import gsap from "gsap";
 import { BadgeCheck, Headset, Trophy, TruckElectric } from "lucide-react";
+import { useEffect, useRef } from "react";
 import banner from "../assets/images/shop-banner.png";
 import Footers from "../components/Footers";
 import Nav from "../components/Nav";
-import Products from "../components/Products";
+import ProductsSection from "../components/Product_section";
+
 const Shop = () => {
+  // GSAP refs
+  const cardsRef = useRef([]);
+
+  // Function to add card refs
+  const addToRefs = (el) => {
+    if (el && !cardsRef.current.includes(el)) {
+      cardsRef.current.push(el);
+    }
+  };
+
+  useEffect(() => {
+    // Clear previous refs on reload
+    cardsRef.current = [];
+
+    // Animate cards
+    if (cardsRef.current.length > 0) {
+      gsap.from(cardsRef.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.6,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+    }
+  }, []); // empty dependency array = run on mount
+
   return (
     <>
       <Nav />
       <div className="relative w-full h-[280px] md:h-[380px] overflow-hidden">
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/40" />
 
-        {/* Content */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white text-center">
           <h2 className="text-3xl md:text-4xl font-semibold mb-2">Shop</h2>
-
           <div className="flex items-center gap-2 text-sm md:text-base text-gray-200">
             <span>Home</span>
-
             <svg
               className="w-4 h-4"
               aria-hidden="true"
@@ -33,23 +60,25 @@ const Shop = () => {
                 d="m9 5 7 7-7 7"
               />
             </svg>
-
             <span className="text-white font-medium">Shop</span>
           </div>
         </div>
 
-        {/* Background Image */}
         <img
           src={banner}
           alt="Shop Banner"
           className="w-full h-full object-cover"
         />
       </div>
-      <Products />
+
+      <ProductsSection />
+
       <div className="mt-10 bg-1 w-full px-4 py-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {/* Item */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
+          <div
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left bg-white p-4 rounded shadow"
+            ref={addToRefs}
+          >
             <Trophy size={36} strokeWidth={0.5} />
             <div>
               <h6 className="font-semibold">High Quality</h6>
@@ -59,7 +88,10 @@ const Shop = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
+          <div
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left bg-white p-4 rounded shadow"
+            ref={addToRefs}
+          >
             <BadgeCheck size={36} strokeWidth={0.5} />
             <div>
               <h6 className="font-semibold">Warranty Protection</h6>
@@ -69,7 +101,10 @@ const Shop = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
+          <div
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left bg-white p-4 rounded shadow"
+            ref={addToRefs}
+          >
             <TruckElectric size={36} strokeWidth={0.5} />
             <div>
               <h6 className="font-semibold">Free Shipping</h6>
@@ -79,7 +114,10 @@ const Shop = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
+          <div
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left bg-white p-4 rounded shadow"
+            ref={addToRefs}
+          >
             <Headset size={36} strokeWidth={0.5} />
             <div>
               <h6 className="font-semibold">24 / 7 Support</h6>
@@ -92,8 +130,6 @@ const Shop = () => {
       </div>
 
       <Footers />
-
-      {/* <PaginationDemo /> */}
     </>
   );
 };

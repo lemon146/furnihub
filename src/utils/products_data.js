@@ -6,11 +6,32 @@ import img5 from "../assets/images/products/img5.png";
 import img6 from "../assets/images/products/img6.png";
 import img7 from "../assets/images/products/img7.png";
 import img8 from "../assets/images/products/img8.png";
-
-export const Products_demo = [
+export const categories = [
+  {
+    name: "Chairs",
+    img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hhaXJzfGVufDB8fDB8fHww",
+    path: "/shop",
+  },
+  {
+    name: "Sofas",
+    img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c29mYXxlbnwwfHwwfHx8MA%3D%3D",
+    path: "/shop",
+  },
+  {
+    name: "Tables",
+    img: "https://images.unsplash.com/photo-1535799695145-f3849086ee3d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dGFibGVzfGVufDB8fDB8fHww",
+    path: "/shop",
+  },
+  {
+    name: "Beds",
+    img: "https://images.unsplash.com/photo-1521783988139-89397d761dce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJlZHN8ZW58MHx8MHx8fDA%3D",
+    path: "/shop",
+  },
+];
+export const All_Products = [
   {
     id: 1,
-    img: img1,
+    image: img1,
     title: "Syltherine",
     shortDesc: "Stylish cafe chair",
     description:
@@ -43,7 +64,7 @@ export const Products_demo = [
 
   {
     id: 2,
-    img: img2,
+    image: img2,
     title: "Leviosa",
     shortDesc: "Minimalist modern chair",
     description:
@@ -71,7 +92,7 @@ export const Products_demo = [
 
   {
     id: 3,
-    img: img3,
+    image: img3,
     title: "Lolito",
     shortDesc: "Luxury leather sofa",
     description:
@@ -99,7 +120,7 @@ export const Products_demo = [
 
   {
     id: 4,
-    img: img4,
+    image: img4,
     title: "Respira",
     shortDesc: "Outdoor bar table",
     description:
@@ -127,7 +148,7 @@ export const Products_demo = [
 
   {
     id: 5,
-    img: img5,
+    image: img5,
     title: "Grifo",
     shortDesc: "Classic wooden shelf",
     description:
@@ -155,7 +176,7 @@ export const Products_demo = [
 
   {
     id: 6,
-    img: img6,
+    image: img6,
     title: "Muggo",
     shortDesc: "Small ceramic mug",
     description:
@@ -183,7 +204,7 @@ export const Products_demo = [
 
   {
     id: 7,
-    img: img7,
+    image: img7,
     title: "Pingky",
     shortDesc: "Pink high-back sofa",
     description:
@@ -211,7 +232,7 @@ export const Products_demo = [
 
   {
     id: 8,
-    img: img8,
+    image: img8,
     title: "Potty",
     shortDesc: "Plant pot decor",
     description:
@@ -236,10 +257,9 @@ export const Products_demo = [
     discount_price: 10,
     original_price: 25,
   },
-];
-export const chairsData = [
+  // chairs
   {
-    id: 1,
+    id: 11,
     category: "chairs",
     title: "Nordic Comfort Chair",
     shortDesc: "Modern wooden chair with soft cushion",
@@ -258,7 +278,7 @@ export const chairsData = [
   },
 
   {
-    id: 2,
+    id: 12,
     category: "chairs",
     title: "Elegant Lounge Chair",
     shortDesc: "Premium lounge chair for living rooms",
@@ -277,7 +297,7 @@ export const chairsData = [
   },
 
   {
-    id: 3,
+    id: 13,
     category: "chairs",
     title: "Minimal Dining Chair",
     shortDesc: "Simple & clean dining chair",
@@ -296,7 +316,7 @@ export const chairsData = [
   },
 
   {
-    id: 4,
+    id: 14,
     category: "chairs",
     title: "Premium Arm Chair",
     shortDesc: "Comfortable arm chair with cushion",
@@ -315,7 +335,7 @@ export const chairsData = [
   },
 
   {
-    id: 5,
+    id: 15,
     category: "chairs",
     title: "Scandinavian Accent Chair",
     shortDesc: "Stylish accent chair for modern homes",
@@ -334,7 +354,7 @@ export const chairsData = [
   },
 
   {
-    id: 6,
+    id: 16,
     category: "chairs",
     title: "Classic Wooden Chair",
     shortDesc: "Traditional wooden seating",
@@ -353,7 +373,7 @@ export const chairsData = [
   },
 
   {
-    id: 7,
+    id: 17,
     category: "chairs",
     title: "Modern Office Chair",
     shortDesc: "Stylish chair for home offices",
@@ -372,7 +392,7 @@ export const chairsData = [
   },
 
   {
-    id: 8,
+    id: 18,
     category: "chairs",
     title: "Cozy Reading Chair",
     shortDesc: "Soft chair for reading corners",
@@ -391,7 +411,7 @@ export const chairsData = [
   },
 
   {
-    id: 9,
+    id: 19,
     category: "chairs",
     title: "Designer Lounge Chair",
     shortDesc: "Luxury designer seating",
@@ -410,7 +430,7 @@ export const chairsData = [
   },
 
   {
-    id: 10,
+    id: 20,
     category: "chairs",
     title: "Compact Dining Chair",
     shortDesc: "Perfect for small spaces",
@@ -429,7 +449,7 @@ export const chairsData = [
   },
 
   {
-    id: 11,
+    id: 21,
     category: "chairs",
     title: "Luxury Velvet Chair",
     shortDesc: "Velvet finish with premium comfort",
@@ -446,32 +466,7 @@ export const chairsData = [
     image:
       "https://images.unsplash.com/photo-1506326426992-32b61983f2fd?w=500&auto=format&fit=crop&q=60",
   },
-];
-
-export const categories = [
-  {
-    name: "Chairs",
-    img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hhaXJzfGVufDB8fDB8fHww",
-    path: "/shop",
-  },
-  {
-    name: "Sofas",
-    img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c29mYXxlbnwwfHwwfHx8MA%3D%3D",
-    path: "/shop",
-  },
-  {
-    name: "Tables",
-    img: "https://images.unsplash.com/photo-1535799695145-f3849086ee3d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dGFibGVzfGVufDB8fDB8fHww",
-    path: "/shop",
-  },
-  {
-    name: "Beds",
-    img: "https://images.unsplash.com/photo-1521783988139-89397d761dce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGJlZHN8ZW58MHx8MHx8fDA%3D",
-    path: "/shop",
-  },
-];
-
-export const sofasData = [
+  // sofas data
   {
     id: 101,
     category: "sofas",
@@ -642,8 +637,7 @@ export const sofasData = [
     image:
       "https://images.unsplash.com/photo-1565374395542-0ce18882c857?w=500&auto=format&fit=crop&q=60",
   },
-];
-export const tablesData = [
+  //  tables
   {
     id: 201,
     category: "tables",
@@ -795,9 +789,7 @@ export const tablesData = [
     image:
       "https://images.unsplash.com/photo-1529878404804-c3bb78ba7995?w=500&auto=format&fit=crop&q=60",
   },
-];
-
-export const bedsData = [
+  // bedsdata
   {
     id: 301,
     category: "beds",

@@ -1,3 +1,5 @@
+"use client";
+
 import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import {
@@ -7,11 +9,6 @@ import {
   FaGithub,
   FaTwitter,
 } from "react-icons/fa";
-import {
-  iconHover,
-  scrollFadeUp,
-  staggerFadeUp,
-} from "../animations/gsapAnimations";
 import Logo from "../assets/images/Logo.png";
 
 const Footers = () => {
@@ -20,23 +17,40 @@ const Footers = () => {
   const iconRef = useRef([]);
 
   useLayoutEffect(() => {
-    const ctx = gsap.context((self) => {
-      // ✅ use `self` (NOT ctx)
-      scrollFadeUp(self, footerRef.current);
-      staggerFadeUp(self, linksRef.current, 0.2);
+    const ctx = gsap.context(() => {
+      // Animate footer container
+      gsap.from(footerRef.current, {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out",
+      });
 
-      iconRef.current.forEach((icon) => {
-        iconHover(self, icon);
+      // Stagger animation for links
+      gsap.from(linksRef.current, {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+      });
+
+      // Animate social icons with scale & fade
+      gsap.from(iconRef.current, {
+        opacity: 0,
+        scale: 0.5,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "back.out(1.7)",
       });
     }, footerRef);
 
-    return () => ctx.revert(); // cleanup
+    return () => ctx.revert();
   }, []);
 
   return (
     <footer ref={footerRef} className="bg-1 mt-10">
       <div className="container mx-auto md:px-10 py-10">
-        {/* Footer Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center sm:text-left">
           {/* Logo */}
           <aside className="flex flex-col items-center sm:items-start">
@@ -109,13 +123,11 @@ const Footers = () => {
 
         <hr className="my-6 border-neutral-content/40" />
 
-        {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-sm text-body">
             © 2023 FurniCo™. All Rights Reserved.
           </span>
 
-          {/* Social Icons */}
           <div className="flex space-x-4">
             {[FaFacebookF, FaDiscord, FaTwitter, FaGithub, FaDribbble].map(
               (Icon, i) => (

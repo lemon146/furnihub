@@ -2,7 +2,7 @@ import { DecimalsArrowRight } from "lucide-react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { Products_demo } from "../utils/products_data";
+import { All_Products } from "../utils/products_data";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -11,14 +11,14 @@ const Products = () => {
       <h2 className="text-heading">Our Products</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
-        {Products_demo.map((item, index) => (
+        {All_Products.map((item, index) => (
           <div
             key={index}
             className="relative flex flex-col items-start bg-card rounded-lg overflow-hidden group"
           >
             {/* Product Image */}
             <img
-              src={item.img}
+              src={item.image}
               alt={item.description}
               className="h-[301px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
@@ -58,10 +58,10 @@ const Products = () => {
 
               <div className="flex items-center gap-2 sm:gap-3 mt-2">
                 <p className="text-grey-1 font-semibold text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px]">
-                  {item.discount_price}$
+                  {item.price}$
                 </p>
                 <p className="text-grey-2 line-through text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px]">
-                  {item.original_price}$
+                  {item.originalPrice}$
                 </p>
               </div>
             </div>
