@@ -58,8 +58,8 @@ export const All_Products = [
     ],
 
     rating: 4.5,
-    discount_price: 20,
-    original_price: 50,
+    price: 20,
+    originalPrice: 50,
   },
 
   {
@@ -86,8 +86,8 @@ export const All_Products = [
     ],
 
     rating: 5,
-    discount_price: 25,
-    original_price: 60,
+    price: 25,
+    originalPrice: 60,
   },
 
   {
@@ -114,8 +114,8 @@ export const All_Products = [
     ],
 
     rating: 5,
-    discount_price: 180,
-    original_price: 250,
+    price: 180,
+    originalPrice: 250,
   },
 
   {
@@ -142,8 +142,8 @@ export const All_Products = [
     ],
 
     rating: 4,
-    discount_price: 35,
-    original_price: 80,
+    price: 35,
+    originalPrice: 80,
   },
 
   {
@@ -170,8 +170,8 @@ export const All_Products = [
     ],
 
     rating: 5,
-    discount_price: 40,
-    original_price: 90,
+    price: 40,
+    originalPrice: 90,
   },
 
   {
@@ -198,8 +198,8 @@ export const All_Products = [
     ],
 
     rating: 4,
-    discount_price: 5,
-    original_price: 12,
+    price: 5,
+    originalPrice: 12,
   },
 
   {
@@ -226,8 +226,8 @@ export const All_Products = [
     ],
 
     rating: 5,
-    discount_price: 150,
-    original_price: 300,
+    price: 150,
+    originalPrice: 300,
   },
 
   {
@@ -254,8 +254,8 @@ export const All_Products = [
     ],
 
     rating: 4,
-    discount_price: 10,
-    original_price: 25,
+    price: 10,
+    originalPrice: 25,
   },
   // chairs
   {
