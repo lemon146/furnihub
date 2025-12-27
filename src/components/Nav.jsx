@@ -61,7 +61,7 @@ const Nav = () => {
 
   return (
     <header ref={navRef}>
-      <nav className="m-2 flex justify-between items-center flex-wrap md:mx-10 p-4">
+      <nav className=" flex justify-between items-center flex-wrap md:mx-10 p-4">
         {/* LOGO */}
         <div
           className="logo flex justify-between items-center gap-2"

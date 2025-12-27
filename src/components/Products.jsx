@@ -1,23 +1,45 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DecimalsArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { All_Products } from "../utils/products_data";
 
+gsap.registerPlugin(ScrollTrigger);
 const Products = () => {
   const navigate = useNavigate();
-  const randomProducts = [...All_Products] // copy array
-    .sort(() => Math.random() - 0.5) // shuffle
+  const randomProducts = [...All_Products]
+    .sort(() => Math.random() - 0.5)
     .slice(0, 8);
+  const proRef = useRef(null);
+  useEffect(() => {
+    let ctx = gsap.context(() => {
+      gsap.from(".card", {
+        scrollTrigger: {
+          trigger: proRef.current,
+          start: "top 85%",
+          marker: true,
+        },
+        opacity: 0,
+        y: 30,
+        stagger: 0.2,
+        duration: 0.8,
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
   return (
-    <section className="max-w-[1236px] w-full mx-auto mt-14 px-4">
+    <section className="max-w-[1236px] w-full mx-auto mt-14 px-4" ref={proRef}>
       <h2 className="text-heading">Our Products</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
         {randomProducts.map((item, index) => (
           <div
             key={index}
-            className="relative flex flex-col items-start bg-card rounded-lg overflow-hidden group"
+            className="relative flex flex-col items-start bg-card rounded-lg overflow-hidden group card "
           >
             {/* Product Image */}
             <img
@@ -75,7 +97,7 @@ const Products = () => {
       <div className="flex justify-center items-center w-full mt-5 p-4">
         <button
           onClick={() => navigate("/shop")}
-          class="border border-[#B88E2F] 
+          className="border border-[#B88E2F] 
          text-[#B88E2F] 
          cursor-pointer 
          transition-all
