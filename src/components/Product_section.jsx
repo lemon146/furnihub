@@ -1,18 +1,20 @@
 "use client";
 
 import { gsap } from "gsap";
+import { DecimalsArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import { All_Products } from "../utils/products_data";
 import { PaginationDemo } from "./Pagination";
 
 const ITEMS_PER_PAGE = 8;
 
-export default function ProductsSection({ navigate }) {
+export default function ProductsSection() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const navigate = useNavigate();
   // Filter by Category
   const filteredProducts =
     selectedCategory === "All"
@@ -41,7 +43,6 @@ export default function ProductsSection({ navigate }) {
     }
   };
 
-  // Animate products on load or filter/page change
   useEffect(() => {
     gsap.fromTo(
       productsRef.current,
@@ -107,9 +108,10 @@ export default function ProductsSection({ navigate }) {
                   </button>
 
                   <button
-                    onClick={() => navigate("/product_details")}
-                    className="flex items-center gap-1 hover-text-neutral"
+                    onClick={() => navigate(`/product/${item.id}`)}
+                    className="flex items-center gap-2 text-white px-4 py-2 rounded font-semibold hover-text-neutral"
                   >
+                    <DecimalsArrowRight />
                     Details
                   </button>
 

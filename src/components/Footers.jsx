@@ -9,6 +9,7 @@ import {
   FaGithub,
   FaTwitter,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import Logo from "../assets/images/Logo.png";
 
 const Footers = () => {
@@ -66,19 +67,16 @@ const Footers = () => {
           <nav>
             <h6 className="footer-title mb-2">Services</h6>
             <ul className="space-y-1">
-              {[
-                "Custom Furniture",
-                "Interior Design",
-                "Furniture Delivery",
-                "Consultation",
-              ].map((item, i) => (
+              {["Chairs", "Sofas", "Beds", "Tables"].map((item, i) => (
                 <li key={i}>
-                  <a
+                  <Link
+                    key={i}
+                    to="/shop"
                     ref={(el) => (linksRef.current[i] = el)}
                     className="link link-hover text-gray-400"
                   >
                     {item}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -88,14 +86,15 @@ const Footers = () => {
           <nav>
             <h6 className="footer-title mb-2">Company</h6>
             <ul className="space-y-1">
-              {["About Us", "Contact", "Careers", "Press"].map((item, i) => (
+              {["About", "Contact", "Careers", "Press"].map((item, i) => (
                 <li key={i}>
-                  <a
+                  <Link
+                    to={`/${item.toLowerCase().replace(/\s+/g, "")}`}
                     ref={(el) => (linksRef.current[i + 4] = el)}
                     className="link link-hover text-gray-400"
                   >
                     {item}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

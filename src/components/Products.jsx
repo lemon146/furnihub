@@ -60,12 +60,13 @@ const Products = () => {
                   Share
                 </button>
                 <button
-                  onClick={() => navigate("/product_details")}
-                  className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral"
+                  onClick={() => navigate(`/product/${item.id}`)}
+                  className="flex items-center gap-2 text-white px-4 py-2 rounded font-semibold hover-text-neutral"
                 >
                   <DecimalsArrowRight />
                   Details
                 </button>
+
                 <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral cursor-pointer">
                   <FaHeart /> like
                 </button>

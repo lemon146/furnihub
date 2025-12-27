@@ -164,12 +164,12 @@ export const All_Products = [
     reviews: [
       {
         user: "Ayesha",
-        rating: 5,
+        rating: 4,
         comment: "Looks amazing and holds a lot of weight.",
       },
     ],
 
-    rating: 5,
+    rating: 4,
     price: 40,
     originalPrice: 90,
   },
