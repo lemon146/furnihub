@@ -105,7 +105,7 @@ const Nav = () => {
               className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
             >
               <Icon
-                size={26} // ← Restored proper size
+                size={26}
                 strokeWidth={1}
                 className="text-gray-700 group-hover:text-black group-hover:scale-110"
               />
@@ -122,7 +122,7 @@ const Nav = () => {
         {mobileMenu && (
           <div
             ref={mobileMenuRef}
-            className="md:hidden fixed top-20 left-0 right-0 bg-white shadow-lg p-5 z-50"
+            className="md:hidden fixed top-17 left-0 right-0 bg-white shadow-lg p-5 z-50"
           >
             <ul className="flex flex-col items-center gap-5 font-medium text-lg">
               {[
