@@ -6,7 +6,9 @@ import img5 from "../assets/images/products/img5.png";
 import img6 from "../assets/images/products/img6.png";
 import img7 from "../assets/images/products/img7.png";
 import img8 from "../assets/images/products/img8.png";
-export const categories = [
+import { Category, Product } from "../types";
+
+export const categories: Category[] = [
   {
     name: "Chairs",
     img: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hhaXJzfGVufDB8fDB8fHww",
@@ -28,7 +30,7 @@ export const categories = [
     path: "/shop",
   },
 ];
-export const All_Products = [
+export const All_Products: Product[] = [
   {
     id: 1,
     image: img1,

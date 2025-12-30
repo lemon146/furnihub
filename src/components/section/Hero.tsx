@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
-import banner from "../assets/images/home-banner.png";
+import banner from "../../assets/images/home-banner.png";
 gsap.registerPlugin(ScrollTrigger);
 const Hero = () => {
   const boxRef = useRef(null);

@@ -4,10 +4,10 @@ import { useEffect, useRef } from "react";
 
 const ServiceFeature = () => {
   // GSAP refs
-  const cardsRef = useRef([]);
+  const cardsRef = useRef<HTMLElement[]>([]);
 
   // Function to add card refs
-  const addToRefs = (el) => {
+  const addToRefs = (el: HTMLElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
       cardsRef.current.push(el);
     }

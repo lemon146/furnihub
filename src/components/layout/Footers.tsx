@@ -10,22 +10,26 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Logo from "../assets/images/Logo.png";
+import Logo from "../../assets/images/Logo.png";
 
-const Footers = () => {
-  const footerRef = useRef(null);
-  const linksRef = useRef([]);
-  const iconRef = useRef([]);
+type HTMLElementArray = (HTMLElement | null)[];
+
+const Footers: React.FC = () => {
+  const footerRef = useRef<HTMLElement | null>(null);
+  const linksRef = useRef<HTMLElementArray>([]);
+  const iconRef = useRef<HTMLElementArray>([]);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       // Animate footer container
-      gsap.from(footerRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: "power3.out",
-      });
+      if (footerRef.current) {
+        gsap.from(footerRef.current, {
+          opacity: 0,
+          y: 50,
+          duration: 1,
+          ease: "power3.out",
+        });
+      }
 
       // Stagger animation for links
       gsap.from(linksRef.current, {
@@ -36,7 +40,7 @@ const Footers = () => {
         ease: "power3.out",
       });
 
-      // Animate social icons with scale & fade
+      // Animate social icons
       gsap.from(iconRef.current, {
         opacity: 0,
         scale: 0.5,
@@ -48,6 +52,11 @@ const Footers = () => {
 
     return () => ctx.revert();
   }, []);
+
+  const services = ["Chairs", "Sofas", "Beds", "Tables"];
+  const company = ["About", "Contact", "Careers", "Press"];
+  const legal = ["Terms of Use", "Privacy Policy", "Cookie Policy"];
+  const socialIcons = [FaFacebookF, FaDiscord, FaTwitter, FaGithub, FaDribbble];
 
   return (
     <footer ref={footerRef} className="bg-1 mt-10">
@@ -67,12 +76,11 @@ const Footers = () => {
           <nav>
             <h6 className="footer-title mb-2">Services</h6>
             <ul className="space-y-1">
-              {["Chairs", "Sofas", "Beds", "Tables"].map((item, i) => (
+              {services.map((item, i) => (
                 <li key={i}>
                   <Link
-                    key={i}
                     to="/shop"
-                    ref={(el) => (linksRef.current[i] = el)}
+                    ref={(el) => (linksRef.current[i] = el as any)}
                     className="link link-hover text-gray-400"
                   >
                     {item}
@@ -86,11 +94,11 @@ const Footers = () => {
           <nav>
             <h6 className="footer-title mb-2">Company</h6>
             <ul className="space-y-1">
-              {["About", "Contact", "Careers", "Press"].map((item, i) => (
+              {company.map((item, i) => (
                 <li key={i}>
                   <Link
                     to={`/${item.toLowerCase().replace(/\s+/g, "")}`}
-                    ref={(el) => (linksRef.current[i + 4] = el)}
+                    ref={(el) => (linksRef.current[i + 4] = el as any)}
                     className="link link-hover text-gray-400"
                   >
                     {item}
@@ -104,18 +112,16 @@ const Footers = () => {
           <nav>
             <h6 className="footer-title mb-2">Legal</h6>
             <ul className="space-y-1">
-              {["Terms of Use", "Privacy Policy", "Cookie Policy"].map(
-                (item, i) => (
-                  <li key={i}>
-                    <a
-                      ref={(el) => (linksRef.current[i + 8] = el)}
-                      className="link link-hover text-gray-400"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+              {legal.map((item, i) => (
+                <li key={i}>
+                  <a
+                    ref={(el) => (linksRef.current[i + 8] = el as any)}
+                    className="link link-hover text-gray-400"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
@@ -128,17 +134,15 @@ const Footers = () => {
           </span>
 
           <div className="flex space-x-4">
-            {[FaFacebookF, FaDiscord, FaTwitter, FaGithub, FaDribbble].map(
-              (Icon, i) => (
-                <a
-                  key={i}
-                  ref={(el) => (iconRef.current[i] = el)}
-                  className="text-gray-400 hover:text-heading cursor-pointer"
-                >
-                  <Icon className="w-5 h-5" />
-                </a>
-              )
-            )}
+            {socialIcons.map((Icon, i) => (
+              <a
+                key={i}
+                ref={(el) => (iconRef.current[i] = el as any)}
+                className="text-gray-400 hover:text-heading cursor-pointer"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            ))}
           </div>
         </div>
       </div>

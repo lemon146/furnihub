@@ -8,9 +8,20 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { FC } from "react";
 
-export function PaginationDemo({ totalPages, currentPage, setCurrentPage }) {
-  const handlePageChange = (page) => {
+interface PaginationDemoProps {
+  totalPages: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+}
+
+const PaginationDemo: FC<PaginationDemoProps> = ({
+  totalPages,
+  currentPage,
+  setCurrentPage,
+}) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
@@ -50,6 +61,7 @@ export function PaginationDemo({ totalPages, currentPage, setCurrentPage }) {
           </PaginationItem>
         ))}
 
+        {/* Next */}
         <PaginationItem>
           <PaginationNext
             href="#"
@@ -63,4 +75,6 @@ export function PaginationDemo({ totalPages, currentPage, setCurrentPage }) {
       </PaginationContent>
     </Pagination>
   );
-}
+};
+
+export default PaginationDemo;

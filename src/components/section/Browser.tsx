@@ -2,7 +2,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { categories } from "../utils/products_data";
+import { categories } from "../../utils/products_data";
 
 gsap.registerPlugin(ScrollTrigger);
 const Browser = () => {

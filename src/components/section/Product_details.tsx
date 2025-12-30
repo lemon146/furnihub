@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
-import { All_Products } from "../utils/products_data";
+import { All_Products } from "../../utils/products_data";
 import ProductNotFound from "./ProductNotFound";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,7 +32,6 @@ const Product_details = () => {
         scrollTrigger: {
           trigger: proRef.current,
           start: "top 85%",
-          marker: true,
         },
         opacity: 0,
         y: 30,
@@ -74,11 +73,11 @@ const Product_details = () => {
                         className={`w-4 h-4 ${
                           i <
                           Math.round(
-                            product?.reviews?.length > 0
-                              ? product.reviews.reduce(
+                            (product?.reviews?.length ?? 0) > 0
+                              ? (product?.reviews ?? []).reduce(
                                   (acc, r) => acc + r.rating,
                                   0
-                                ) / product.reviews.length
+                                ) / (product?.reviews?.length ?? 0)
                               : 0
                           )
                             ? "text-yellow-400"
@@ -94,12 +93,12 @@ const Product_details = () => {
                     ))}
                   </div>
                   <p className="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
-                    {product?.reviews?.length > 0
+                    {(product?.reviews ?? []).length > 0
                       ? (
-                          product.reviews.reduce(
+                          product!.reviews!.reduce(
                             (acc, r) => acc + r.rating,
                             0
-                          ) / product.reviews.length
+                          ) / product!.reviews!.length
                         ).toFixed(1)
                       : "No rating"}
                   </p>
@@ -109,7 +108,7 @@ const Product_details = () => {
                     className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
                   >
                     {product?.reviews?.length || 0} Review
-                    {product?.reviews?.length > 1 ? "s" : ""}
+                    {product?.reviews?.length ?? 0 > 1 ? "s" : ""}
                   </a>
                 </div>
               </div>
@@ -201,15 +200,15 @@ const Product_details = () => {
             Customer Reviews ({product?.reviews?.length || 0})
           </h2>
 
-          {product?.reviews?.length > 0 ? (
+          {(product?.reviews?.length ?? 0) > 0 ? (
             <div
               className={`space-y-6 ${
-                product.reviews.length > 2
+                (product?.reviews?.length ?? 0) > 2
                   ? "max-h-[220px] overflow-y-auto pr-2"
                   : ""
               }`}
             >
-              {product.reviews.map((review, index) => (
+              {product?.reviews?.map((review, index) => (
                 <div
                   key={index}
                   className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md"

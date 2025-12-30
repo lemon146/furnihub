@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { All_Products } from "../utils/products_data";
+import { All_Products } from "../../utils/products_data";
 
 gsap.registerPlugin(ScrollTrigger);
 const Products = () => {
@@ -20,7 +20,6 @@ const Products = () => {
         scrollTrigger: {
           trigger: proRef.current,
           start: "top 85%",
-          marker: true,
         },
         opacity: 0,
         y: 30,

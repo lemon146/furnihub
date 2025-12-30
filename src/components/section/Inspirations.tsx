@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import img1 from "../assets/images/inspirations/img1.png";
-import { All_Products } from "../utils/products_data";
+import img1 from "../../assets/images/inspirations/img1.png";
+import { All_Products } from "../../utils/products_data";
 
 export default function Inspirations() {
   const slides = ["/room2.jpg", "/room3.jpg", "/room4.jpg"];

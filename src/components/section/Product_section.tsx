@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { All_Products } from "../utils/products_data";
-import { PaginationDemo } from "./Pagination";
+import { All_Products } from "../../utils/products_data";
+import PaginationDemo from "./Pagination";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -32,12 +32,12 @@ export default function ProductsSection() {
   const categories = ["All", "chairs", "tables", "sofas", "beds"];
 
   // GSAP ref
-  const productsRef = useRef([]);
+  const productsRef = useRef<HTMLElement[]>([]);
 
   // Clear ref on each render
   productsRef.current = [];
 
-  const addToRefs = (el) => {
+  const addToRefs = (el: HTMLElement | null) => {
     if (el && !productsRef.current.includes(el)) {
       productsRef.current.push(el);
     }
