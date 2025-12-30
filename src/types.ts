@@ -1,3 +1,4 @@
+export interface Pagination {}
 // Category type
 export interface Category {
   name: string;
@@ -24,8 +25,8 @@ export interface AdditionalInfo {
 // Product type
 export interface Product {
   id: number;
-  category?: string; // optional for some products
-  image: string; // local image import or URL
+  category?: string;
+  image: string;
   title: string;
   shortDesc: string;
   description: string;
