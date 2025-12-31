@@ -74,9 +74,11 @@ const Nav: React.FC = () => {
   }, [mobileMenu]);
 
   return (
-    <header ref={navRef}>
+    <header
+      ref={navRef}
+      className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md shadow-md "
+    >
       <nav className="flex justify-between items-center flex-wrap md:mx-10 p-4">
-        {/* LOGO */}
         <div
           className="logo flex justify-between items-center gap-2"
           ref={logoRef}
@@ -85,7 +87,6 @@ const Nav: React.FC = () => {
           <h1 className="font-bold text-3xl md:text-4xl">Furniro</h1>
         </div>
 
-        {/* DESKTOP NAV */}
         <ul className="hidden lg:flex items-center gap-8 font-medium text-gray-700">
           {navItems.map((item, i) => (
             <li
@@ -100,13 +101,12 @@ const Nav: React.FC = () => {
                 className="transition-colors duration-300 group-hover:text-black"
               >
                 {item.name}
-                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full" />
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full" />
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* DESKTOP ICONS */}
         <div className="hidden lg:flex items-center gap-3">
           {[UserRoundPen, CiSearch, CiHeart, CiShoppingCart].map((Icon, i) => (
             <Link
@@ -126,16 +126,14 @@ const Nav: React.FC = () => {
           ))}
         </div>
 
-        {/* MOBILE MENU BUTTON */}
         <button className="lg:hidden" onClick={toggleNavbar}>
           {mobileMenu ? <X size={26} /> : <TextAlignJustify size={26} />}
         </button>
 
-        {/* MOBILE DROPDOWN MENU */}
         {mobileMenu && (
           <div
             ref={mobileMenuRef}
-            className="md:hidden fixed top-17 left-0 right-0 bg-white shadow-lg p-5 z-50"
+            className="md:hidden fixed top-17 left-0 right-0  p-5 z-50 bg-white/95 backdrop-blur-md shadow-md"
           >
             <ul className="flex flex-col items-center gap-5 font-medium text-lg">
               {navItems.map((item) => (
@@ -147,7 +145,6 @@ const Nav: React.FC = () => {
               ))}
             </ul>
 
-            {/* MOBILE ICONS */}
             <div className="mt-6 flex gap-4 justify-center">
               {[UserRoundPen, CiSearch, CiHeart, CiShoppingCart].map(
                 (Icon, i) => (
