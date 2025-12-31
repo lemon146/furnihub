@@ -141,11 +141,11 @@ export default function ProductsSection() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center flex-wrap mt-6">
         <PaginationDemo
-          totalPages={totalPages} // ← use calculated total pages
-          currentPage={currentPage} // ← pass current page
-          setCurrentPage={setCurrentPage} // ← pass setter
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       </div>
     </section>

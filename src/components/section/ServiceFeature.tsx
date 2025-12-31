@@ -17,7 +17,6 @@ const ServiceFeature = () => {
     // Clear previous refs on reload
     cardsRef.current = [];
 
-    // Animate cards
     if (cardsRef.current.length > 0) {
       gsap.from(cardsRef.current, {
         opacity: 0,

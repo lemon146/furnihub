@@ -6,6 +6,8 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { CiHeart, CiSearch, CiShoppingCart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/Logo.png";
+import CartDrawer from "../section/CartDrawer";
+import WishlistDrawer from "../section/WishlistDrawer";
 
 interface NavItem {
   name: string;
@@ -28,6 +30,10 @@ const Nav: React.FC = () => {
   const iconRef = useRef<HTMLAnchorElement[]>([]);
   const logoRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const profileRef = useRef<HTMLAnchorElement | null>(null);
+  const searchRef = useRef<HTMLAnchorElement | null>(null);
+  const heartRef = useRef<HTMLDivElement | null>(null);
+  const cartRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -50,14 +56,25 @@ const Nav: React.FC = () => {
         ease: "power3.out",
       });
 
-      // Desktop icons stagger
-      gsap.from(iconRef.current, {
-        opacity: 0,
-        scale: 0.7,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-      });
+      gsap.fromTo(
+        [
+          profileRef.current,
+          searchRef.current,
+          heartRef.current,
+          cartRef.current,
+        ],
+        {
+          opacity: 0,
+          y: -10,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          stagger: 0.1,
+          ease: "power2.out",
+        }
+      );
 
       // Animate mobile menu when it appears
       if (mobileMenu && mobileMenuRef.current) {
@@ -108,22 +125,36 @@ const Nav: React.FC = () => {
         </ul>
 
         <div className="hidden lg:flex items-center gap-3">
-          {[UserRoundPen, CiSearch, CiHeart, CiShoppingCart].map((Icon, i) => (
-            <Link
-              key={i}
-              to="#"
-              ref={(el) => {
-                if (el) iconRef.current[i] = el;
-              }}
-              className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
-            >
-              <Icon
-                size={26}
-                strokeWidth={1}
-                className="text-gray-700 group-hover:text-black group-hover:scale-110"
-              />
-            </Link>
-          ))}
+          <Link
+            to="/profile"
+            ref={profileRef}
+            className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
+          >
+            <UserRoundPen
+              size={26}
+              strokeWidth={1}
+              className="text-gray-700 group-hover:text-black group-hover:scale-110"
+            />
+          </Link>
+
+          <Link
+            to="#"
+            ref={searchRef}
+            className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
+          >
+            <CiSearch
+              size={26}
+              strokeWidth={1}
+              className="text-gray-700 group-hover:text-black group-hover:scale-110"
+            />
+          </Link>
+
+          <div ref={heartRef}>
+            <WishlistDrawer />
+          </div>
+          <div ref={cartRef}>
+            <CartDrawer />
+          </div>
         </div>
 
         <button className="lg:hidden" onClick={toggleNavbar}>
@@ -133,7 +164,7 @@ const Nav: React.FC = () => {
         {mobileMenu && (
           <div
             ref={mobileMenuRef}
-            className="md:hidden fixed top-17 left-0 right-0  p-5 z-50 bg-white/95 backdrop-blur-md shadow-md"
+            className="md:lg fixed top-17 left-0 right-0  p-5 z-50 bg-white/95 backdrop-blur-md shadow-md"
           >
             <ul className="flex flex-col items-center gap-5 font-medium text-lg">
               {navItems.map((item) => (
