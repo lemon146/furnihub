@@ -9,7 +9,7 @@ const Shop = () => {
   return (
     <>
       <MainLayout>
-        <div className="relative w-full h-[280px] md:h-[380px] overflow-hidden">
+        <div className="relative w-full h-70 md:h-95 overflow-hidden">
           <div className="absolute inset-0 bg-black/40" />
 
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white text-center">
