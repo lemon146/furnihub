@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import { TextAlignJustify, UserRoundPen, X } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { CiHeart, CiSearch, CiShoppingCart } from "react-icons/ci";
+import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/Logo.png";
 import CartDrawer from "../section/CartDrawer";
@@ -177,17 +177,36 @@ const Nav: React.FC = () => {
             </ul>
 
             <div className="mt-6 flex gap-4 justify-center">
-              {[UserRoundPen, CiSearch, CiHeart, CiShoppingCart].map(
-                (Icon, i) => (
-                  <Link
-                    key={i}
-                    to="#"
-                    className="text-gray-600 hover:text-black transition"
-                  >
-                    <Icon size={26} />
-                  </Link>
-                )
-              )}
+              <Link
+                to="/profile"
+                ref={profileRef}
+                className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
+              >
+                <UserRoundPen
+                  size={26}
+                  strokeWidth={1}
+                  className="text-gray-700 group-hover:text-black group-hover:scale-110"
+                />
+              </Link>
+
+              <Link
+                to="#"
+                ref={searchRef}
+                className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
+              >
+                <CiSearch
+                  size={26}
+                  strokeWidth={1}
+                  className="text-gray-700 group-hover:text-black group-hover:scale-110"
+                />
+              </Link>
+
+              <div ref={heartRef}>
+                <WishlistDrawer />
+              </div>
+              <div ref={cartRef}>
+                <CartDrawer />
+              </div>
             </div>
           </div>
         )}

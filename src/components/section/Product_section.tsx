@@ -7,6 +7,7 @@ import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { All_Products } from "../../utils/products_data";
+import AddToCartBtn from "../ui/AddToCartBtn";
 import PaginationDemo from "./Pagination";
 
 const ITEMS_PER_PAGE = 8;
@@ -26,7 +27,7 @@ export default function ProductsSection() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const displayedProducts = filteredProducts.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE
+    startIndex + ITEMS_PER_PAGE,
   );
 
   const categories = ["All", "chairs", "tables", "sofas", "beds"];
@@ -53,7 +54,7 @@ export default function ProductsSection() {
         duration: 0.5,
         stagger: 0.1,
         ease: "power3.out",
-      }
+      },
     );
   }, [displayedProducts]);
 
@@ -98,9 +99,7 @@ export default function ProductsSection() {
 
               {/* Hover Actions */}
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button className="btn-primary px-4 py-2 font-semibold rounded cursor-pointer">
-                  Add to Cart
-                </button>
+                <AddToCartBtn productId={item.id} />
 
                 <div className="flex justify-between items-center gap-3 text-white">
                   <button className="flex items-center gap-1 hover-text-neutral">

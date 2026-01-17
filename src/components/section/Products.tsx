@@ -31,7 +31,7 @@ const Products = () => {
     return () => ctx.revert();
   }, []);
   return (
-    <section className="max-w-[1236px] w-full mx-auto mt-14 px-4" ref={proRef}>
+    <section className="max-w-309 w-full mx-auto mt-14 px-4" ref={proRef}>
       <h2 className="text-heading">Our Products</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
@@ -44,7 +44,7 @@ const Products = () => {
             <img
               src={item.image}
               alt={item.description}
-              className="h-[301px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="h-75.25 w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
 
             {/* Overlay (covers whole card on hover) */}
