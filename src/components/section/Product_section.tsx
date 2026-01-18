@@ -3,11 +3,11 @@
 import { gsap } from "gsap";
 import { DecimalsArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { All_Products } from "../../utils/products_data";
 import AddToCartBtn from "../ui/AddToCartBtn";
+import WishListBtn from "../ui/WishListBtn";
 import PaginationDemo from "./Pagination";
 
 const ITEMS_PER_PAGE = 8;
@@ -114,9 +114,7 @@ export default function ProductsSection() {
                     Details
                   </button>
 
-                  <button className="flex items-center gap-1 hover-text-neutral">
-                    <FaHeart /> Like
-                  </button>
+                  <WishListBtn productId={item.id} />
                 </div>
               </div>
 

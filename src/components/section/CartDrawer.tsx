@@ -37,52 +37,65 @@ export default function CartDrawer() {
         {/* Scrollable Cart Items */}
         <ScrollArea className="flex-1 overflow-y-auto pr-2">
           <div className="space-y-4">
-            {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between border rounded-lg p-3"
-              >
-                {/* Image */}
-                <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Info */}
-                <div className="flex-1 ml-3">
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-sm text-gray-500">
-                    {`${item.quantity} × $${(item.price ?? 0) * item.quantity}`}
-                  </p>
-                </div>
-                {/* Remove */}
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="ml-3 text-gray-400 hover:text-red-500"
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between border rounded-lg p-3"
                 >
-                  <Trash2 size={18} />
-                </button>
+                  {/* Image */}
+                  <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 ml-3">
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-sm text-gray-500">
+                      {`${item.quantity} × $${(item.price ?? 0) * item.quantity}`}
+                    </p>
+                  </div>
+
+                  {/* Remove */}
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="ml-3 text-gray-400 hover:text-red-500"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 text-center mt-10">
+                <p className="text-lg font-medium">Your cart is empty 🛒</p>
+                <p className="text-sm mt-1">
+                  Add some products to see them here!
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </ScrollArea>
 
         {/* Footer */}
-        <DrawerFooter>
-          <div className="flex justify-between items-center">
-            <p className="text-lg font-semibold">Subtotal:</p>
-            <p className="text-lg font-bold">Rs. 520,000</p>
-          </div>
-          <Button className="w-full bg-[#B88E2F] hover:bg-[#a17a24] mt-2">
-            Checkout
-          </Button>
+        {cartItems.length > 0 && (
+          <DrawerFooter>
+            <div className="flex justify-between items-center">
+              <p className="text-lg font-semibold">Subtotal:</p>
+              <p className="text-lg font-bold">Rs. 520,000</p>
+            </div>
+            <Button className="w-full bg-[#B88E2F] hover:bg-[#a17a24] mt-2">
+              Checkout
+            </Button>
 
-          <DrawerClose className="mt-4 text-gray-600 hover:underline text-sm mx-auto block">
-            Continue Shopping
-          </DrawerClose>
-        </DrawerFooter>
+            <DrawerClose className="mt-4 text-gray-600 hover:underline text-sm mx-auto block">
+              Continue Shopping
+            </DrawerClose>
+          </DrawerFooter>
+        )}
       </DrawerContent>
     </Drawer>
   );

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -9,9 +8,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWishListContext } from "@/context/WishlistContext";
+import { Trash2 } from "lucide-react";
 import { CiHeart } from "react-icons/ci";
 
 export default function WishlistDrawer() {
+  const { savedProducts, toggleFavorite } = useWishListContext();
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -34,13 +36,44 @@ export default function WishlistDrawer() {
         {/* Wishlist products */}
         <ScrollArea className="h-[300px] pr-2">
           <div className="space-y-4">
-            {/* Wishlist Item Example */}
-            <div className="flex items-center justify-between border p-3 rounded-md">
-              <p>Product Name</p>
-              <Button size="sm" variant="secondary">
-                Add to Cart
-              </Button>
-            </div>
+            {savedProducts.length > 0 ? (
+              savedProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between border rounded-lg p-3"
+                >
+                  {/* Image */}
+                  <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 ml-3">
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-sm text-gray-500">${item.price}</p>
+                  </div>
+
+                  {/* Remove */}
+                  <button
+                    onClick={() => toggleFavorite(item.id)}
+                    className="ml-3 text-gray-400 hover:text-red-500"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 text-center mt-10">
+                <p className="text-lg font-medium">Your wishlist is empty 😢</p>
+                <p className="text-sm mt-1">
+                  Save items you love to see them here!
+                </p>
+              </div>
+            )}
           </div>
         </ScrollArea>
 
