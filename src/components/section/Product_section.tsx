@@ -59,7 +59,7 @@ export default function ProductsSection() {
   }, [displayedProducts]);
 
   return (
-    <section className="max-w-[1236px] w-full mx-auto mt-14 px-4">
+    <section className="max-w-309 w-full mx-auto mt-14 px-4">
       <h2 className="text-heading font-semibold">Our Products</h2>
 
       {/* Category Buttons */}
@@ -94,7 +94,7 @@ export default function ProductsSection() {
               <img
                 src={item.image}
                 alt={item.description}
-                className="h-[301px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="h-75.25 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
 
               {/* Hover Actions */}

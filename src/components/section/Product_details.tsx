@@ -58,7 +58,7 @@ const Product_details = () => {
   return (
     <>
       <section className="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
-        <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+        <div className="max-w-7xl px-4 mx-auto 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
             <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
               <img
@@ -200,7 +200,7 @@ const Product_details = () => {
       </section>
       <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
       <section className="py-12 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-screen-xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
             Customer Reviews ({product?.reviews?.length || 0})
           </h2>
@@ -209,7 +209,7 @@ const Product_details = () => {
             <div
               className={`space-y-6 ${
                 (product?.reviews?.length ?? 0) > 2
-                  ? "max-h-[220px] overflow-y-auto pr-2"
+                  ? "max-h-55 overflow-y-auto pr-2"
                   : ""
               }`}
             >
@@ -242,10 +242,7 @@ const Product_details = () => {
 
       <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
-      <section
-        className="max-w-[1236px] w-full mx-auto mt-14 px-4"
-        ref={proRef}
-      >
+      <section className="max-w-309 w-full mx-auto mt-14 px-4" ref={proRef}>
         <h2 className="text-heading">Related Products</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
@@ -258,7 +255,7 @@ const Product_details = () => {
               <img
                 src={item.image}
                 alt={item.description}
-                className="h-[301px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="h-75.25 w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
 
               {/* Overlay (covers whole card on hover) */}

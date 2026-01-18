@@ -34,7 +34,7 @@ export default function WishlistDrawer() {
         </DrawerHeader>
 
         {/* Wishlist products */}
-        <ScrollArea className="h-[300px] pr-2">
+        <ScrollArea className="h-75 pr-2">
           <div className="space-y-4">
             {savedProducts.length > 0 ? (
               savedProducts.map((item) => (
