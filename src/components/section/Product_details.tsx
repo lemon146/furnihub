@@ -1,18 +1,30 @@
+import { useCartContext } from "@/context/CartContext";
+import { useWishListContext } from "@/context/WishlistContext";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { DecimalsArrowRight } from "lucide-react";
+import { DecimalsArrowRight, HeartOff, ShoppingCart } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { All_Products } from "../../utils/products_data";
+import AddToCartBtn from "../ui/AddToCartBtn";
+import WishListBtn from "../ui/WishListBtn";
 import ProductNotFound from "./ProductNotFound";
 gsap.registerPlugin(ScrollTrigger);
 
 const Product_details = () => {
+  const { toggleFavorite, savedProducts } = useWishListContext();
+  const { addToCart, cartItems } = useCartContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const proRef = useRef(null);
+  // is product exist on cart
+  const isProductInCart = cartItems.some((item) => item.id === Number(id));
+  // is product exist on Wishlist
+  const isProductInWishList = savedProducts.some(
+    (item) => item.id === Number(id),
+  );
 
   // Find product
   const product = All_Products.find((p) => p.id === Number(id));
@@ -20,9 +32,9 @@ const Product_details = () => {
   // Handle invalid product
   if (!product) return <ProductNotFound />;
 
-  // Related products (safe now)
+  // Related products
   const relatedProducts = All_Products.filter(
-    (p) => p.category === product.category && p.id !== product.id
+    (p) => p.category === product.category && p.id !== product.id,
   ).slice(0, 4);
 
   // GSAP animation
@@ -76,9 +88,9 @@ const Product_details = () => {
                             (product?.reviews?.length ?? 0) > 0
                               ? (product?.reviews ?? []).reduce(
                                   (acc, r) => acc + r.rating,
-                                  0
+                                  0,
                                 ) / (product?.reviews?.length ?? 0)
-                              : 0
+                              : 0,
                           )
                             ? "text-yellow-400"
                             : "text-gray-300 dark:text-gray-600"
@@ -97,7 +109,7 @@ const Product_details = () => {
                       ? (
                           product!.reviews!.reduce(
                             (acc, r) => acc + r.rating,
-                            0
+                            0,
                           ) / product!.reviews!.length
                         ).toFixed(1)
                       : "No rating"}
@@ -108,63 +120,56 @@ const Product_details = () => {
                     className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
                   >
                     {product?.reviews?.length || 0} Review
-                    {product?.reviews?.length ?? 0 > 1 ? "s" : ""}
+                    {(product?.reviews?.length ?? 0 > 1) ? "s" : ""}
                   </a>
                 </div>
               </div>
 
               <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-                <a
-                  href="#"
-                  title=""
-                  className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  role="button"
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(product.id)}
+                  className={`
+    flex items-center gap-2 py-2.5 px-5 text-sm font-medium
+    rounded-lg border transition-all duration-300
+    focus:outline-none focus:ring-4
+    ${
+      isProductInWishList
+        ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100 focus:ring-red-100"
+        : "bg-white text-gray-500 border-gray-200 hover:bg-gray-100 focus:ring-gray-100"
+    }
+    dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300
+  `}
                 >
-                  <svg
-                    className="w-5 h-5 -ms-2 me-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                    />
-                  </svg>
-                  Add to favorites
-                </a>
+                  {isProductInWishList ? (
+                    <HeartOff strokeWidth={1.25} />
+                  ) : (
+                    <FaHeart className="text-red-500" />
+                  )}
 
-                <a
-                  href="#"
-                  title=""
-                  className="text-white mt-4 sm:mt-0 bg-primary hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800 flex items-center justify-center"
-                  role="button"
+                  {isProductInWishList
+                    ? "Remove from favorites"
+                    : "Add to favorites"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => addToCart(product.id)}
+                  disabled={isProductInCart}
+                  className={`
+    mt-4 sm:mt-0 flex items-center gap-2 justify-center
+    rounded-lg px-5 py-2.5 text-sm font-medium transition-all
+    focus:outline-none focus:ring-4
+    ${
+      isProductInCart
+        ? "bg-green-600 text-white cursor-not-allowed opacity-70"
+        : "bg-primary text-white hover:bg-primary-800 focus:ring-primary-300"
+    }
+  `}
                 >
-                  <svg
-                    className="w-5 h-5 -ms-2 me-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-                    />
-                  </svg>
-                  Add to cart
-                </a>
+                  <ShoppingCart strokeWidth={0.75} />
+                  {isProductInCart ? "Item added" : "Add to cart"}
+                </button>
               </div>
 
               <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
@@ -258,9 +263,7 @@ const Product_details = () => {
 
               {/* Overlay (covers whole card on hover) */}
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button className="flex items-center gap-2 btn-primary px-4 py-2 rounded font-semibold hover:bg-grey-200 cursor-pointer">
-                  Add to Cart
-                </button>
+                <AddToCartBtn productId={item.id} />
 
                 <div className="flex justify-between items-center ">
                   <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral">
@@ -275,9 +278,7 @@ const Product_details = () => {
                     Details
                   </button>
 
-                  <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral cursor-pointer">
-                    <FaHeart /> like
-                  </button>
+                  <WishListBtn productId={item.id} />
                 </div>
               </div>
 

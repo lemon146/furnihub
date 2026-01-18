@@ -3,11 +3,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DecimalsArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { All_Products } from "../../utils/products_data";
 import AddToCartBtn from "../ui/AddToCartBtn";
+import WishListBtn from "../ui/WishListBtn";
 
 gsap.registerPlugin(ScrollTrigger);
 const Products = () => {
@@ -67,9 +67,7 @@ const Products = () => {
                   Details
                 </button>
 
-                <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral cursor-pointer">
-                  <FaHeart /> like
-                </button>
+                <WishListBtn productId={item.id} />
               </div>
             </div>
 
