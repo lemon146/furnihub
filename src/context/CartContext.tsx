@@ -11,6 +11,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartContextProvider = ({ children }: CartContextProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [hasLoaded, SetHasLoaded] = useState(false);
 
   const addToCart = (id: number | string) => {
     const product = All_Products.find((item) => item.id === id);
@@ -24,17 +25,33 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
             : item,
         ),
       );
+      SetHasLoaded(true);
     } else {
       setCartItems((prev) => [...prev, { ...product, quantity: 1 }]);
+      SetHasLoaded(true);
     }
     return toast.success("Product added");
   };
+  // remove Cart
+  const removeFromCart = (id: number | string) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    toast.success("Product removed!");
+    SetHasLoaded(true);
+  };
   useEffect(() => {
+    if (!hasLoaded) return;
     localStorage.setItem("data", JSON.stringify(cartItems));
-  }, [setCartItems, cartItems]);
+  }, [cartItems, hasLoaded]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("data");
+    if (stored) {
+      setCartItems(JSON.parse(stored));
+    }
+  }, []);
 
   return (
-    <CartContext.Provider value={{ addToCart, cartItems }}>
+    <CartContext.Provider value={{ addToCart, cartItems, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

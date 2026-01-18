@@ -1,3 +1,4 @@
+import { useCartContext } from "@/context/CartContext";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DecimalsArrowRight } from "lucide-react";
@@ -6,10 +7,12 @@ import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { All_Products } from "../../utils/products_data";
+import AddToCartBtn from "../ui/AddToCartBtn";
 
 gsap.registerPlugin(ScrollTrigger);
 const Products = () => {
   const navigate = useNavigate();
+  const { addToCart } = useCartContext();
   const randomProducts = [...All_Products]
     .sort(() => Math.random() - 0.5)
     .slice(0, 8);
@@ -49,9 +52,7 @@ const Products = () => {
 
             {/* Overlay (covers whole card on hover) */}
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button className="flex items-center gap-2 btn-primary px-4 py-2 rounded font-semibold hover:bg-grey-200 cursor-pointer">
-                Add to Cart
-              </button>
+              <AddToCartBtn productId={item.id} />
 
               <div className="flex justify-between items-center ">
                 <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral">
