@@ -1,4 +1,5 @@
 import { useCartContext } from "@/context/CartContext";
+import toast from "react-hot-toast";
 
 interface AddToCartProps {
   productId: string | number;
@@ -14,7 +15,21 @@ const AddToCartBtn = ({ productId }: AddToCartProps) => {
     <button
       onClick={(e) => {
         e.stopPropagation();
-        addToCart(productId);
+        if (isAdded) {
+          toast("Already in your cart", {
+            icon: "🛒",
+            duration: 2000,
+            style: {
+              borderRadius: "4px",
+              background: "#333",
+              color: "#fff",
+              fontSize: "14px",
+              fontWeight: "500",
+            },
+          });
+        } else {
+          addToCart(productId);
+        }
       }}
       className={`
         btn-primary px-4 py-2 font-semibold rounded cursor-pointer 
