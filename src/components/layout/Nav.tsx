@@ -1,8 +1,9 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { TextAlignJustify, UserRoundPen, X } from "lucide-react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/Logo.png";
@@ -27,184 +28,158 @@ const Nav: React.FC = () => {
 
   const navRef = useRef<HTMLElement | null>(null);
   const menuItemsRef = useRef<HTMLLIElement[]>([]);
-  const iconRef = useRef<HTMLAnchorElement[]>([]);
-  const logoRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
-  const profileRef = useRef<HTMLAnchorElement | null>(null);
-  const searchRef = useRef<HTMLAnchorElement | null>(null);
-  const heartRef = useRef<HTMLDivElement | null>(null);
-  const cartRef = useRef<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      // Logo animation
-      if (logoRef.current) {
-        gsap.from(logoRef.current, {
-          opacity: 0,
-          y: -20,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      }
+  useGSAP(
+    () => {
+      const tl = gsap.timeline();
 
-      // Desktop menu items stagger
-      gsap.from(menuItemsRef.current, {
+      tl.from(".nav-logo", {
         opacity: 0,
-        y: -10,
+        x: -20,
         duration: 0.6,
-        stagger: 0.08,
-        ease: "power3.out",
-      });
+        ease: "power2.out",
+      })
+        .from(
+          menuItemsRef.current,
+          {
+            opacity: 0,
+            y: -10,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: "power3.out",
+          },
+          "-=0.3",
+        )
+        .from(
+          ".nav-icons",
+          {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: "back.out(1.7)",
+          },
+          "-=0.2",
+        );
+    },
+    { scope: navRef },
+  );
 
+  useGSAP(() => {
+    if (mobileMenu) {
       gsap.fromTo(
-        [
-          profileRef.current,
-          searchRef.current,
-          heartRef.current,
-          cartRef.current,
-        ],
-        {
-          opacity: 0,
-          y: -10,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.1,
-          ease: "power2.out",
-        }
+        mobileMenuRef.current,
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.4, ease: "power3.inOut" },
       );
-
-      // Animate mobile menu when it appears
-      if (mobileMenu && mobileMenuRef.current) {
-        gsap.from(mobileMenuRef.current, {
-          opacity: 0,
-          y: -30,
-          duration: 0.4,
-          ease: "power3.out",
-        });
-      }
-    }, navRef);
-
-    return () => ctx.revert();
+      gsap.from(".mobile-link", {
+        opacity: 0,
+        x: -20,
+        stagger: 0.1,
+        duration: 0.3,
+        delay: 0.2,
+      });
+    }
   }, [mobileMenu]);
 
   return (
     <header
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md shadow-md "
+      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100"
     >
-      <nav className="flex justify-between items-center flex-wrap md:mx-10 p-4">
-        <div
-          className="logo flex justify-between items-center gap-2"
-          ref={logoRef}
-        >
-          <img src={logo} alt="logo" className="h-9 w-11" />
-          <h1 className="font-bold text-3xl md:text-4xl">Furniro</h1>
+      <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4 md:py-6">
+        {/* Desktop & Mobile Logo */}
+        <div className="nav-logo flex items-center gap-2 select-none">
+          <img src={logo} alt="logo" className="h-8 w-10 object-contain" />
+          <h1 className="font-bold text-2xl md:text-3xl tracking-tight text-[#333]">
+            Furniro
+          </h1>
         </div>
 
-        <ul className="hidden lg:flex items-center gap-8 font-medium text-gray-700">
+        {/* Desktop Menu */}
+        <ul className="hidden lg:flex items-center gap-10">
           {navItems.map((item, i) => (
             <li
               key={item.name}
               ref={(el) => {
                 if (el) menuItemsRef.current[i] = el;
               }}
-              className="relative group"
             >
               <Link
                 to={item.path}
-                className="transition-colors duration-300 group-hover:text-black"
+                className="text-sm font-semibold text-[#3A3A3A] hover:text-[#B88E2F] transition-colors duration-300"
               >
                 {item.name}
-                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-black transition-all duration-300 group-hover:w-full" />
               </Link>
             </li>
           ))}
         </ul>
 
-        <div className="hidden lg:flex items-center gap-3">
+        {/* Desktop Action Icons */}
+        <div className="hidden lg:flex items-center gap-5">
           <Link
             to="/profile"
-            ref={profileRef}
-            className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
+            className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F] transition-transform active:scale-90"
           >
-            <UserRoundPen
-              size={26}
-              strokeWidth={1}
-              className="text-gray-700 group-hover:text-black group-hover:scale-110"
-            />
+            <UserRoundPen size={24} strokeWidth={1.5} />
           </Link>
-
-          <Link
-            to="#"
-            ref={searchRef}
-            className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
-          >
-            <CiSearch
-              size={26}
-              strokeWidth={1}
-              className="text-gray-700 group-hover:text-black group-hover:scale-110"
-            />
-          </Link>
-
-          <div ref={heartRef}>
+          <button className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F] active:scale-90">
+            <CiSearch size={28} />
+          </button>
+          <div className="nav-icons">
             <WishlistDrawer />
           </div>
-          <div ref={cartRef}>
+          <div className="nav-icons">
             <CartDrawer />
           </div>
         </div>
 
-        <button className="lg:hidden" onClick={toggleNavbar}>
-          {mobileMenu ? <X size={26} /> : <TextAlignJustify size={26} />}
+        {/* Mobile Toggle Button */}
+        <button
+          className="lg:hidden p-2 text-[#333] active:scale-90 transition-transform"
+          onClick={toggleNavbar}
+          aria-label="Toggle Menu"
+        >
+          {mobileMenu ? <X size={28} /> : <TextAlignJustify size={28} />}
         </button>
 
+        {/* Mobile Menu Overlay */}
         {mobileMenu && (
           <div
             ref={mobileMenuRef}
-            className="md:lg fixed top-17 left-0 right-0  p-5 z-50 bg-white/95 backdrop-blur-md shadow-md"
+            className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl overflow-hidden"
           >
-            <ul className="flex flex-col items-center gap-5 font-medium text-lg">
-              {navItems.map((item) => (
-                <li key={item.name} onClick={() => setMobileMenu(false)}>
-                  <Link to={item.path} className="hover:text-heading">
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col p-8 gap-8">
+              <ul className="flex flex-col gap-6">
+                {navItems.map((item) => (
+                  <li
+                    key={item.name}
+                    className="mobile-link"
+                    onClick={() => setMobileMenu(false)}
+                  >
+                    <Link
+                      to={item.path}
+                      className="text-xl font-bold text-[#3A3A3A] hover:text-[#B88E2F]"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-            <div className="mt-6 flex gap-4 justify-center">
-              <Link
-                to="/profile"
-                ref={profileRef}
-                className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
-              >
-                <UserRoundPen
-                  size={26}
-                  strokeWidth={1}
-                  className="text-gray-700 group-hover:text-black group-hover:scale-110"
-                />
-              </Link>
-
-              <Link
-                to="#"
-                ref={searchRef}
-                className="group flex h-10 w-10 items-center justify-center transition-transform duration-300"
-              >
-                <CiSearch
-                  size={26}
-                  strokeWidth={1}
-                  className="text-gray-700 group-hover:text-black group-hover:scale-110"
-                />
-              </Link>
-
-              <div ref={heartRef}>
+              <div className="mobile-link pt-6 border-t border-gray-100 flex justify-between items-center">
+                <Link
+                  to="/profile"
+                  onClick={() => setMobileMenu(false)}
+                  className="p-2 text-[#3A3A3A]"
+                >
+                  <UserRoundPen size={26} />
+                </Link>
+                <button className="p-2 text-[#3A3A3A]">
+                  <CiSearch size={28} />
+                </button>
                 <WishlistDrawer />
-              </div>
-              <div ref={cartRef}>
                 <CartDrawer />
               </div>
             </div>
