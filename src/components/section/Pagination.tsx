@@ -13,16 +13,16 @@ import { FC } from "react";
 interface PaginationDemoProps {
   totalPages: number;
   currentPage: number;
-  setCurrentPage: (page: number) => void;
+  // setCurrentPage: (page: number) => void;
 }
 
 const PaginationDemo: FC<PaginationDemoProps> = ({
   totalPages,
   currentPage,
-  setCurrentPage,
+  // setCurrentPage,
 }) => {
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // setCurrentPage(page);
   };
 
   return (
