@@ -1,149 +1,141 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useLayoutEffect, useRef } from "react";
-import {
-  FaDiscord,
-  FaDribbble,
-  FaFacebookF,
-  FaGithub,
-  FaTwitter,
-} from "react-icons/fa";
+import { useRef } from "react";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/images/Logo.png";
 
-type HTMLElementArray = (HTMLElement | null)[];
-
 const Footers: React.FC = () => {
   const footerRef = useRef<HTMLElement | null>(null);
-  const linksRef = useRef<HTMLElementArray>([]);
-  const iconRef = useRef<HTMLElementArray>([]);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      // Animate footer container
-      if (footerRef.current) {
-        gsap.from(footerRef.current, {
-          opacity: 0,
-          y: 50,
-          duration: 1,
-          ease: "power3.out",
-        });
-      }
-
-      // Stagger animation for links
-      gsap.from(linksRef.current, {
+  useGSAP(
+    () => {
+      gsap.from(".footer-el", {
         opacity: 0,
         y: 20,
-        duration: 0.6,
+        duration: 0.8,
         stagger: 0.1,
-        ease: "power3.out",
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 90%",
+        },
       });
-
-      // Animate social icons
-      gsap.from(iconRef.current, {
-        opacity: 0,
-        scale: 0.5,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-      });
-    }, footerRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  const services = ["Chairs", "Sofas", "Beds", "Tables"];
-  const company = ["About", "Contact", "Careers", "Press"];
-  const legal = ["Terms of Use", "Privacy Policy", "Cookie Policy"];
-  const socialIcons = [FaFacebookF, FaDiscord, FaTwitter, FaGithub, FaDribbble];
+    },
+    { scope: footerRef },
+  );
 
   return (
-    <footer ref={footerRef} className="bg-1 mt-10">
-      <div className="container mx-auto md:px-10 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center sm:text-left">
-          {/* Logo */}
-          <aside className="flex flex-col items-center sm:items-start">
-            <img src={Logo} alt="FurniCo Logo" className="mb-4 w-32" />
-            <p className="text-body">
-              FurniCo Furniture Ltd.
-              <br />
-              Coral Gables, FL 33134, USA
+    <footer
+      ref={footerRef}
+      className="bg-white border-t border-gray-100 pt-16 pb-8"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12">
+          {/* Brand Info */}
+          <div className="md:col-span-4 footer-el">
+            <img src={Logo} alt="Furniro" className="h-8 mb-6 object-contain" />
+            <p className="text-[#9F9F9F] text-sm md:text-base leading-relaxed max-w-xs">
+              400 University Drive Suite 200 Coral Gables, <br />
+              FL 33134 USA
             </p>
-          </aside>
+            <div className="flex gap-4 mt-6">
+              {[FaFacebook, FaInstagram, FaTwitter, FaLinkedin].map(
+                (Icon, i) => (
+                  <Icon
+                    key={i}
+                    className="text-xl text-black hover:text-[#B88E2F] cursor-pointer transition-colors"
+                  />
+                ),
+              )}
+            </div>
+          </div>
 
-          {/* Services */}
-          <nav>
-            <h6 className="footer-title mb-2">Services</h6>
-            <ul className="space-y-1">
-              {services.map((item, i) => (
-                <li key={i}>
-                  <Link
-                    to="/shop"
-                    ref={(el) => (linksRef.current[i] = el as any)}
-                    className="link link-hover text-gray-400"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+          {/* Links Section */}
+          <div className="md:col-span-2 footer-el">
+            <h6 className="text-[#9F9F9F] font-medium mb-8">Links</h6>
+            <ul className="flex flex-col gap-5 text-sm md:text-base font-bold text-black">
+              <li>
+                <Link to="/" className="hover:text-[#B88E2F] transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/shop"
+                  className="hover:text-[#B88E2F] transition-colors"
+                >
+                  Shop
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-[#B88E2F] transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="hover:text-[#B88E2F] transition-colors"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
-          </nav>
+          </div>
 
-          {/* Company */}
-          <nav>
-            <h6 className="footer-title mb-2">Company</h6>
-            <ul className="space-y-1">
-              {company.map((item, i) => (
-                <li key={i}>
-                  <Link
-                    to={`/${item.toLowerCase().replace(/\s+/g, "")}`}
-                    ref={(el) => (linksRef.current[i + 4] = el as any)}
-                    className="link link-hover text-gray-400"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+          {/* Help Section */}
+          <div className="md:col-span-2 footer-el">
+            <h6 className="text-[#9F9F9F] font-medium mb-8">Help</h6>
+            <ul className="flex flex-col gap-5 text-sm md:text-base font-bold text-black">
+              <li>
+                <Link to="/" className="hover:text-[#B88E2F] transition-colors">
+                  Payment Options
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="hover:text-[#B88E2F] transition-colors">
+                  Returns
+                </Link>
+              </li>
+              <li>
+                <Link to="/" className="hover:text-[#B88E2F] transition-colors">
+                  Privacy Policies
+                </Link>
+              </li>
             </ul>
-          </nav>
+          </div>
 
-          {/* Legal */}
-          <nav>
-            <h6 className="footer-title mb-2">Legal</h6>
-            <ul className="space-y-1">
-              {legal.map((item, i) => (
-                <li key={i}>
-                  <a
-                    ref={(el) => (linksRef.current[i + 8] = el as any)}
-                    className="link link-hover text-gray-400"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {/* Newsletter Section */}
+          <div className="md:col-span-4 footer-el">
+            <h6 className="text-[#9F9F9F] font-medium mb-8">Newsletter</h6>
+            <form className="flex items-center gap-3 border-b border-black pb-1">
+              <input
+                type="email"
+                placeholder="Enter Your Email Address"
+                className="w-full bg-transparent text-sm focus:outline-none placeholder:text-[#9F9F9F]"
+              />
+              <button
+                type="submit"
+                className="text-sm font-bold uppercase tracking-tight hover:text-[#B88E2F] transition-colors"
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
         </div>
 
-        <hr className="my-6 border-neutral-content/40" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-sm text-body">
-            © 2023 FurniCo™. All Rights Reserved.
-          </span>
-
-          <div className="flex space-x-4">
-            {socialIcons.map((Icon, i) => (
-              <a
-                key={i}
-                ref={(el) => (iconRef.current[i] = el as any)}
-                className="text-gray-400 hover:text-heading cursor-pointer"
-              >
-                <Icon className="w-5 h-5" />
-              </a>
-            ))}
-          </div>
+        {/* Copyright Section */}
+        <div className="pt-8 border-t border-[#D9D9D9] footer-el">
+          <p className="text-black text-sm md:text-base">
+            2026 Furniro. All rights reserved
+          </p>
         </div>
       </div>
     </footer>

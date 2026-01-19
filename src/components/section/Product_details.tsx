@@ -2,7 +2,7 @@ import { useCartContext } from "@/context/CartContext";
 import { useWishListContext } from "@/context/WishlistContext";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { DecimalsArrowRight, HeartOff, ShoppingCart } from "lucide-react";
+import { ArrowRight, HeartOff, ShoppingCart, Star } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
@@ -19,6 +19,8 @@ const Product_details = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const proRef = useRef(null);
+  const container = useRef(null);
+
   // is product exist on cart
   const isProductInCart = cartItems.some((item) => item.id === Number(id));
   // is product exist on Wishlist
@@ -37,9 +39,27 @@ const Product_details = () => {
     (p) => p.category === product.category && p.id !== product.id,
   ).slice(0, 4);
 
+  // Calculation for average rating
+  const reviewCount = product?.reviews?.length || 0;
+  const avgRating =
+    reviewCount > 0
+      ? (product?.reviews?.reduce((acc, r) => acc + r.rating, 0) ??
+        0 / reviewCount)
+      : 0;
+
   // GSAP animation
   useEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
+      // Main product details animation
+      gsap.from(".anim-item", {
+        opacity: 0,
+        y: 20,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+
+      // Related products animation
       gsap.from(".card", {
         scrollTrigger: {
           trigger: proRef.current,
@@ -50,155 +70,126 @@ const Product_details = () => {
         stagger: 0.2,
         duration: 0.8,
       });
-    });
+    }, container);
 
     return () => ctx.revert();
-  }, []);
+  }, [id]);
 
   return (
     <>
-      <section className="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
-        <div className="max-w-7xl px-4 mx-auto 2xl:px-0">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-            <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
+      <section
+        ref={container}
+        className="py-12 bg-white md:py-20 antialiased overflow-hidden"
+      >
+        <div className="max-w-7xl px-4 mx-auto">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-20">
+            {/* Product Image with Hover Effect */}
+            <div className="anim-item shrink-0 max-w-md lg:max-w-lg mx-auto bg-[#F9F1E7] rounded-2xl p-6 sm:p-10">
               <img
-                className="w-full "
+                className="w-full h-auto object-contain mix-blend-multiply hover:scale-105 transition-transform duration-500"
                 src={product.image}
                 alt={product.title}
               />
             </div>
 
-            <div className="mt-6 sm:mt-8 lg:mt-0">
-              <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+            <div className="mt-8 lg:mt-0 flex flex-col justify-center">
+              <h1 className="anim-item text-3xl font-bold text-[#3A3A3A] sm:text-4xl lg:text-5xl">
                 {product.title}
               </h1>
-              <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-                <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
+
+              <div className="anim-item mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
+                <p className="text-3xl font-semibold text-[#B88E2F]">
                   ${product.price}
                 </p>
 
-                <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                  <div className="flex items-center gap-1">
+                <div className="hidden sm:block h-6 w-[1px] bg-gray-300 mx-2" />
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center text-yellow-400">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <svg
+                      <Star
                         key={i}
-                        className={`w-4 h-4 ${
-                          i <
-                          Math.round(
-                            (product?.reviews?.length ?? 0) > 0
-                              ? (product?.reviews ?? []).reduce(
-                                  (acc, r) => acc + r.rating,
-                                  0,
-                                ) / (product?.reviews?.length ?? 0)
-                              : 0,
-                          )
-                            ? "text-yellow-400"
-                            : "text-gray-300 dark:text-gray-600"
-                        }`}
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                      </svg>
+                        size={18}
+                        fill={
+                          i < Math.round(avgRating) ? "currentColor" : "none"
+                        }
+                        strokeWidth={1.5}
+                      />
                     ))}
                   </div>
-                  <p className="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
-                    {(product?.reviews ?? []).length > 0
-                      ? (
-                          product!.reviews!.reduce(
-                            (acc, r) => acc + r.rating,
-                            0,
-                          ) / product!.reviews!.length
-                        ).toFixed(1)
-                      : "No rating"}
-                  </p>
-
-                  <a
-                    href="#"
-                    className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
-                  >
-                    {product?.reviews?.length || 0} Review
-                    {(product?.reviews?.length ?? 0 > 1) ? "s" : ""}
-                  </a>
+                  <span className="text-sm font-medium text-[#9F9F9F]">
+                    {reviewCount} Customer Review{reviewCount !== 1 ? "s" : ""}
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-                <button
-                  type="button"
-                  onClick={() => toggleFavorite(product.id)}
-                  className={`
-    flex items-center gap-2 py-2.5 px-5 text-sm font-medium
-    rounded-lg border transition-all duration-300
-    focus:outline-none focus:ring-4
-    ${
-      isProductInWishList
-        ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100 focus:ring-red-100"
-        : "bg-white text-gray-500 border-gray-200 hover:bg-gray-100 focus:ring-gray-100"
-    }
-    dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300
-  `}
-                >
-                  {isProductInWishList ? (
-                    <HeartOff strokeWidth={1.25} />
-                  ) : (
-                    <FaHeart className="text-red-500" />
-                  )}
-
-                  {isProductInWishList
-                    ? "Remove from favorites"
-                    : "Add to favorites"}
-                </button>
-
+              {/* Action Buttons */}
+              <div className="anim-item mt-10 flex flex-col sm:flex-row gap-4">
                 <button
                   type="button"
                   onClick={() => addToCart(product.id)}
                   disabled={isProductInCart}
-                  className={`
-    mt-4 sm:mt-0 flex items-center gap-2 justify-center
-    rounded-lg px-5 py-2.5 text-sm font-medium transition-all
-    focus:outline-none focus:ring-4
-    ${
-      isProductInCart
-        ? "bg-green-600 text-white cursor-not-allowed opacity-70"
-        : "bg-primary text-white hover:bg-primary-800 focus:ring-primary-300"
-    }
-  `}
+                  className={`flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-bold text-sm transition-all active:scale-95 border-2 ${
+                    isProductInCart
+                      ? "bg-green-600 border-green-600 text-white cursor-default"
+                      : "bg-transparent border-[#B88E2F] text-[#B88E2F] hover:bg-[#B88E2F] hover:text-white"
+                  }`}
                 >
-                  <ShoppingCart strokeWidth={0.75} />
-                  {isProductInCart ? "Item added" : "Add to cart"}
+                  <ShoppingCart size={20} />
+                  {isProductInCart ? "In Your Cart" : "Add To Cart"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(product.id)}
+                  className="flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-gray-300 hover:bg-red-50 transition-colors"
+                >
+                  {isProductInWishList ? (
+                    <HeartOff size={20} className="text-red-500" />
+                  ) : (
+                    <FaHeart size={20} className="text-gray-400" />
+                  )}
+                  <span className="text-sm font-semibold">
+                    {isProductInWishList ? "Unsave" : "Wishlist"}
+                  </span>
                 </button>
               </div>
 
-              <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+              <hr className="anim-item my-10 border-gray-100" />
 
-              <p className="mb-6 text-gray-500 dark:text-gray-400">
-                {product.description}.
+              <p className="anim-item text-[#9F9F9F] leading-relaxed mb-8">
+                {product.description}
               </p>
-              <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
-              <ul className="text-gray-500 dark:text-gray-400 space-y-2">
-                <li>
-                  <strong>Material:</strong> {product.additionalInfo?.material}
-                </li>
-                <li>
-                  <strong>Color:</strong> {product.additionalInfo?.color}
-                </li>
-                <li>
-                  <strong>Weight:</strong> {product.additionalInfo?.weight}
-                </li>
-                <li>
-                  <strong>Dimensions:</strong>{" "}
-                  {product.additionalInfo?.dimensions}
-                </li>
-              </ul>
+              {/* Specifications List */}
+              <div className="anim-item space-y-4 pt-4 border-t border-gray-100">
+                {[
+                  {
+                    label: "Material",
+                    value: product.additionalInfo?.material,
+                  },
+                  { label: "Color", value: product.additionalInfo?.color },
+                  { label: "Weight", value: product.additionalInfo?.weight },
+                  {
+                    label: "Dimensions",
+                    value: product.additionalInfo?.dimensions,
+                  },
+                ].map((info, idx) => (
+                  <div key={idx} className="flex text-sm">
+                    <span className="w-32 text-[#9F9F9F]">{info.label}</span>
+                    <span className="text-[#3A3A3A]">
+                      : {info.value || "N/A"}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
+
       <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+
       <section className="py-12 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
@@ -209,7 +200,7 @@ const Product_details = () => {
             <div
               className={`space-y-6 ${
                 (product?.reviews?.length ?? 0) > 2
-                  ? "max-h-55 overflow-y-auto pr-2"
+                  ? "max-h-96 overflow-y-auto pr-2"
                   : ""
               }`}
             >
@@ -251,7 +242,7 @@ const Product_details = () => {
           {relatedProducts.map((item, index) => (
             <div
               key={index}
-              className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
+              className="card relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
             >
               <div className="relative aspect-4/5 overflow-hidden">
                 <img
@@ -271,7 +262,7 @@ const Product_details = () => {
                       onClick={() => navigate(`/product/${item.id}`)}
                       className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300"
                     >
-                      <DecimalsArrowRight /> Details
+                      <ArrowRight /> Details
                     </button>
                     <WishListBtn productId={item.id} />
                   </div>
@@ -305,7 +296,7 @@ const Product_details = () => {
                       onClick={() => navigate(`/product/${item.id}`)}
                       className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
                     >
-                      <DecimalsArrowRight size={12} /> Details
+                      <ArrowRight size={12} /> Details
                     </button>
                     <WishListBtn productId={item.id} />
                   </div>
