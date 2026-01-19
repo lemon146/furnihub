@@ -242,76 +242,83 @@ const Product_details = () => {
 
       <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
-      <section className="max-w-309 w-full mx-auto mt-14 px-4" ref={proRef}>
-        <h2 className="text-heading">Related Products</h2>
+      <section className="max-w-7xl w-full mx-auto mt-14 px-4" ref={proRef}>
+        <h2 className="text-2xl md:text-heading font-bold text-center md:text-left">
+          Related Products
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mt-6">
           {relatedProducts.map((item, index) => (
             <div
               key={index}
-              className="relative flex flex-col items-start bg-card rounded-lg overflow-hidden group card "
+              className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
             >
-              {/* Product Image */}
-              <img
-                src={item.image}
-                alt={item.description}
-                className="h-75.25 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              <div className="relative aspect-4/5 overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.description}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
 
-              {/* Overlay (covers whole card on hover) */}
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <AddToCartBtn productId={item.id} />
-
-                <div className="flex justify-between items-center ">
-                  <button className="flex items-center gap-2  text-white px-4 py-2 rounded font-semibold hover-text-neutral">
-                    <IoShareSocialOutline />
-                    Share
-                  </button>
-                  <button
-                    onClick={() => navigate(`/product/${item.id}`)}
-                    className="flex items-center gap-2 text-white px-4 py-2 rounded font-semibold hover-text-neutral"
-                  >
-                    <DecimalsArrowRight />
-                    Details
-                  </button>
-
-                  <WishListBtn productId={item.id} />
+                {/* Desktop Overlay (Hidden on Mobile/Touch) */}
+                <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <AddToCartBtn productId={item.id} />
+                  <div className="flex justify-between items-center text-white">
+                    <button className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300">
+                      <IoShareSocialOutline /> Share
+                    </button>
+                    <button
+                      onClick={() => navigate(`/product/${item.id}`)}
+                      className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300"
+                    >
+                      <DecimalsArrowRight /> Details
+                    </button>
+                    <WishListBtn productId={item.id} />
+                  </div>
                 </div>
               </div>
 
               {/* Product Info */}
-
-              <div className="p-3 sm:p-4 md:p-5 z-10">
-                <h2 className="text-grey-1 font-semibold text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px]">
+              <div className="p-3 flex flex-col grow">
+                <h2 className="text-grey-1 font-semibold text-sm md:text-lg truncate">
                   {item.title}
                 </h2>
-                <p className="text-grey-2 font-medium text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] mt-1">
+                <p className="text-grey-2 font-medium text-xs md:text-sm mt-1 line-clamp-1">
                   {item.shortDesc}
                 </p>
 
-                <div className="flex items-center gap-2 sm:gap-3 mt-2">
-                  <p className="text-grey-1 font-semibold text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px]">
-                    {item.price}$
+                <div className="flex items-center gap-2 mt-2">
+                  <p className="text-grey-1 font-bold text-sm md:text-base">
+                    ${item.price}
                   </p>
-                  <p className="text-grey-2 line-through text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px]">
-                    {item.originalPrice}$
-                  </p>
+                  {item.originalPrice && (
+                    <p className="text-grey-2 line-through text-xs opacity-60">
+                      ${item.originalPrice}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
+                  <AddToCartBtn productId={item.id} />
+                  <div className="flex justify-between">
+                    <button
+                      onClick={() => navigate(`/product/${item.id}`)}
+                      className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
+                    >
+                      <DecimalsArrowRight size={12} /> Details
+                    </button>
+                    <WishListBtn productId={item.id} />
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="flex justify-center items-center w-full mt-5 p-4">
+
+        <div className="flex justify-center items-center w-full mt-10">
           <button
             onClick={() => navigate("/shop")}
-            className="border border-[#B88E2F] 
-               text-[#B88E2F] 
-               cursor-pointer 
-               transition-all
-               px-6 py-2 
-               sm:px-8 sm:py-3 
-               md:px-10 md:py-3.5
-               hover:bg-[#B88E2F] hover:text-white"
+            className="border border-[#B88E2F] text-[#B88E2F] px-10 py-3 font-semibold transition-all hover:bg-[#B88E2F] hover:text-white"
           >
             See More
           </button>

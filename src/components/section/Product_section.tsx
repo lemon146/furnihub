@@ -16,6 +16,7 @@ export default function ProductsSection() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+
   // Filter by Category
   const filteredProducts =
     selectedCategory === "All"
@@ -83,57 +84,78 @@ export default function ProductsSection() {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-6">
         {displayedProducts.length > 0 ? (
           displayedProducts.map((item, index) => (
             <div
               ref={addToRefs}
               key={index}
-              className="relative flex flex-col items-start bg-card rounded-lg overflow-hidden group"
+              className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
             >
-              <img
-                src={item.image}
-                alt={item.description}
-                className="h-75.25 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              {/* Image Container */}
+              <div className="relative aspect-square overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.description}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
 
-              {/* Hover Actions */}
-              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <AddToCartBtn productId={item.id} />
-
-                <div className="flex justify-between items-center gap-3 text-white">
-                  <button className="flex items-center gap-1 hover-text-neutral">
-                    <IoShareSocialOutline /> Share
-                  </button>
-
-                  <button
-                    onClick={() => navigate(`/product/${item.id}`)}
-                    className="flex items-center gap-2 text-white px-4 py-2 rounded font-semibold hover-text-neutral"
-                  >
-                    <DecimalsArrowRight />
-                    Details
-                  </button>
-
-                  <WishListBtn productId={item.id} />
+                {/* Desktop Hover Actions (Hidden on Mobile) */}
+                <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <AddToCartBtn productId={item.id} />
+                  <div className="flex justify-between items-center gap-3 text-white">
+                    <button className="flex items-center gap-1 hover:text-neutral-300">
+                      <IoShareSocialOutline /> Share
+                    </button>
+                    <button
+                      onClick={() => navigate(`/product/${item.id}`)}
+                      className="flex items-center gap-2 text-white px-4 py-2 rounded font-semibold hover:text-neutral-300"
+                    >
+                      <DecimalsArrowRight /> Details
+                    </button>
+                    <WishListBtn productId={item.id} />
+                  </div>
                 </div>
               </div>
 
               {/* Product Info */}
-              <div className="p-4">
-                <h2 className="font-semibold text-lg">{item.title}</h2>
-                <p className="text-sm opacity-75">{item.shortDesc}</p>
+              <div className="p-3 md:p-4 flex flex-col grow">
+                <h2 className="font-semibold text-sm md:text-lg truncate">
+                  {item.title}
+                </h2>
+                <p className="text-xs md:text-sm opacity-75 line-clamp-1">
+                  {item.shortDesc}
+                </p>
 
-                <div className="flex gap-2 mt-2 text-sm">
-                  <span className="font-semibold">{item.price}$</span>
-                  <span className="line-through opacity-60">
-                    {item.originalPrice}$
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="font-bold text-sm md:text-base">
+                    ${item.price}
                   </span>
+                  {item.originalPrice && (
+                    <span className="line-through opacity-50 text-xs">
+                      ${item.originalPrice}
+                    </span>
+                  )}
+                </div>
+
+                {/* Mobile actions (Visible only on mobile/tablet) */}
+                <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
+                  <AddToCartBtn productId={item.id} />
+                  <div className="flex justify-between">
+                    <button
+                      onClick={() => navigate(`/product/${item.id}`)}
+                      className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
+                    >
+                      <DecimalsArrowRight size={12} /> Details
+                    </button>
+                    <WishListBtn productId={item.id} />
+                  </div>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <p className="text-center col-span-4">No products found.</p>
+          <p className="text-center col-span-full py-10">No products found.</p>
         )}
       </div>
 
