@@ -39,26 +39,78 @@ export default function ProductsSection() {
     <section className="max-w-309 w-full mx-auto mt-14 px-4">
       <h2 className="text-heading font-semibold">Our Products</h2>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <details className="relative">
-          <summary className="list-none cursor-pointer px-4 py-2 border rounded text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2">
-            Category
-          </summary>
-          <div className="absolute z-20 mt-2 w-48 rounded-lg border bg-white shadow-lg p-3 space-y-2">
-            {["Chairs", "Tables", "Sofas", "Beds"].map((item) => (
-              <label key={item} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-[#B88E2F]" />
-                {item}
-              </label>
-            ))}
-          </div>
-        </details>
+      {/* your animated filter UI */}
+      <div className="mt-6   flex flex-wrap items-center gap-3">
+        {[
+          {
+            label: "Category",
+            width: "w-52",
+            items: ["Chairs", "Tables", "Sofas", "Beds"],
+          },
+          {
+            label: "Material",
+            width: "w-52",
+            items: ["Wood", "Metal", "Fabric", "Leather"],
+          },
+        ].map((group) => (
+          <details key={group.label} className="relative group">
+            <summary className="list-none cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-[#B88E2F]/10 transition-all duration-300">
+              {group.label}
+              <svg
+                className="ml-auto h-4 w-4 transition-transform duration-300 group-open:rotate-180"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </summary>
 
-        <details className="relative">
-          <summary className="list-none cursor-pointer px-4 py-2 border rounded text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2">
+            <div
+              className={`absolute z-30 mt-3 ${group.width} rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 space-y-2
+        opacity-0 scale-95 translate-y-2 pointer-events-none
+        group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
+        transition-all duration-300 ease-out`}
+            >
+              {group.items.map((item) => (
+                <label
+                  key={item}
+                  className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer
+            hover:bg-[#B88E2F]/10 transition"
+                >
+                  <input type="checkbox" className="accent-[#B88E2F]" />
+                  {item}
+                </label>
+              ))}
+            </div>
+          </details>
+        ))}
+
+        <details className="relative group">
+          <summary className="list-none cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-[#B88E2F]/10 transition-all duration-300">
             Price
+            <svg
+              className="ml-auto h-4 w-4 transition-transform duration-300 group-open:rotate-180"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clipRule="evenodd"
+              />
+            </svg>
           </summary>
-          <div className="absolute z-20 mt-2 w-56 rounded-lg border bg-white shadow-lg p-4 space-y-3">
+
+          <div
+            className="absolute z-30 mt-3 w-64 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 space-y-4
+      opacity-0 scale-95 translate-y-2 pointer-events-none
+      group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
+      transition-all duration-300 ease-out"
+          >
             <input
               type="range"
               min="0"
@@ -72,36 +124,39 @@ export default function ProductsSection() {
           </div>
         </details>
 
-        <details className="relative">
-          <summary className="list-none cursor-pointer px-4 py-2 border rounded text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2">
-            Material
-          </summary>
-          <div className="absolute z-20 mt-2 w-48 rounded-lg border bg-white shadow-lg p-3 space-y-2">
-            {["Wood", "Metal", "Fabric", "Leather"].map((item) => (
-              <label key={item} className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="accent-[#B88E2F]" />
-                {item}
-              </label>
-            ))}
-          </div>
-        </details>
-
-        <details className="relative">
-          <summary className="list-none cursor-pointer px-4 py-2 border rounded text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2">
+        <details className="relative group">
+          <summary className="list-none cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-[#B88E2F]/10 transition-all duration-300">
             Color
+            <svg
+              className="ml-auto h-4 w-4 transition-transform duration-300 group-open:rotate-180"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clipRule="evenodd"
+              />
+            </svg>
           </summary>
-          <div className="absolute z-20 mt-2 w-44 rounded-lg border bg-white shadow-lg p-3 flex gap-3 flex-wrap">
+
+          <div
+            className="absolute z-30 mt-3 w-48 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 flex gap-3 flex-wrap
+      opacity-0 scale-95 translate-y-2 pointer-events-none
+      group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
+      transition-all duration-300 ease-out"
+          >
             {["#000000", "#8B4513", "#C2B280", "#FFFFFF"].map((color) => (
               <button
                 key={color}
-                className="w-7 h-7 rounded-full border"
+                className="w-8 h-8 rounded-full border hover:scale-110 hover:ring-2 hover:ring-[#B88E2F]/50 transition"
                 style={{ backgroundColor: color }}
               />
             ))}
           </div>
         </details>
 
-        <button className="ml-auto px-4 py-2 bg-[#B88E2F] text-white rounded text-sm font-medium hover:opacity-90 transition">
+        <button className="ml-auto px-6 py-2 bg-[#B88E2F] text-white rounded-lg text-sm font-semibold hover:shadow-lg hover:opacity-90 transition">
           Apply
         </button>
       </div>
@@ -175,7 +230,7 @@ export default function ProductsSection() {
       <div className="flex justify-center flex-wrap mt-6">
         {" "}
         <PaginationDemo
-          totalPages={10}
+          totalPages={3}
           currentPage={2}
           // setCurrentPage={10}
         />
