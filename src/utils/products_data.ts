@@ -41,7 +41,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Wood & Fabric",
-      color: "Brown",
+      color: "White",
       weight: "7 kg",
       dimensions: "45 × 50 × 85 cm",
     },
@@ -74,7 +74,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Metal & Foam",
-      color: "Black",
+      color: "White",
       weight: "6 kg",
       dimensions: "40 × 45 × 80 cm",
     },
@@ -102,7 +102,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Genuine Leather",
-      color: "Dark Brown",
+      color: "Grey",
       weight: "35 kg",
       dimensions: "200 × 90 × 85 cm",
     },
@@ -130,7 +130,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Metal & Wood",
-      color: "Natural",
+      color: "Grey",
       weight: "10 kg",
       dimensions: "60 × 60 × 105 cm",
     },
@@ -158,7 +158,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Solid Wood",
-      color: "Oak",
+      color: "Grey",
       weight: "12 kg",
       dimensions: "80 × 30 × 150 cm",
     },
@@ -214,7 +214,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Fabric",
-      color: "Pink",
+      color: "Brown",
       weight: "30 kg",
       dimensions: "190 × 85 × 95 cm",
     },
@@ -242,7 +242,7 @@ export const All_Products: Product[] = [
 
     additionalInfo: {
       material: "Clay",
-      color: "Beige",
+      color: "Dark Brown",
       weight: "2 kg",
       dimensions: "25 × 25 × 30 cm",
     },
@@ -273,7 +273,7 @@ export const All_Products: Product[] = [
     reviewsCount: 124,
     stock: 18,
     material: "Solid Oak Wood",
-    color: "Natural Wood",
+    color: "Yellow",
     dimensions: "45 x 50 x 85 cm",
     image:
       "https://plus.unsplash.com/premium_photo-1705169612592-32610774a5d0?w=500&auto=format&fit=crop&q=60",
@@ -292,7 +292,7 @@ export const All_Products: Product[] = [
     reviewsCount: 89,
     stock: 10,
     material: "Walnut Wood & Fabric",
-    color: "Warm Brown",
+    color: "White",
     dimensions: "60 x 65 x 90 cm",
     image:
       "https://images.unsplash.com/photo-1503602642458-232111445657?w=500&auto=format&fit=crop&q=60",
@@ -311,7 +311,7 @@ export const All_Products: Product[] = [
     reviewsCount: 64,
     stock: 25,
     material: "Beech Wood",
-    color: "Matte Black",
+    color: "Black",
     dimensions: "43 x 48 x 82 cm",
     image:
       "https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=500&auto=format&fit=crop&q=60",
@@ -349,7 +349,7 @@ export const All_Products: Product[] = [
     reviewsCount: 97,
     stock: 14,
     material: "Plywood & Fabric",
-    color: "Light Beige",
+    color: "Dark Brown",
     dimensions: "55 x 60 x 88 cm",
     image:
       "https://images.unsplash.com/photo-1612372606404-0ab33e7187ee?w=500&auto=format&fit=crop&q=60",
@@ -368,7 +368,7 @@ export const All_Products: Product[] = [
     reviewsCount: 41,
     stock: 30,
     material: "Teak Wood",
-    color: "Natural Brown",
+    color: "White",
     dimensions: "44 x 46 x 80 cm",
     image:
       "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&auto=format&fit=crop&q=60",
@@ -387,7 +387,7 @@ export const All_Products: Product[] = [
     reviewsCount: 133,
     stock: 12,
     material: "Metal & Mesh",
-    color: "Charcoal Black",
+    color: "Dark Brown",
     dimensions: "58 x 60 x 92 cm",
     image:
       "https://images.unsplash.com/photo-1549497538-303791108f95?w=500&auto=format&fit=crop&q=60",
@@ -406,7 +406,7 @@ export const All_Products: Product[] = [
     reviewsCount: 76,
     stock: 9,
     material: "Fabric & Solid Wood",
-    color: "Soft Grey",
+    color: "Dark Brown",
     dimensions: "62 x 68 x 94 cm",
     image:
       "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=500&auto=format&fit=crop&q=60",
@@ -425,7 +425,7 @@ export const All_Products: Product[] = [
     reviewsCount: 58,
     stock: 5,
     material: "Leather & Steel",
-    color: "Tan Brown",
+    color: "Dark Grey",
     dimensions: "70 x 75 x 100 cm",
     image:
       "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&auto=format&fit=crop&q=60",
@@ -444,7 +444,7 @@ export const All_Products: Product[] = [
     reviewsCount: 34,
     stock: 40,
     material: "Engineered Wood",
-    color: "White",
+    color: "Black",
     dimensions: "42 x 45 x 78 cm",
     image:
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=500&auto=format&fit=crop&q=60",
@@ -463,7 +463,7 @@ export const All_Products: Product[] = [
     reviewsCount: 92,
     stock: 8,
     material: "Velvet & Metal",
-    color: "Emerald Green",
+    color: "White",
     dimensions: "60 x 65 x 90 cm",
     image:
       "https://images.unsplash.com/photo-1506326426992-32b61983f2fd?w=500&auto=format&fit=crop&q=60",
@@ -482,7 +482,7 @@ export const All_Products: Product[] = [
     reviewsCount: 146,
     stock: 6,
     material: "Fabric & Solid Wood",
-    color: "Warm Beige",
+    color: "Light Grey",
     dimensions: "220 x 90 x 85 cm",
     image:
       "https://plus.unsplash.com/premium_photo-1674567529895-c89b6bb1b9e6?w=500&auto=format&fit=crop&q=60",
@@ -501,7 +501,7 @@ export const All_Products: Product[] = [
     reviewsCount: 93,
     stock: 9,
     material: "Linen Fabric & Wood",
-    color: "Light Grey",
+    color: "Dark Brown",
     dimensions: "165 x 85 x 80 cm",
     image:
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=500&auto=format&fit=crop&q=60",
@@ -520,7 +520,7 @@ export const All_Products: Product[] = [
     reviewsCount: 121,
     stock: 7,
     material: "Premium Fabric",
-    color: "Charcoal",
+    color: "Light Blue",
     dimensions: "210 x 92 x 84 cm",
     image:
       "https://images.unsplash.com/photo-1630585308572-f53438fc684f?w=500&auto=format&fit=crop&q=60",
@@ -539,7 +539,7 @@ export const All_Products: Product[] = [
     reviewsCount: 78,
     stock: 4,
     material: "Velvet & Metal Frame",
-    color: "Royal Blue",
+    color: "Dark Grey",
     dimensions: "225 x 95 x 88 cm",
     image:
       "https://plus.unsplash.com/premium_photo-1676320514018-ec119b57dbce?w=500&auto=format&fit=crop&q=60",
@@ -558,7 +558,7 @@ export const All_Products: Product[] = [
     reviewsCount: 66,
     stock: 11,
     material: "Cotton Blend & Wood",
-    color: "Soft Cream",
+    color: "dark Grey ",
     dimensions: "205 x 90 x 83 cm",
     image:
       "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&auto=format&fit=crop&q=60",
@@ -577,7 +577,7 @@ export const All_Products: Product[] = [
     reviewsCount: 51,
     stock: 13,
     material: "Polyester Fabric",
-    color: "Dark Green",
+    color: "Dark Grey",
     dimensions: "170 x 85 x 80 cm",
     image:
       "https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?w=500&auto=format&fit=crop&q=60",
@@ -918,4 +918,25 @@ export const All_Products: Product[] = [
     image:
       "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=500&auto=format&fit=crop&q=60",
   },
+];
+export const allColors = [
+  { name: "White", hex: "#FFFFFF" },
+  { name: "Grey", hex: "#808080" },
+  { name: "Dark Brown", hex: "#5C4033" },
+  { name: "Yellow", hex: "#FFD700" },
+  { name: "Black", hex: "#000000" },
+  { name: "Dark Grey", hex: "#4A4A4A" },
+  { name: "Light Grey", hex: "#D3D3D3" },
+  { name: "Light Blue", hex: "#ADD8E6" },
+  { name: "Stone Grey", hex: "#8C8C8C" },
+  { name: "Taupe", hex: "#B38B6D" },
+  { name: "Natural Oak", hex: "#C9A77C" },
+  { name: "Walnut Brown", hex: "#8B6F47" },
+  { name: "White Marble", hex: "#F5F5F5" },
+  { name: "Light Wood", hex: "#D4A574" },
+  { name: "Matte Black", hex: "#28282B" },
+  { name: "Rustic Brown", hex: "#6E4B3A" },
+  { name: "Light Beige", hex: "#F5F5DC" },
+  { name: "Natural Brown", hex: "#A0826D" },
+  { name: "Walnut", hex: "#7A5C3E" },
 ];

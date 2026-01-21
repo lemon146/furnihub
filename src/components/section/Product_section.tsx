@@ -1,17 +1,25 @@
 "use client";
 
+import { useShopFilter } from "@/context/ShopFilterContext";
+import { allColors } from "@/utils/products_data";
 import { gsap } from "gsap";
 import { DecimalsArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { All_Products } from "../../utils/products_data";
 import AddToCartBtn from "../ui/AddToCartBtn";
 import WishListBtn from "../ui/WishListBtn";
 import PaginationDemo from "./Pagination";
 
 export default function ProductsSection() {
   const navigate = useNavigate();
+  const {
+    categoryToggle,
+    filterProduct,
+    colorToggle,
+    activeFilter,
+    setActiveFilter,
+  } = useShopFilter();
   const productsRef = useRef<HTMLElement[]>([]);
   productsRef.current = [];
 
@@ -33,13 +41,12 @@ export default function ProductsSection() {
         ease: "power3.out",
       },
     );
-  }, []);
+  }, [filterProduct]);
 
   return (
     <section className="max-w-309 w-full mx-auto mt-14 px-4">
       <h2 className="text-heading font-semibold">Our Products</h2>
 
-      {/* your animated filter UI */}
       <div className="mt-6   flex flex-wrap items-center gap-3">
         {[
           {
@@ -81,7 +88,14 @@ export default function ProductsSection() {
                   className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer
             hover:bg-[#B88E2F]/10 transition"
                 >
-                  <input type="checkbox" className="accent-[#B88E2F]" />
+                  <input
+                    onChange={(e) =>
+                      categoryToggle(e.target.value, e.target.checked)
+                    }
+                    type="checkbox"
+                    className="accent-[#B88E2F]"
+                    value={item}
+                  />
                   {item}
                 </label>
               ))}
@@ -146,13 +160,26 @@ export default function ProductsSection() {
       group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
       transition-all duration-300 ease-out"
           >
-            {["#000000", "#8B4513", "#C2B280", "#FFFFFF"].map((color) => (
-              <button
-                key={color}
-                className="w-8 h-8 rounded-full border hover:scale-110 hover:ring-2 hover:ring-[#B88E2F]/50 transition"
-                style={{ backgroundColor: color }}
-              />
-            ))}
+            {allColors.map(({ name, hex }) => {
+              const isActive = activeFilter.color.includes(name);
+
+              return (
+                <button
+                  key={name}
+                  onClick={() => colorToggle(name)}
+                  className={`
+          w-8 h-8 rounded-full border transition
+          ${
+            isActive
+              ? "ring-2 ring-[#B88E2F] scale-110"
+              : "hover:scale-110 hover:ring-2 hover:ring-[#B88E2F]/50"
+          }
+        `}
+                  style={{ backgroundColor: hex }}
+                  aria-pressed={isActive}
+                />
+              );
+            })}
           </div>
         </details>
 
@@ -161,72 +188,98 @@ export default function ProductsSection() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-6">
-        {All_Products.map((item, index) => (
-          <div
-            ref={addToRefs}
-            key={index}
-            className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
-          >
-            <div className="relative aspect-square overflow-hidden">
-              <img
-                src={item.image}
-                alt={item.description}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+      <div className="mt-6">
+        {filterProduct.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {filterProduct.map((item, index) => (
+              <div
+                ref={addToRefs}
+                key={index}
+                className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
+              >
+                {/* Image + hover overlay */}
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.description}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <AddToCartBtn productId={item.id} />
+                    <div className="flex items-center gap-3 text-white">
+                      <button className="flex items-center gap-1 hover:text-neutral-300">
+                        <IoShareSocialOutline /> Share
+                      </button>
+                      <button
+                        onClick={() => navigate(`/product/${item.id}`)}
+                        className="flex items-center gap-2 px-4 py-2 rounded font-semibold hover:text-neutral-300"
+                      >
+                        <DecimalsArrowRight /> Details
+                      </button>
+                      <WishListBtn productId={item.id} />
+                    </div>
+                  </div>
+                </div>
 
-              <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <AddToCartBtn productId={item.id} />
-                <div className="flex items-center gap-3 text-white">
-                  <button className="flex items-center gap-1 hover:text-neutral-300">
-                    <IoShareSocialOutline /> Share
-                  </button>
-                  <button
-                    onClick={() => navigate(`/product/${item.id}`)}
-                    className="flex items-center gap-2 px-4 py-2 rounded font-semibold hover:text-neutral-300"
-                  >
-                    <DecimalsArrowRight /> Details
-                  </button>
-                  <WishListBtn productId={item.id} />
+                {/* Product info */}
+                <div className="p-3 md:p-4 flex flex-col grow">
+                  <h2 className="font-semibold text-sm md:text-lg truncate">
+                    {item.title}
+                  </h2>
+                  <p className="text-xs md:text-sm opacity-75 line-clamp-1">
+                    {item.shortDesc}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="font-bold text-sm md:text-base">
+                      ${item.price}
+                    </span>
+                    {item.originalPrice && (
+                      <span className="line-through opacity-50 text-xs">
+                        ${item.originalPrice}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
+                    <AddToCartBtn productId={item.id} />
+                    <div className="flex justify-between">
+                      <button
+                        onClick={() => navigate(`/product/${item.id}`)}
+                        className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
+                      >
+                        <DecimalsArrowRight size={12} /> Details
+                      </button>
+                      <WishListBtn productId={item.id} />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="p-3 md:p-4 flex flex-col grow">
-              <h2 className="font-semibold text-sm md:text-lg truncate">
-                {item.title}
-              </h2>
-              <p className="text-xs md:text-sm opacity-75 line-clamp-1">
-                {item.shortDesc}
-              </p>
-
-              <div className="flex items-center gap-2 mt-2">
-                <span className="font-bold text-sm md:text-base">
-                  ${item.price}
-                </span>
-                {item.originalPrice && (
-                  <span className="line-through opacity-50 text-xs">
-                    ${item.originalPrice}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
-                <AddToCartBtn productId={item.id} />
-                <div className="flex justify-between">
-                  <button
-                    onClick={() => navigate(`/product/${item.id}`)}
-                    className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
-                  >
-                    <DecimalsArrowRight size={12} /> Details
-                  </button>
-                  <WishListBtn productId={item.id} />
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          <div className="flex flex-col items-center justify-center mt-16 text-center space-y-4">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+              alt="No products found"
+              className="w-32 h-32 opacity-40"
+            />
+            <h2 className="text-xl md:text-2xl font-bold text-gray-700">
+              No products match your filters
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Try changing your category or color selection.
+            </p>
+            <button
+              onClick={() => setActiveFilter({ category: [], color: [] })} // resets all filters
+              className="mt-2 px-6 py-2 bg-[#B88E2F] text-white rounded-lg hover:opacity-90 transition"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
       </div>
+
       <div className="flex justify-center flex-wrap mt-6">
         {" "}
         <PaginationDemo
