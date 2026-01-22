@@ -14,6 +14,8 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({
     category: [] as string[],
     color: [] as string[],
+    material: [] as string[],
+    price: 0,
   });
 
   const filterProduct = useMemo(() => {
@@ -28,8 +30,28 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
         (c) => c.color && activeFilter.color.includes(c.color),
       );
     }
+    if (activeFilter.material.length) {
+      data = data.filter(
+        (e) => e.material && activeFilter.material.includes(e.material),
+      );
+    }
+    if (activeFilter.price > 0) {
+      data = data.filter((e) => e.price && e.price <= activeFilter.price);
+    }
     return data;
-  }, [activeFilter.category, activeFilter.color]);
+  }, [
+    activeFilter.category,
+    activeFilter.color,
+    activeFilter.material,
+    activeFilter.price,
+  ]);
+  const priceToggle = (value: string) => {
+    const price = Number(value);
+    setActiveFilter((prev) => ({
+      ...prev,
+      price: price,
+    }));
+  };
   const categoryToggle = (category: string, checked: boolean) => {
     setActiveFilter((prev) => ({
       ...prev,
@@ -46,10 +68,19 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
         : [...prev.color, color],
     }));
   };
+  const materialToggle = (material: string, checked: boolean) => {
+    setActiveFilter((prev) => ({
+      ...prev,
+      material: checked
+        ? [...prev.material, material]
+        : prev.material.filter((e) => e !== material),
+    }));
+  };
+
   useEffect(() => {
-    console.log("Active filter:", activeFilter.color);
+    console.log("Active filter:", activeFilter.price);
     console.log("Filtered products:", filterProduct);
-  }, [activeFilter, activeFilter.color]);
+  }, [activeFilter, activeFilter.price]);
 
   return (
     <ShopFilterContext
@@ -59,6 +90,8 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
         colorToggle,
         activeFilter,
         setActiveFilter,
+        materialToggle,
+        priceToggle,
       }}
     >
       {children}

@@ -919,6 +919,7 @@ export const All_Products: Product[] = [
       "https://images.unsplash.com/photo-1578898887932-dce23a595ad4?w=500&auto=format&fit=crop&q=60",
   },
 ];
+
 export const allColors = [
   { name: "White", hex: "#FFFFFF" },
   { name: "Grey", hex: "#808080" },
@@ -940,3 +941,37 @@ export const allColors = [
   { name: "Natural Brown", hex: "#A0826D" },
   { name: "Walnut", hex: "#7A5C3E" },
 ];
+export const CATEGORY_FILTER = {
+  label: "Category",
+  width: "w-52",
+  items: ["Chairs", "Tables", "Sofas", "Beds"],
+};
+
+export const MATERIAL_FILTER = {
+  label: "Material",
+  width: "w-60",
+  items: [
+    "Solid Oak Wood",
+    "Walnut Wood",
+    "Engineered Wood",
+    "Plywood",
+    "MDF",
+    "Teak Wood",
+    "Sheesham Wood",
+    "Metal",
+    "Steel",
+    "Iron",
+    "Aluminum",
+    "Glass",
+    "Tempered Glass",
+    "Marble",
+    "Fabric",
+    "Linen Fabric",
+    "Velvet Fabric",
+    "Leather",
+    "Faux Leather",
+    "Plastic",
+    "Rattan",
+    "Bamboo",
+  ],
+};

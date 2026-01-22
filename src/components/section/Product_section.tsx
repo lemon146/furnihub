@@ -1,10 +1,14 @@
 "use client";
 
 import { useShopFilter } from "@/context/ShopFilterContext";
-import { allColors } from "@/utils/products_data";
+import {
+  allColors,
+  CATEGORY_FILTER,
+  MATERIAL_FILTER,
+} from "@/utils/products_data";
 import { gsap } from "gsap";
-import { DecimalsArrowRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ChevronDown, DecimalsArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import AddToCartBtn from "../ui/AddToCartBtn";
@@ -19,6 +23,8 @@ export default function ProductsSection() {
     colorToggle,
     activeFilter,
     setActiveFilter,
+    materialToggle,
+    priceToggle,
   } = useShopFilter();
   const productsRef = useRef<HTMLElement[]>([]);
   productsRef.current = [];
@@ -28,6 +34,7 @@ export default function ProductsSection() {
       productsRef.current.push(el);
     }
   };
+  const [price, setPrice] = useState("");
 
   useEffect(() => {
     gsap.fromTo(
@@ -48,60 +55,44 @@ export default function ProductsSection() {
       <h2 className="text-heading font-semibold">Our Products</h2>
 
       <div className="mt-6   flex flex-wrap items-center gap-3">
-        {[
-          {
-            label: "Category",
-            width: "w-52",
-            items: ["Chairs", "Tables", "Sofas", "Beds"],
-          },
-          {
-            label: "Material",
-            width: "w-52",
-            items: ["Wood", "Metal", "Fabric", "Leather"],
-          },
-        ].map((group) => (
-          <details key={group.label} className="relative group">
-            <summary className="list-none cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-[#B88E2F]/10 transition-all duration-300">
-              {group.label}
-              <svg
-                className="ml-auto h-4 w-4 transition-transform duration-300 group-open:rotate-180"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </summary>
+        <details className="relative group">
+          <summary className="filter-btn">
+            Category
+            <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
+          </summary>
 
-            <div
-              className={`absolute z-30 mt-3 ${group.width} rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 space-y-2
-        opacity-0 scale-95 translate-y-2 pointer-events-none
-        group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
-        transition-all duration-300 ease-out`}
-            >
-              {group.items.map((item) => (
-                <label
-                  key={item}
-                  className="flex items-center gap-2 text-sm rounded-lg px-3 py-2 cursor-pointer
-            hover:bg-[#B88E2F]/10 transition"
-                >
-                  <input
-                    onChange={(e) =>
-                      categoryToggle(e.target.value, e.target.checked)
-                    }
-                    type="checkbox"
-                    className="accent-[#B88E2F]"
-                    value={item}
-                  />
-                  {item}
-                </label>
-              ))}
-            </div>
-          </details>
-        ))}
+          <div className="filter-panel w-52">
+            {CATEGORY_FILTER.items.map((item) => (
+              <label key={item} className="filter-item">
+                <input
+                  type="checkbox"
+                  className="accent-[#B88E2F]"
+                  onChange={(e) => categoryToggle(item, e.target.checked)}
+                />
+                {item}
+              </label>
+            ))}
+          </div>
+        </details>
+        <details className="relative group">
+          <summary className="filter-btn">
+            Material
+            <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
+          </summary>
+
+          <div className="filter-panel w-60">
+            {MATERIAL_FILTER.items.map((item) => (
+              <label key={item} className="filter-item">
+                <input
+                  type="checkbox"
+                  className="accent-[#B88E2F]"
+                  onChange={(e) => materialToggle(item, e.target.checked)}
+                />
+                {item}
+              </label>
+            ))}
+          </div>
+        </details>
 
         <details className="relative group">
           <summary className="list-none cursor-pointer px-4 py-2 border rounded-lg text-sm font-medium text-[#B88E2F] border-[#B88E2F] flex items-center gap-2 bg-white/80 backdrop-blur hover:bg-[#B88E2F]/10 transition-all duration-300">
@@ -130,9 +121,11 @@ export default function ProductsSection() {
               min="0"
               max="2000"
               className="w-full accent-[#B88E2F]"
+              onChange={(e) => priceToggle(e.target.value)}
+              value={activeFilter.price}
             />
             <div className="flex justify-between text-xs opacity-70">
-              <span>$0</span>
+              <span>${activeFilter.price}</span>
               <span>$2000</span>
             </div>
           </div>
@@ -271,7 +264,14 @@ export default function ProductsSection() {
               Try changing your category or color selection.
             </p>
             <button
-              onClick={() => setActiveFilter({ category: [], color: [] })} // resets all filters
+              onClick={() =>
+                setActiveFilter({
+                  category: [],
+                  color: [],
+                  material: [],
+                  price: 0,
+                })
+              }
               className="mt-2 px-6 py-2 bg-[#B88E2F] text-white rounded-lg hover:opacity-90 transition"
             >
               Clear Filters
