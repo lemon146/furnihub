@@ -4,7 +4,9 @@ import ScrollToTop from "./components/layout/ScrollToTop";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Product_detail from "./pages/Product_detail";
+import Register from "./pages/Register";
 import Shop from "./pages/Shop";
 
 const App = () => {
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/product/:id" element={<Product_detail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
       <Toaster />
     </>

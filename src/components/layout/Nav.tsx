@@ -82,6 +82,7 @@ const Nav: React.FC = () => {
       });
     }
   }, [mobileMenu]);
+  const isLoggedIn = false;
 
   return (
     <header
@@ -118,12 +119,46 @@ const Nav: React.FC = () => {
 
         {/* Desktop Action Icons */}
         <div className="hidden lg:flex items-center gap-5">
-          <Link
-            to="/profile"
-            className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F] transition-transform active:scale-90"
-          >
-            <UserRoundPen size={24} strokeWidth={1.5} />
-          </Link>
+          {!isLoggedIn ? (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/login"
+                className="text-sm font-semibold text-[#3A3A3A] hover:text-[#B88E2F]"
+              >
+                Login
+              </Link>
+              <span className="text-gray-300">/</span>
+              <Link
+                to="/register"
+                className="text-sm font-semibold text-[#3A3A3A] hover:text-[#B88E2F]"
+              >
+                Register
+              </Link>
+            </div>
+          ) : (
+            <div className="relative group">
+              <button className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F]">
+                <UserRoundPen size={24} strokeWidth={1.5} />
+              </button>
+
+              {/* Profile Dropdown */}
+              <div className="absolute right-0 top-full mt-4 w-48 rounded-xl bg-white shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <Link
+                  to="/profile"
+                  className="block px-4 py-3 hover:bg-gray-50"
+                >
+                  My Profile
+                </Link>
+                <Link to="/orders" className="block px-4 py-3 hover:bg-gray-50">
+                  Orders
+                </Link>
+                <button className="w-full text-left px-4 py-3 hover:bg-gray-50 text-red-500">
+                  Logout
+                </button>
+              </div>
+            </div>
+          )}
+
           <button className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F] active:scale-90">
             <CiSearch size={28} />
           </button>
@@ -169,13 +204,24 @@ const Nav: React.FC = () => {
               </ul>
 
               <div className="mobile-link pt-6 border-t border-gray-100 flex justify-between items-center">
-                <Link
-                  to="/profile"
-                  onClick={() => setMobileMenu(false)}
-                  className="p-2 text-[#3A3A3A]"
-                >
-                  <UserRoundPen size={26} />
-                </Link>
+                {!isLoggedIn ? (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenu(false)}
+                    className="text-lg font-semibold text-[#3A3A3A]"
+                  >
+                    Login
+                  </Link>
+                ) : (
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenu(false)}
+                    className="p-2 text-[#3A3A3A]"
+                  >
+                    <UserRoundPen size={26} />
+                  </Link>
+                )}
+
                 <button className="p-2 text-[#3A3A3A]">
                   <CiSearch size={28} />
                 </button>
