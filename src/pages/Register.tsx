@@ -1,9 +1,29 @@
 "use client";
 
 import AuthNavbar from "@/components/layout/AuthNavBar";
-import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { RegisterFormType } from "@/types/auth";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 
 export default function Register() {
+  const { register, user } = useAuth();
+  const [formData, setFormData] = useState<RegisterFormType>({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    register(formData);
+  };
+  if (user) return <Navigate to={"/"} />;
   return (
     <div className="min-h-screen bg-[#FAFAFA] px-4 pt-24 flex items-center justify-center">
       <AuthNavbar />
@@ -17,7 +37,7 @@ export default function Register() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-semibold text-[#3A3A3A] mb-1">
               Full Name
@@ -25,6 +45,9 @@ export default function Register() {
             <input
               type="text"
               placeholder="John Doe"
+              value={formData.name}
+              name="name"
+              onChange={handleChange}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
           </div>
@@ -35,6 +58,9 @@ export default function Register() {
             </label>
             <input
               type="email"
+              value={formData.email}
+              name="email"
+              onChange={handleChange}
               placeholder="you@example.com"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
@@ -46,7 +72,10 @@ export default function Register() {
             </label>
             <input
               type="password"
+              name="password"
               placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
           </div>

@@ -4,7 +4,7 @@ import {
   ShopFilterProviderProps,
 } from "@/types/shopfilter";
 import { All_Products } from "@/utils/products_data";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 export const ShopFilterContext = createContext<
   ShopFilterContextType | undefined
@@ -76,11 +76,6 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
         : prev.material.filter((e) => e !== material),
     }));
   };
-
-  useEffect(() => {
-    console.log("Active filter:", activeFilter.price);
-    console.log("Filtered products:", filterProduct);
-  }, [activeFilter, activeFilter.price]);
 
   return (
     <ShopFilterContext

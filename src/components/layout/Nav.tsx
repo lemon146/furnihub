@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { TextAlignJustify, UserRoundPen, X } from "lucide-react";
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
 const Nav: React.FC = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const toggleNavbar = () => setMobileMenu(!mobileMenu);
+  const { logout, user } = useAuth();
 
   const navRef = useRef<HTMLElement | null>(null);
   const menuItemsRef = useRef<HTMLLIElement[]>([]);
@@ -119,7 +121,7 @@ const Nav: React.FC = () => {
 
         {/* Desktop Action Icons */}
         <div className="hidden lg:flex items-center gap-5">
-          {!isLoggedIn ? (
+          {!user ? (
             <div className="flex items-center gap-3">
               <Link
                 to="/login"
@@ -152,7 +154,10 @@ const Nav: React.FC = () => {
                 <Link to="/orders" className="block px-4 py-3 hover:bg-gray-50">
                   Orders
                 </Link>
-                <button className="w-full text-left px-4 py-3 hover:bg-gray-50 text-red-500">
+                <button
+                  onClick={logout}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 text-red-500"
+                >
                   Logout
                 </button>
               </div>
