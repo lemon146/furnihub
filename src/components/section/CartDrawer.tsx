@@ -13,9 +13,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCartContext } from "@/context/CartContext";
 import { Trash2 } from "lucide-react";
 import { CiShoppingCart } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 export default function CartDrawer() {
   const { cartItems, removeFromCart } = useCartContext();
+  const navigate = useNavigate();
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -87,7 +89,10 @@ export default function CartDrawer() {
               <p className="text-lg font-semibold">Subtotal:</p>
               <p className="text-lg font-bold">Rs. 520,000</p>
             </div>
-            <Button className="w-full bg-[#B88E2F] hover:bg-[#a17a24] mt-2">
+            <Button
+              onClick={() => navigate("/cart")}
+              className="w-full bg-[#B88E2F] hover:bg-[#a17a24] mt-2"
+            >
               Checkout
             </Button>
 
