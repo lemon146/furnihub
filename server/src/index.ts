@@ -1,11 +1,14 @@
 import dotenv from "dotenv";
 import { app } from "./app";
 import dbConnection from "./config/db.connection";
+import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
 dbConnection()
   .then(() => {
     const port = process.env.PORT || 4000;
+
+    app.use(errorHandler);
     app.listen(port, () => {
       console.log(`server is running at port ${port}`);
     });
