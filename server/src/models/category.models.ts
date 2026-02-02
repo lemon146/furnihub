@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
+import { string } from "zod";
 
-const categorySchema = new mongoose.Schema(
+interface Category {
+  title: string;
+  image: string;
+  createdBy: mongoose.Types.ObjectId;
+}
+
+const categorySchema = new mongoose.Schema<Category>(
   {
     title: {
       type: String,
@@ -9,9 +16,15 @@ const categorySchema = new mongoose.Schema(
       unique: true,
     },
     image: {
-      type: String,
-      trim: true,
-      default: "",
+      url: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+      public_id: {
+        type: string,
+        default: "",
+      },
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,4 +34,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export const Category = mongoose.model("Category", categorySchema);
+export const Category = mongoose.model<Category>("Category", categorySchema);
