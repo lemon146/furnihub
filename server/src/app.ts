@@ -17,4 +17,15 @@ app.use(express.json({ limit: "13kb" }));
 app.use(express.urlencoded({ extended: true, limit: "13kb" }));
 app.use(express.static(path.join(__dirname, "../public")));
 
+// routes import
+
+import { errorHandler } from "./middlewares/errorHandler";
+import userRouter from "./routes/user.routes";
+
+// route declaration
+
+app.use("/api/v1/users", userRouter);
+
+app.use(errorHandler);
+
 export { app };
