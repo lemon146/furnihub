@@ -7,11 +7,11 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "USER" | "ADMIN";
-  refreshTokens: string[];
+  refreshTokens: string;
 
   isPasswordCorrect(password: string): Promise<boolean>;
-  generateAccessToken?(): string;
-  generateRefreshToken?(): string;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -27,7 +27,7 @@ const userSchema = new Schema<IUser>(
     },
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
-    refreshTokens: { type: [String], default: [] },
+    refreshTokens: { type: String, default: "" },
   },
   { timestamps: true },
 );
@@ -48,7 +48,6 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      email: this.email,
     },
     process.env.ACCESS_TOKEN_SECRET || "hjj",
     {
@@ -61,7 +60,6 @@ userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      email: this.email,
     },
     process.env.REFRESH_TOKEN_SECRET || "jdkj",
     {
