@@ -1,12 +1,12 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { User } from "../models/user.models";
+import { IUser, User } from "../models/user.models";
 import { ApiError } from "../utils/apiError";
 import { asyncHandler } from "./asyncHandler";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user: IUser;
     }
   }
 }
