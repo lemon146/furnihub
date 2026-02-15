@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export const isUserValid = asyncHandler(async (req, res, next) => {
+export const isAuthenticated = asyncHandler(async (req, res, next) => {
   // get token from cookie
   const token = req.cookies?.accessToken;
 

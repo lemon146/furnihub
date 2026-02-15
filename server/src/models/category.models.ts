@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { string } from "zod";
 
 interface Category {
   title: string;
@@ -22,7 +21,7 @@ const categorySchema = new mongoose.Schema<Category>(
         default: "",
       },
       public_id: {
-        type: string,
+        type: String,
         default: "",
       },
     },
