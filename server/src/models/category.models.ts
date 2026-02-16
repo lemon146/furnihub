@@ -2,8 +2,11 @@ import mongoose from "mongoose";
 
 interface Category {
   title: string;
-  image: string;
-  createdBy: mongoose.Types.ObjectId;
+  image: {
+    url: string;
+    public_id: string;
+  };
+  createdBy?: mongoose.Types.ObjectId;
 }
 
 const categorySchema = new mongoose.Schema<Category>(
@@ -17,12 +20,12 @@ const categorySchema = new mongoose.Schema<Category>(
     image: {
       url: {
         type: String,
+        required: true,
         trim: true,
-        default: "",
       },
       public_id: {
         type: String,
-        default: "",
+        required: true,
       },
     },
     createdBy: {
@@ -32,5 +35,7 @@ const categorySchema = new mongoose.Schema<Category>(
   },
   { timestamps: true },
 );
+
+categorySchema.index({ title: 1 }, { unique: true });
 
 export const Category = mongoose.model<Category>("Category", categorySchema);
