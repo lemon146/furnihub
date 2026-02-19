@@ -1,7 +1,10 @@
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { Category } from "../models/category.models";
 import { ApiError } from "../utils/apiError";
-import { uploadFileOnCloudinary } from "../utils/coudinary";
+import {
+  deleteFileOnCloudinary,
+  uploadFileOnCloudinary,
+} from "../utils/coudinary";
 
 const createCategory = asyncHandler(async (req, res) => {
   const { title } = req.body;
@@ -45,16 +48,27 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 const deleteCategory = asyncHandler(async (req, res) => {
-  const id = req.params;
+  const { id } = req.params;
 
   if (!id) {
-    throw new ApiError(409, "category id not found");
+    throw new ApiError(400, "Category id is required");
   }
 
-  const category = await Category.findOne({ _id: id });
+  const category = await Category.findByIdAndDelete(id);
+
   if (!category) {
-    throw new ApiError(401, "Category not found !");
+    throw new ApiError(404, "Category not found");
   }
+
+  // delete image from cloudinary
+  if (category.image?.public_id) {
+    await deleteFileOnCloudinary(category.image.public_id);
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category deleted successfully",
+  });
 });
 
-export { createCategory };
+export { createCategory, deleteCategory };
