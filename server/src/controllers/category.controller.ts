@@ -3,6 +3,7 @@ import { Category } from "../models/category.models";
 import { ApiError } from "../utils/apiError";
 import {
   deleteFileOnCloudinary,
+  updateNewFileOnCloudinary,
   uploadFileOnCloudinary,
 } from "../utils/coudinary";
 
@@ -71,4 +72,51 @@ const deleteCategory = asyncHandler(async (req, res) => {
   });
 });
 
-export { createCategory, deleteCategory };
+const updateCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const image = req.file;
+
+  if (!id) {
+    throw new ApiError(400, "Category ID is required");
+  }
+  const cat = await Category.findById(id);
+  if (!cat) {
+    throw new ApiError(404, "Category not found");
+  }
+
+  if (title) {
+    cat.title = title;
+  }
+
+  if (image) {
+    const file = await updateNewFileOnCloudinary(
+      cat.image.public_id,
+      image.path,
+      "Categories",
+    );
+
+    cat.image.url = file.url;
+    cat.image.public_id = file.public_id;
+  }
+
+  await cat.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Category updated successfully",
+    data: cat,
+  });
+});
+
+const getAllCategory = asyncHandler(async (req, res) => {
+  const categories = await Category.find().sort({ createdAt: -1 }).lean();
+
+  return res.status(200).json({
+    success: true,
+    message: "Categories fetched successfully",
+    categories,
+  });
+});
+
+export { createCategory, deleteCategory, getAllCategory, updateCategory };
