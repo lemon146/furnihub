@@ -18,8 +18,6 @@ const uploadFileOnCloudinary = async (filePath: string, folderName: string) => {
       public_id: `${folderName}-${Date.now()}`,
     });
 
-    console.log("file upload success:", result.secure_url);
-
     fs.unlinkSync(filePath); // cleanup after success
 
     return {
@@ -31,7 +29,7 @@ const uploadFileOnCloudinary = async (filePath: string, folderName: string) => {
       fs.unlinkSync(filePath);
     }
 
-    throw new ApiError(400, `Error uploading file to Cloudinary ${error}`);
+    throw new ApiError(500, "Error updating file");
   }
 };
 
@@ -44,13 +42,35 @@ const deleteFileOnCloudinary = async (publicId: string) => {
   }
 };
 const updateNewFileOnCloudinary = async (
-  oldPublicId: string,
-  newPublicId: string,
+  oldPublicId: string | null,
+  filePath: string,
   folderName: string,
 ) => {
-  const upload = await uploadFileOnCloudinary(newPublicId, folderName);
-  if (oldPublicId) {
-    await deleteFileOnCloudinary(oldPublicId);
+  try {
+    const upload = await uploadFileOnCloudinary(filePath, folderName);
+
+    if (!upload) {
+      throw new ApiError(500, "File upload failed");
+    }
+
+    if (oldPublicId) {
+      try {
+        await deleteFileOnCloudinary(oldPublicId);
+      } catch (deleteError) {
+        console.error("Old file deletion failed:", deleteError);
+      }
+    }
+
+    return {
+      url: upload.url,
+      public_id: upload.public_id,
+    };
+  } catch (error) {
+    console.error("Cloudinary update error:", error);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    throw new ApiError(500, "Error updating file");
   }
 };
 
