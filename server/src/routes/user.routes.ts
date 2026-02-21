@@ -8,7 +8,8 @@ import {
   registerUser,
 } from "../controllers/user.controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
-import { registerSchema, validate } from "../middlewares/user.validator";
+import { registerSchema } from "../middlewares/user.validator";
+import { validate } from "../middlewares/validate.middleware";
 
 const router = Router();
 

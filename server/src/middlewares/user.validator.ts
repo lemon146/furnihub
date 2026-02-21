@@ -1,4 +1,3 @@
-import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 
 // Zod schema
@@ -9,12 +8,4 @@ export const registerSchema = z.object({
 });
 
 // Infer TS type from schema
-export type RegisterSchemaType = z.infer<typeof registerSchema>;
-
-// Validation middleware
-export const validate =
-  (schema: z.ZodSchema) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    schema.parse(req.body);
-    next();
-  };
+// export type RegisterSchemaType = z.infer<typeof registerSchema>;

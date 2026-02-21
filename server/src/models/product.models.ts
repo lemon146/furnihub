@@ -4,10 +4,13 @@ interface Product {
   title: string;
   description: string;
   short_desc: string;
-  image: {
-    url: string;
-    publicId: string;
-  };
+  images: [
+    {
+      url: string;
+      publicId: string;
+    },
+  ];
+  category: mongoose.Types.ObjectId;
   additionalInfo: {
     material: string;
     color: string;
@@ -39,16 +42,16 @@ const productSchema = new mongoose.Schema<Product>(
       trim: true,
       required: true,
     },
-    image: {
-      url: {
-        type: String,
-        trim: true,
-        default: "",
+    images: [
+      {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true },
       },
-      publicId: {
-        type: String,
-        default: "",
-      },
+    ],
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
     },
     additionalInfo: {
       material: { type: String, required: true },
