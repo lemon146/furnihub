@@ -21,12 +21,14 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 import { errorHandler } from "./middlewares/errorHandler";
 import categoryRouter from "./routes/category.routes";
+import productRouter from "./routes/product.routes";
 import userRouter from "./routes/user.routes";
 
 // route declaration
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/product", productRouter);
 
 app.use(errorHandler);
 
