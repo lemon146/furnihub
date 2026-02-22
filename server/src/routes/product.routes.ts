@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { createProduct } from "../controllers/product.controller";
+import {
+  createProduct,
+  deleteProduct,
+} from "../controllers/product.controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
 import { upload } from "../middlewares/multer.middleware";
 import { createProductSchema } from "../middlewares/product.validator";
@@ -17,5 +20,8 @@ router
     validate(createProductSchema),
     createProduct,
   );
+router
+  .route("/:id")
+  .delete(isAuthenticated, authorizeRoles("ADMIN"), deleteProduct);
 
 export default router;

@@ -2,7 +2,10 @@ import { asyncHandler } from "../middlewares/asyncHandler";
 import { Category } from "../models/category.models";
 import { Product } from "../models/product.models";
 import { ApiError } from "../utils/apiError";
-import { uploadFileOnCloudinary } from "../utils/coudinary";
+import {
+  deleteFileOnCloudinary,
+  uploadFileOnCloudinary,
+} from "../utils/coudinary";
 
 const createProduct = asyncHandler(async (req, res) => {
   const {
@@ -63,4 +66,26 @@ const createProduct = asyncHandler(async (req, res) => {
   });
 });
 
-export { createProduct };
+const deleteProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new ApiError(400, "id required");
+  }
+  //  check product exist
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new ApiError(404, "Product Not Found");
+  }
+  await Promise.all(
+    product.images.map((image) => deleteFileOnCloudinary(image.publicId)),
+  );
+  await product.deleteOne();
+  return res.status(200).json({
+    success: true,
+    message: "Product delete successfully",
+    product: product,
+  });
+});
+
+export { createProduct, deleteProduct };
