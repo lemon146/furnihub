@@ -38,7 +38,7 @@ const deleteFileOnCloudinary = async (publicId: string) => {
     const result = await cloudinary.uploader.destroy(publicId);
     return result;
   } catch (error) {
-    throw new Error(`Cloudinary delete failed: ${error}`);
+    throw new ApiError(500, `Cloudinary delete failed`);
   }
 };
 const updateNewFileOnCloudinary = async (
