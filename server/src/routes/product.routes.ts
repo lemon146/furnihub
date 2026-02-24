@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
+  updateProduct,
 } from "../controllers/product.controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
 import { upload } from "../middlewares/multer.middleware";
@@ -23,5 +24,15 @@ router
 router
   .route("/:id")
   .delete(isAuthenticated, authorizeRoles("ADMIN"), deleteProduct);
+
+router
+  .route("/:id")
+  .patch(
+    isAuthenticated,
+    authorizeRoles("ADMIN"),
+    upload.array("image", 5),
+    validate(createProductSchema),
+    updateProduct,
+  );
 
 export default router;

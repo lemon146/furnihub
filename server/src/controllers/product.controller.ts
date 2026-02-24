@@ -87,5 +87,90 @@ const deleteProduct = asyncHandler(async (req, res) => {
     product: product,
   });
 });
+const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    title,
+    description,
+    short_desc,
+    category,
+    material,
+    color,
+    weight,
+    dimension,
+    originalPrice,
+    price,
+    stock,
+  } = req.body;
+  const { id } = req.params;
+  const files = req.files as Express.Multer.File[] | undefined;
 
-export { createProduct, deleteProduct };
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw new ApiError(400, "Product Not Found");
+  }
+  if (files?.length) {
+    const newImages: { url: string; publicId: string }[] = [];
+
+    for (const file of files) {
+      const upload = await uploadFileOnCloudinary(file.path, "Product");
+
+      if (!upload) {
+        throw new ApiError(500, "Image upload failed");
+      }
+
+      newImages.push({
+        url: upload.url,
+        publicId: upload.public_id,
+      });
+    }
+
+    //  Delete old images only after upload success
+    await Promise.all(
+      product.images.map((img) => deleteFileOnCloudinary(img.publicId)),
+    );
+
+    product.images = newImages as any;
+  }
+
+  if (title) {
+    product.title = title;
+  }
+  if (description) {
+    product.description = description;
+  }
+  if (short_desc) {
+    product.short_desc = short_desc;
+  }
+  if (category) {
+    product.category = category;
+  }
+  if (material) {
+    product.additionalInfo.material = material;
+  }
+  if (color) {
+    product.additionalInfo.color = color;
+  }
+  if (weight) {
+    product.additionalInfo.weight = weight;
+  }
+  if (dimension) {
+    product.additionalInfo.dimension = dimension;
+  }
+  if (originalPrice) {
+    product.originalPrice = originalPrice;
+  }
+  if (price !== undefined) {
+    product.price = price;
+  }
+  if (stock) {
+    product.stock = stock;
+  }
+  await product.save();
+  return res.status(200).json({
+    success: true,
+    message: "Product update successfully",
+  });
+});
+
+export { createProduct, deleteProduct, updateProduct };
