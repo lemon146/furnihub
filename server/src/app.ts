@@ -2,6 +2,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import path from "path";
+import { errorHandler } from "./middlewares/errorHandler";
+import categoryRouter from "./routes/category.routes";
+import productRouter from "./routes/product.routes";
+import userRouter from "./routes/user.routes";
 
 const app = express();
 
@@ -16,13 +20,6 @@ app.use(cookieParser());
 app.use(express.json({ limit: "13kb" }));
 app.use(express.urlencoded({ extended: true, limit: "13kb" }));
 app.use(express.static(path.join(__dirname, "../public")));
-
-// routes import
-
-import { errorHandler } from "./middlewares/errorHandler";
-import categoryRouter from "./routes/category.routes";
-import productRouter from "./routes/product.routes";
-import userRouter from "./routes/user.routes";
 
 // route declaration
 
