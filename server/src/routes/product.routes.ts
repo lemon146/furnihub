@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
+  fetchAllProduct,
   updateProduct,
 } from "../controllers/product.controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
@@ -35,4 +36,5 @@ router
     updateProduct,
   );
 
+router.route("/").get(isAuthenticated, fetchAllProduct);
 export default router;

@@ -172,5 +172,14 @@ const updateProduct = asyncHandler(async (req, res) => {
     message: "Product update successfully",
   });
 });
-
-export { createProduct, deleteProduct, updateProduct };
+// fetch all product
+const fetchAllProduct = asyncHandler(async (req, res) => {
+  const product = await Product.find();
+  if (!product) throw new ApiError(404, "Product not Found");
+  return res.status(200).json({
+    success: true,
+    message: "product fetch successfully",
+    product: product,
+  });
+});
+export { createProduct, deleteProduct, fetchAllProduct, updateProduct };
