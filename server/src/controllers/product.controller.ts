@@ -174,12 +174,32 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 // fetch all product
 const fetchAllProduct = asyncHandler(async (req, res) => {
-  const product = await Product.find();
-  if (!product) throw new ApiError(404, "Product not Found");
+  const products = await Product.find();
+
   return res.status(200).json({
     success: true,
-    message: "product fetch successfully",
+    count: products.length,
+    message: "Products fetched successfully",
+    products,
+  });
+});
+const fetchSingleProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) throw new ApiError(404, "product id not Found");
+
+  const product = await Product.findById(id);
+  if (!product) throw new ApiError(404, "product not Found");
+
+  return res.status(200).json({
+    success: true,
+    message: "fetch Product successfully",
     product: product,
   });
 });
-export { createProduct, deleteProduct, fetchAllProduct, updateProduct };
+export {
+  createProduct,
+  deleteProduct,
+  fetchAllProduct,
+  fetchSingleProduct,
+  updateProduct,
+};

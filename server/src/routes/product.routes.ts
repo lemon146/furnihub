@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProduct,
   fetchAllProduct,
+  fetchSingleProduct,
   updateProduct,
 } from "../controllers/product.controller";
 import { isAuthenticated } from "../middlewares/auth.middleware";
@@ -37,4 +38,5 @@ router
   );
 
 router.route("/").get(isAuthenticated, fetchAllProduct);
+router.route("/:id").get(isAuthenticated, fetchSingleProduct);
 export default router;
