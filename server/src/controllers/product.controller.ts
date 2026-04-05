@@ -174,8 +174,16 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 // fetch all product
 const fetchAllProduct = asyncHandler(async (req, res) => {
-  const products = await Product.find();
-
+  const { title, price } = req.query;
+  const queryObjects = <any>{};
+  if (title) {
+    queryObjects.title = title;
+  }
+  if (price) {
+    queryObjects.price = Number(price);
+  }
+  console.log(queryObjects);
+  const products = await Product.find(queryObjects).populate("category");
   return res.status(200).json({
     success: true,
     count: products.length,
@@ -187,7 +195,7 @@ const fetchSingleProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!id) throw new ApiError(404, "product id not Found");
 
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate("category");
   if (!product) throw new ApiError(404, "product not Found");
 
   return res.status(200).json({
