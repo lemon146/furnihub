@@ -6,6 +6,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 import categoryRouter from "./routes/category.routes";
 import productRouter from "./routes/product.routes";
 import userRouter from "./routes/user.routes";
+import reviewRouter from "./routes/review.routes";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/product", productRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.use(errorHandler);
 
