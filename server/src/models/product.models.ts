@@ -17,7 +17,7 @@ interface Product {
     weight: string;
     dimension: string;
   };
-  rating: number;
+  averageRating: number;
   numReviews: number;
   originalPrice: number;
   price: number;
@@ -59,7 +59,7 @@ const productSchema = new mongoose.Schema<Product>(
       weight: { type: String, required: true },
       dimension: { type: String, required: true },
     },
-    rating: {
+    averageRating: {
       type: Number,
       min: 0,
       max: 5,
