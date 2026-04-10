@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     // ✨ Path aliases (use @/)
+    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "paths": {
       "@/*": [
