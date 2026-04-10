@@ -15,6 +15,9 @@ import { ProductsPage } from "./pages/admin/pages/Products";
 import { ProductViewPage } from "./pages/admin/pages/Product_view";
 import { CreateProductPage } from "./pages/admin/pages/CreateProduct";
 import { EditProductPage } from "./pages/admin/pages/EditProduct";
+import { CategoriesPage } from "./pages/admin/pages/Categories";
+import { SettingsPage } from "./pages/admin/pages/Setting";
+import { ReviewsPage } from "./pages/admin/pages/Reviews";
 
 const App = () => {
   return (
@@ -37,7 +40,10 @@ const App = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="products" element={<ProductsPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
           <Route path="productsviews" element={<ProductViewPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="reviews" element={<ReviewsPage />} />
           <Route
             path="/admin/products/create"
             element={<CreateProductPage />}
