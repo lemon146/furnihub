@@ -1,5 +1,6 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { useState } from "react";
+import { Image, LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
   Sofa,
@@ -7,6 +8,13 @@ import {
   ShoppingCart,
   Menu,
   X,
+  MessageSquare,
+  Mail,
+  Tag,
+  CreditCard,
+  Package,
+  BarChart,
+  Settings,
 } from "lucide-react";
 
 export default function AdminLayout() {
@@ -14,12 +22,31 @@ export default function AdminLayout() {
 
   const navItems = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
+
+    // Catalog
     { to: "/admin/products", label: "Products", icon: Sofa },
     { to: "/admin/categories", label: "Categories", icon: Sofa },
+    { to: "/admin/inventory", label: "Inventory", icon: Package },
+
+    // Sales
     { to: "/admin/orders", label: "Orders", icon: ShoppingCart },
+    { to: "/admin/payments", label: "Payments", icon: CreditCard },
+    { to: "/admin/coupons", label: "Coupons", icon: Tag },
+
+    // Users
     { to: "/admin/customers", label: "Customers", icon: Users },
-    { to: "/admin/reviews", label: "Reviews", icon: Users },
-    { to: "/admin/settings", label: "Settings", icon: LayoutDashboard },
+    { to: "/admin/users", label: "Admins", icon: Users },
+
+    // Content
+    { to: "/admin/reviews", label: "Reviews", icon: MessageSquare },
+    { to: "/admin/messages", label: "Messages", icon: Mail },
+    { to: "/admin/banners", label: "Banners", icon: Image },
+
+    // Insights
+    { to: "/admin/analytics", label: "Analytics", icon: BarChart },
+
+    // System
+    { to: "/admin/settings", label: "Settings", icon: Settings },
   ];
 
   const navClass = (isActive: boolean) =>
@@ -39,17 +66,14 @@ export default function AdminLayout() {
       >
         <div className="flex items-center justify-between px-4 py-4 border-b">
           <h1 className="font-bold text-lg">FurniAdmin</h1>
-          <button
-            onClick={() => setOpen(false)}
-            className="md:hidden"
-          >
+          <button onClick={() => setOpen(false)} className="md:hidden">
             <X size={20} />
           </button>
         </div>
 
         <nav className="p-4 space-y-2">
           {navItems.map((item) => {
-            const Icon = item.icon;
+            const Icon = item.icon as LucideIcon;
             return (
               <NavLink
                 key={item.to}
@@ -67,9 +91,7 @@ export default function AdminLayout() {
           <div className="border-t my-4" />
 
           {/* Logout */}
-          <button
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition"
-          >
+          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition">
             <span>🚪</span>
             <span className="text-sm font-medium">Logout</span>
           </button>
@@ -89,19 +111,14 @@ export default function AdminLayout() {
         {/* Header */}
         <header className="bg-white shadow-sm px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setOpen(true)}
-              className="md:hidden"
-            >
+            <button onClick={() => setOpen(true)} className="md:hidden">
               <Menu size={22} />
             </button>
             <h2 className="text-lg font-semibold">Dashboard</h2>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-sm text-gray-600">
-              Admin
-            </span>
+            <span className="hidden sm:block text-sm text-gray-600">Admin</span>
             <img
               src="https://i.pravatar.cc/40"
               alt="avatar"
