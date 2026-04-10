@@ -18,6 +18,7 @@ import { EditProductPage } from "./pages/admin/pages/EditProduct";
 import { CategoriesPage } from "./pages/admin/pages/Categories";
 import { SettingsPage } from "./pages/admin/pages/Setting";
 import { ReviewsPage } from "./pages/admin/pages/Reviews";
+import CustomersPage from "./pages/admin/pages/Customer";
 
 const App = () => {
   return (
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="productsviews" element={<ProductViewPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="customers" element={<CustomersPage />} />
           <Route
             path="/admin/products/create"
             element={<CreateProductPage />}
