@@ -9,12 +9,20 @@ import Login from "./pages/Login";
 import Product_detail from "./pages/Product_detail";
 import Register from "./pages/Register";
 import Shop from "./pages/Shop";
+import AdminLayout from "./components/admin/AdminLayout";
+import { Dashboard } from "./pages/admin/Dashboard";
+import { ProductsPage } from "./pages/admin/pages/Products";
+import { ProductViewPage } from "./pages/admin/pages/Product_view";
+import { CreateProductPage } from "./pages/admin/pages/CreateProduct";
+import { EditProductPage } from "./pages/admin/pages/EditProduct";
 
 const App = () => {
   return (
     <>
       <ScrollToTop />
+
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/contact" element={<Contact />} />
@@ -23,10 +31,26 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Admin Routes */}
+
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="productsviews" element={<ProductViewPage />} />
+          <Route
+            path="/admin/products/create"
+            element={<CreateProductPage />}
+          />
+          <Route
+            path="/admin/products/:id/edit"
+            element={<EditProductPage />}
+          />
+        </Route>
       </Routes>
+
       <Toaster />
     </>
   );
 };
-
 export default App;
