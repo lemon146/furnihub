@@ -1,15 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search,
-  Users,
-  Mail,
-  ShoppingBag,
-  Eye,
-  Ban,
-  Trash2,
-  X,
-} from "lucide-react";
+import { Search, Users, ShoppingBag, Eye, Ban, Trash2, X } from "lucide-react";
 
 /* ================= TYPES ================= */
 type Order = {
@@ -29,7 +20,7 @@ type Customer = {
   recentOrders: Order[];
 };
 
-/* ================= DUMMY DATA ================= */
+/* ================= DATA ================= */
 const dummyCustomers: Customer[] = [
   {
     id: "1",
@@ -60,19 +51,17 @@ const dummyCustomers: Customer[] = [
 
 /* ================= COMPONENT ================= */
 export default function CustomersPage() {
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState<Customer[]>(dummyCustomers);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   );
   const [tab, setTab] = useState<"overview" | "orders">("overview");
 
-  /* ================= FILTER ================= */
   const filtered = customers.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  /* ================= HELPERS ================= */
   const getInitials = (name: string) =>
     name
       .split(" ")
@@ -80,38 +69,26 @@ export default function CustomersPage() {
       .join("")
       .toUpperCase();
 
-  /* ================= TOGGLE STATUS ================= */
   const toggleStatus = (id: string) => {
     setCustomers((prev) =>
       prev.map((c) =>
         c.id === id
-          ? {
-              ...c,
-              status: c.status === "active" ? "blocked" : "active",
-            }
+          ? { ...c, status: c.status === "active" ? "blocked" : "active" }
           : c,
       ),
     );
 
     setSelectedCustomer((prev) =>
       prev && prev.id === id
-        ? {
-            ...prev,
-            status: prev.status === "active" ? "blocked" : "active",
-          }
+        ? { ...prev, status: prev.status === "active" ? "blocked" : "active" }
         : prev,
     );
   };
 
-  /* ================= UI ================= */
   return (
-    <motion.div
-      className="p-4 sm:p-6 space-y-6"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <motion.div className="p-4 sm:p-6 space-y-6">
+      {/* ================= HEADER ================= */}
+      <div className="flex flex-col sm:flex-row justify-between gap-3">
         <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
           <Users size={22} /> Customers
         </h1>
@@ -127,9 +104,9 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      {/* TABLE */}
-      <div className="hidden md:block bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+      {/* ================= DESKTOP TABLE ================= */}
+      <div className="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+        <table className="w-full min-w-[800px] text-sm">
           <thead className="bg-gray-100 text-left">
             <tr>
               <th className="p-3">Name</th>
@@ -141,28 +118,19 @@ export default function CustomersPage() {
           </thead>
 
           <tbody>
-            {filtered.map((customer, i) => (
-              <motion.tr
-                key={customer.id}
-                className="border-t hover:bg-gray-50"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
+            {filtered.map((customer) => (
+              <tr key={customer.id} className="border-t hover:bg-gray-50">
                 <td className="p-3 font-medium">{customer.name}</td>
-
                 <td className="p-3 text-gray-600">{customer.email}</td>
 
-                <td className="p-3">
-                  <div className="flex items-center gap-1">
-                    <ShoppingBag size={14} />
-                    {customer.orders}
-                  </div>
+                <td className="p-3 flex items-center gap-1">
+                  <ShoppingBag size={14} />
+                  {customer.orders}
                 </td>
 
                 <td className="p-3">
                   <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
+                    className={`px-2 py-1 rounded text-xs ${
                       customer.status === "active"
                         ? "bg-green-100 text-green-600"
                         : "bg-red-100 text-red-600"
@@ -179,31 +147,72 @@ export default function CustomersPage() {
                         setSelectedCustomer(customer);
                         setTab("overview");
                       }}
-                      className="p-1.5 rounded bg-blue-100 text-blue-600"
+                      className="p-1.5 bg-blue-100 text-blue-600 rounded"
                     >
                       <Eye size={16} />
                     </button>
 
                     <button
                       onClick={() => toggleStatus(customer.id)}
-                      className={`p-1.5 rounded ${
-                        customer.status === "active"
-                          ? "bg-red-100 text-red-600"
-                          : "bg-green-100 text-green-600"
-                      }`}
+                      className="p-1.5 bg-yellow-100 text-yellow-600 rounded"
                     >
                       <Ban size={16} />
                     </button>
 
-                    <button className="p-1.5 rounded bg-red-100 text-red-600">
+                    <button className="p-1.5 bg-red-100 text-red-600 rounded">
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </td>
-              </motion.tr>
+              </tr>
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* ================= MOBILE CARDS ================= */}
+      <div className="grid gap-4 md:hidden">
+        {filtered.map((customer) => (
+          <div
+            key={customer.id}
+            className="bg-white shadow rounded-xl p-4 space-y-3"
+          >
+            <div className="flex justify-between">
+              <p className="font-semibold">{customer.name}</p>
+              <span
+                className={`text-xs px-2 py-1 rounded ${
+                  customer.status === "active"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-red-100 text-red-600"
+                }`}
+              >
+                {customer.status}
+              </span>
+            </div>
+
+            <p className="text-sm text-gray-500">{customer.email}</p>
+
+            <p className="text-sm flex items-center gap-1">
+              <ShoppingBag size={14} /> {customer.orders} orders
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSelectedCustomer(customer)}
+                className="flex-1 bg-blue-100 text-blue-600 py-2 rounded text-sm"
+              >
+                View
+              </button>
+
+              <button
+                onClick={() => toggleStatus(customer.id)}
+                className="flex-1 bg-yellow-100 text-yellow-600 py-2 rounded text-sm"
+              >
+                Toggle
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* ================= DRAWER ================= */}
@@ -213,22 +222,18 @@ export default function CustomersPage() {
             {/* BACKDROP */}
             <motion.div
               className="fixed inset-0 bg-black/40 z-40"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               onClick={() => setSelectedCustomer(null)}
             />
 
-            {/* PANEL */}
+            {/* PANEL (FULL MOBILE + SIDE DESKTOP) */}
             <motion.div
               className="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-xl flex flex-col"
-              initial={{ x: 500 }}
+              initial={{ x: 400 }}
               animate={{ x: 0 }}
-              exit={{ x: 500 }}
-              transition={{ type: "tween" }}
+              exit={{ x: 400 }}
             >
               {/* HEADER */}
-              <div className="p-4 border-b flex justify-between items-center">
+              <div className="p-4 border-b flex justify-between">
                 <h2 className="font-semibold">Customer Profile</h2>
                 <button onClick={() => setSelectedCustomer(null)}>
                   <X />
@@ -251,12 +256,12 @@ export default function CustomersPage() {
 
               {/* STATS */}
               <div className="p-4 grid grid-cols-2 gap-3 border-b">
-                <div className="p-3 bg-gray-50 rounded">
+                <div className="bg-gray-50 p-3 rounded">
                   <p className="text-xs text-gray-500">Orders</p>
                   <p className="font-semibold">{selectedCustomer.orders}</p>
                 </div>
 
-                <div className="p-3 bg-gray-50 rounded">
+                <div className="bg-gray-50 p-3 rounded">
                   <p className="text-xs text-gray-500">Spent</p>
                   <p className="font-semibold">
                     ${selectedCustomer.totalSpent}
@@ -264,7 +269,7 @@ export default function CustomersPage() {
                 </div>
               </div>
 
-              {/* STATUS TOGGLE */}
+              {/* ACTION */}
               <div className="p-4">
                 <button
                   onClick={() => toggleStatus(selectedCustomer.id)}
@@ -280,57 +285,14 @@ export default function CustomersPage() {
                 </button>
               </div>
 
-              {/* TABS */}
-              <div className="flex border-b">
-                <button
-                  onClick={() => setTab("overview")}
-                  className={`flex-1 p-3 text-sm ${
-                    tab === "overview"
-                      ? "border-b-2 border-black font-medium"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Overview
-                </button>
-
-                <button
-                  onClick={() => setTab("orders")}
-                  className={`flex-1 p-3 text-sm ${
-                    tab === "orders"
-                      ? "border-b-2 border-black font-medium"
-                      : "text-gray-500"
-                  }`}
-                >
-                  Orders
-                </button>
-              </div>
-
               {/* CONTENT */}
-              <div className="p-4 flex-1 overflow-y-auto">
-                {tab === "overview" && (
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <b>Phone:</b> {selectedCustomer.phone}
-                    </p>
-                    <p>
-                      <b>Address:</b> {selectedCustomer.address}
-                    </p>
-                  </div>
-                )}
-
-                {tab === "orders" && (
-                  <div className="space-y-3">
-                    {selectedCustomer.recentOrders.map((o) => (
-                      <div
-                        key={o.id}
-                        className="p-3 border rounded flex justify-between"
-                      >
-                        <span>{o.id}</span>
-                        <span>${o.amount}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="p-4 text-sm space-y-2 overflow-y-auto">
+                <p>
+                  <b>Phone:</b> {selectedCustomer.phone}
+                </p>
+                <p>
+                  <b>Address:</b> {selectedCustomer.address}
+                </p>
               </div>
             </motion.div>
           </>
