@@ -19,6 +19,9 @@ import { CategoriesPage } from "./pages/admin/pages/Categories";
 import { SettingsPage } from "./pages/admin/pages/Setting";
 import { ReviewsPage } from "./pages/admin/pages/Reviews";
 import CustomersPage from "./pages/admin/pages/Customer";
+import OrdersPage from "./pages/admin/pages/Order";
+import AnalyticsPage from "./pages/admin/pages/Analytics";
+import MessagesPage from "./pages/admin/pages/Message";
 
 const App = () => {
   return (
@@ -46,6 +49,9 @@ const App = () => {
           <Route path="settings" element={<SettingsPage />} />
           <Route path="reviews" element={<ReviewsPage />} />
           <Route path="customers" element={<CustomersPage />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="messages" element={<MessagesPage />} />
           <Route
             path="/admin/products/create"
             element={<CreateProductPage />}
