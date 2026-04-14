@@ -1,10 +1,14 @@
 import {
   AuthContextProviderProps,
   AuthContextType,
+  Login,
   RegisterFormType,
 } from "@/types/auth";
 import { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "@/api/auth";
+import { useLoading } from "./LoadingContext";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
@@ -12,17 +16,31 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<string | undefined>();
-  const [loading, setLoading] = useState(true);
+  const { setLoading } = useLoading();
   const navigate = useNavigate();
 
-  const login = (email: string, password: string) => {
-    if (!email || !password) return;
-
-    localStorage.setItem("user", JSON.stringify(email));
-    setUser(email);
-    setLoading(false);
-    navigate("/");
+  const login = async (data: Login) => {
+    if (!data.email) {
+      toast.error("email required");
+      return;
+    }
+    if (!data.password) {
+      toast.error("password required");
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await loginUser(data);
+      console.log(res);
+      toast.success("login successfull");
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const register = (formData: RegisterFormType) => {
     console.log(formData);
   };
@@ -42,7 +60,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );
