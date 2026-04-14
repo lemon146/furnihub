@@ -22,11 +22,13 @@ import CustomersPage from "./pages/admin/pages/Customer";
 import OrdersPage from "./pages/admin/pages/Order";
 import AnalyticsPage from "./pages/admin/pages/Analytics";
 import MessagesPage from "./pages/admin/pages/Message";
+import GlobalLoader from "./components/GlobalLoader";
 
 const App = () => {
   return (
     <>
       <ScrollToTop />
+      <GlobalLoader />
 
       <Routes>
         {/* Public Routes */}
