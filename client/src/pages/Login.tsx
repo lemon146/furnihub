@@ -2,25 +2,26 @@
 
 import AuthNavbar from "@/components/layout/AuthNavBar";
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useLoading } from "@/context/LoadingContext";
+import { Login } from "@/types/auth";
+import { use, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, Navigate } from "react-router-dom";
 
-export default function Login() {
-  const { login, user, loading: authloadin } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  if (user) {
-    return <Navigate to={"/"} />;
-  }
+export default function login() {
+  const { login } = useAuth();
+  const { loading } = useLoading();
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+  // if (user) {
+  //   return <Navigate to={"/"} />;
+  // }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    login(email, password);
-    toast.success("login success");
-    setLoading(false);
+    login(user);
   };
 
   return (
@@ -41,8 +42,8 @@ export default function Login() {
             </label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
               placeholder="you@example.com"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
@@ -55,8 +56,8 @@ export default function Login() {
             <input
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
           </div>
