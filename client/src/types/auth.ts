@@ -1,10 +1,9 @@
 import { ReactNode } from "react";
 
 export interface AuthContextType {
-  login: (email: string, password: string) => void;
+  login: (data: Login) => void;
   logout: () => void;
   register: (formData: RegisterFormType) => void;
-  loading: boolean;
   user: string | undefined;
 }
 export interface AuthContextProviderProps {
@@ -15,4 +14,16 @@ export interface RegisterFormType {
   email: string;
   password: string;
   name: string;
+}
+
+export interface Login {
+  email: string;
+  password: string;
+}
+
+// loading
+
+export interface LoadingContextType {
+  loading: boolean;
+  setLoading: (value: boolean) => void;
 }
