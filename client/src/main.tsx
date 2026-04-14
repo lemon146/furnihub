@@ -8,6 +8,7 @@ import { CartContextProvider } from "./context/CartContext.js";
 import { ShopFilterProvider } from "./context/ShopFilterContext.js";
 import { WishListContextProvider } from "./context/WishlistContext.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { LoadingProvider } from "./context/LoadingContext.js";
 
 const queryClient = new QueryClient();
 
@@ -15,15 +16,17 @@ createRoot(document.getElementById("root")! as HTMLElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthContextProvider>
-          <ShopFilterProvider>
-            <WishListContextProvider>
-              <CartContextProvider>
-                <App />
-              </CartContextProvider>
-            </WishListContextProvider>
-          </ShopFilterProvider>
-        </AuthContextProvider>
+        <LoadingProvider>
+          <AuthContextProvider>
+            <ShopFilterProvider>
+              <WishListContextProvider>
+                <CartContextProvider>
+                  <App />
+                </CartContextProvider>
+              </WishListContextProvider>
+            </ShopFilterProvider>
+          </AuthContextProvider>
+        </LoadingProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>,
