@@ -14,3 +14,8 @@ export const logOut = async () => {
   const res = await api.post("/users/logout");
   return res.data;
 };
+
+export const getCurrentUser = async () => {
+  const res = await api.get("/users/current/user");
+  return res.data;
+};

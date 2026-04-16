@@ -7,7 +7,7 @@ import {
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "@/api/auth";
+import { getCurrentUser, loginUser } from "@/api/auth";
 import { useLoading } from "./LoadingContext";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -15,7 +15,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [user, setUser] = useState<string | undefined>();
+  const [user, setUser] = useState<any>(null);
   const { setLoading } = useLoading();
   const navigate = useNavigate();
 
@@ -30,8 +30,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
     try {
       setLoading(true);
-      const res = await loginUser(data);
-      console.log(res);
+      await loginUser(data);
+      await fetchAndStoreUser();
       toast.success("login successfull");
       navigate("/");
     } catch (error: any) {
@@ -40,6 +40,35 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       setLoading(false);
     }
   };
+  const fetchAndStoreUser = async () => {
+    try {
+      const result = await getCurrentUser();
+      const user = result.user;
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+    } catch (error: any) {
+      setUser(null);
+      console.log(error?.response?.data || error.message);
+      localStorage.removeItem("user");
+    }
+  };
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const storeUser = localStorage.getItem("user");
+        if (storeUser) {
+          setUser(JSON.parse(storeUser));
+        }
+        await fetchAndStoreUser();
+      } catch (error: any) {
+        setUser(null);
+        localStorage.removeItem("user");
+      } finally {
+        setLoading(false);
+      }
+    };
+    initAuth();
+  }, []);
 
   const register = (formData: RegisterFormType) => {
     console.log(formData);
@@ -50,14 +79,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setUser(undefined);
     navigate("/login");
   };
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register }}>
