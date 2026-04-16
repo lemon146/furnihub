@@ -209,7 +209,7 @@ const Nav: React.FC = () => {
               </ul>
 
               <div className="mobile-link pt-6 border-t border-gray-100 flex justify-between items-center">
-                {!isLoggedIn ? (
+                {!user ? (
                   <Link
                     to="/login"
                     onClick={() => setMobileMenu(false)}
