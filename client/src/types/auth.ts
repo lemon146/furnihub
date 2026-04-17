@@ -4,11 +4,18 @@ export interface AuthContextType {
   login: (data: Login) => void;
   logout: () => void;
   register: (formData: RegisterFormType) => void;
-  user: string | undefined;
+  user: User | null;
 }
 export interface AuthContextProviderProps {
   children: ReactNode;
 }
+
+export type User = {
+  _id: string;
+  fullName: string;
+  email: string;
+  role: string;
+};
 
 export interface RegisterFormType {
   email: string;
