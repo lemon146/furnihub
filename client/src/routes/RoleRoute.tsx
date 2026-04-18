@@ -8,13 +8,13 @@ type Props = {
   allowedRole: string[];
 };
 const RoleRoute = ({ allowedRole }: Props) => {
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
   const { loading } = useLoading();
+  if (loading || initializing) {
+    return <GlobalLoader />;
+  }
   if (!user) {
     return <Navigate to={"/login"} />;
-  }
-  if (loading) {
-    return <GlobalLoader />;
   }
 
   if (!allowedRole.includes(user.role)) {
