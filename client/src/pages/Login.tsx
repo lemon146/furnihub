@@ -9,19 +9,18 @@ import toast from "react-hot-toast";
 import { Link, Navigate } from "react-router-dom";
 
 export default function login() {
-  const { login } = useAuth();
-  const { loading } = useLoading();
-  const [user, setUser] = useState({
+  const { login, user } = useAuth();
+  const [formUser, formSetUser] = useState({
     email: "",
     password: "",
   });
-  // if (user) {
-  //   return <Navigate to={"/"} />;
-  // }
+  if (user) {
+    return <Navigate to={"/"} />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(user);
+    login(formUser);
   };
 
   return (
@@ -42,8 +41,10 @@ export default function login() {
             </label>
             <input
               type="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              value={formUser.email}
+              onChange={(e) =>
+                formSetUser({ ...formUser, email: e.target.value })
+              }
               placeholder="you@example.com"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
@@ -56,8 +57,10 @@ export default function login() {
             <input
               type="password"
               placeholder="••••••••"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              value={formUser.password}
+              onChange={(e) =>
+                formSetUser({ ...formUser, password: e.target.value })
+              }
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
           </div>

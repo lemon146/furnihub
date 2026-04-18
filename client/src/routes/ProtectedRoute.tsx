@@ -6,9 +6,9 @@ import toast from "react-hot-toast";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
   const { loading } = useLoading();
-  if (loading) {
+  if (loading || initializing) {
     return <GlobalLoader />;
   }
   if (!user) {

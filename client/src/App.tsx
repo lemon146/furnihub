@@ -23,6 +23,10 @@ import OrdersPage from "./pages/admin/pages/Order";
 import AnalyticsPage from "./pages/admin/pages/Analytics";
 import MessagesPage from "./pages/admin/pages/Message";
 import GlobalLoader from "./components/GlobalLoader";
+import Unauthorized from "./pages/Unauthorized";
+import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import RoleRoute from "./routes/RoleRoute";
 
 const App = () => {
   return (
@@ -40,31 +44,36 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="*" element={<NotFound />} />
 
-        {/* Admin Routes */}
-
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="products" element={<ProductsPage />} />
-          <Route path="categories" element={<CategoriesPage />} />
-          <Route path="productsviews" element={<ProductViewPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="reviews" element={<ReviewsPage />} />
-          <Route path="customers" element={<CustomersPage />} />
-          <Route path="orders" element={<OrdersPage />} />
-          <Route path="analytics" element={<AnalyticsPage />} />
-          <Route path="messages" element={<MessagesPage />} />
-          <Route
-            path="/admin/products/create"
-            element={<CreateProductPage />}
-          />
-          <Route
-            path="/admin/products/:id/edit"
-            element={<EditProductPage />}
-          />
+        {/* protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          {/* Admin Routes */}
+          <Route element={<RoleRoute allowedRole={["ADMIN"]} />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="categories" element={<CategoriesPage />} />
+              <Route path="productsviews" element={<ProductViewPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="reviews" element={<ReviewsPage />} />
+              <Route path="customers" element={<CustomersPage />} />
+              <Route path="orders" element={<OrdersPage />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="messages" element={<MessagesPage />} />
+              <Route
+                path="/admin/products/create"
+                element={<CreateProductPage />}
+              />
+              <Route
+                path="/admin/products/:id/edit"
+                element={<EditProductPage />}
+              />
+            </Route>
+          </Route>
         </Route>
       </Routes>
-
       <Toaster />
     </>
   );

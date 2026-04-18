@@ -3,11 +3,12 @@ import {
   AuthContextType,
   Login,
   RegisterFormType,
+  User,
 } from "@/types/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, loginUser } from "@/api/auth";
+import { getCurrentUser, loginUser, logOut } from "@/api/auth";
 import { useLoading } from "./LoadingContext";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -15,58 +16,62 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [initializing, setInitializing] = useState(true);
   const { setLoading } = useLoading();
   const navigate = useNavigate();
 
   const login = async (data: Login) => {
-    if (!data.email) {
-      toast.error("email required");
-      return;
-    }
-    if (!data.password) {
-      toast.error("password required");
-      return;
-    }
+    if (!data.email || !data.password) return;
+
     try {
       setLoading(true);
+
       await loginUser(data);
-      await fetchAndStoreUser();
-      toast.success("login successfull");
-      navigate("/");
+
+      const res = await getCurrentUser();
+      const userData = res.user;
+
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      toast.success("login successful");
+
+      navigate(userData.role === "ADMIN" ? "/admin" : "/");
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
-    }
-  };
-  const fetchAndStoreUser = async () => {
-    try {
-      const result = await getCurrentUser();
-      const user = result.user;
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
-    } catch (error: any) {
-      setUser(null);
-      console.log(error?.response?.data || error.message);
-      localStorage.removeItem("user");
+      setInitializing(false);
     }
   };
   useEffect(() => {
     const initAuth = async () => {
+      setLoading(true);
+      setInitializing(true);
+
       try {
         const storeUser = localStorage.getItem("user");
+
         if (storeUser) {
-          setUser(JSON.parse(storeUser));
+          const parsedUser = JSON.parse(storeUser);
+          setUser(parsedUser);
+        } else {
+          const res = await getCurrentUser();
+          const userData = res.user;
+
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
         }
-        await fetchAndStoreUser();
-      } catch (error: any) {
+      } catch (error) {
         setUser(null);
         localStorage.removeItem("user");
       } finally {
         setLoading(false);
+        setInitializing(false);
       }
     };
+
     initAuth();
   }, []);
 
@@ -74,14 +79,17 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     console.log(formData);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await logOut();
     localStorage.removeItem("user");
-    setUser(undefined);
+    setUser(null);
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, register, initializing }}
+    >
       {children}
     </AuthContext.Provider>
   );

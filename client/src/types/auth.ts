@@ -5,6 +5,7 @@ export interface AuthContextType {
   logout: () => void;
   register: (formData: RegisterFormType) => void;
   user: User | null;
+  initializing: any;
 }
 export interface AuthContextProviderProps {
   children: ReactNode;
