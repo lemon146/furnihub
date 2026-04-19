@@ -15,7 +15,7 @@ export default function login() {
     password: "",
   });
   if (user) {
-    return <Navigate to={"/"} />;
+    return <Navigate to={user.role === "ADMIN" ? "/admin" : "/"} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
