@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { ApiError } from "../utils/apiError";
+import { error } from "console";
 
 export const errorHandler = (
   err: Error,
@@ -24,6 +25,7 @@ export const errorHandler = (
 
   return res.status(500).json({
     success: false,
-    message: "Sorry, the server is currently down. Please try again later.",
+    message: "Something went wrong",
+    error: err.message,
   });
 };
