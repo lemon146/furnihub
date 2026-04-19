@@ -36,43 +36,26 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       localStorage.setItem("user", JSON.stringify(userData));
 
       toast.success("login successful");
-
-      navigate(userData.role === "ADMIN" ? "/admin" : "/");
+      navigate(userData?.role === "ADMIN" ? "/admin" : "/");
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
-      setInitializing(false);
     }
   };
   useEffect(() => {
-    const initAuth = async () => {
-      setLoading(true);
-      setInitializing(true);
-
+    const userData = localStorage.getItem("user");
+    if (userData) {
       try {
-        const storeUser = localStorage.getItem("user");
-
-        if (storeUser) {
-          const parsedUser = JSON.parse(storeUser);
-          setUser(parsedUser);
-        } else {
-          const res = await getCurrentUser();
-          const userData = res.user;
-
-          setUser(userData);
-          localStorage.setItem("user", JSON.stringify(userData));
-        }
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
       } catch (error) {
+        console.error("Error parsing user data:", error);
         setUser(null);
         localStorage.removeItem("user");
-      } finally {
-        setLoading(false);
-        setInitializing(false);
       }
-    };
-
-    initAuth();
+    }
+    setInitializing(false);
   }, []);
 
   const register = (formData: RegisterFormType) => {

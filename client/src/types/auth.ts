@@ -15,7 +15,11 @@ export type User = {
   _id: string;
   fullName: string;
   email: string;
-  role: string;
+  role: "ADMIN" | "USER";
+  refreshTokens: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
 
 export interface RegisterFormType {

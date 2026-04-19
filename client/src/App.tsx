@@ -27,6 +27,7 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RoleRoute from "./routes/RoleRoute";
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
   return (
