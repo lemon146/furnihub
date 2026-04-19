@@ -16,8 +16,10 @@ import {
   BarChart,
   Settings,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminLayout() {
+  const { logout } = useAuth();
   const [open, setOpen] = useState(false);
 
   const navItems = [
@@ -91,7 +93,10 @@ export default function AdminLayout() {
           <div className="border-t my-4" />
 
           {/* Logout */}
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition">
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition"
+          >
             <span>🚪</span>
             <span className="text-sm font-medium">Logout</span>
           </button>
