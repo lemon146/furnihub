@@ -19,3 +19,7 @@ export const getCurrentUser = async () => {
   const res = await api.get("/users/current/user");
   return res.data;
 };
+export const refreshToken = async () => {
+  const res = await api.post("/users/refresh/token");
+  return res.data;
+};

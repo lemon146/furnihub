@@ -8,7 +8,7 @@ import {
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, loginUser, logOut } from "@/api/auth";
+import { getCurrentUser, loginUser, logOut, refreshToken } from "@/api/auth";
 import { useLoading } from "./LoadingContext";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -44,18 +44,31 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   };
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
+    const initAuth = async () => {
       try {
-        const parsedUser = JSON.parse(userData);
-        setUser(parsedUser);
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-        setUser(null);
-        localStorage.removeItem("user");
+        // always verify with server, not localStorage
+        const res = await getCurrentUser();
+        setUser(res.user);
+        localStorage.setItem("user", JSON.stringify(res.user));
+      } catch {
+        // access token expired, try refresh
+        try {
+          await refreshToken();
+          const res = await getCurrentUser();
+          setUser(res.user);
+          localStorage.setItem("user", JSON.stringify(res.user));
+        } catch {
+          // both failed, clear everything
+          setUser(null);
+          localStorage.removeItem("user");
+          // logout()
+        }
+      } finally {
+        setInitializing(false);
       }
-    }
-    setInitializing(false);
+    };
+
+    initAuth();
   }, []);
 
   const register = (formData: RegisterFormType) => {
