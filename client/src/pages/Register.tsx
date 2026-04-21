@@ -2,27 +2,29 @@
 
 import AuthNavbar from "@/components/layout/AuthNavBar";
 import { useAuth } from "@/context/AuthContext";
-import { RegisterFormType } from "@/types/auth";
-import React, { useState } from "react";
+import { RegisterInput, registerSchema } from "@/schema/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Link, Navigate } from "react-router-dom";
 
 export default function Register() {
-  const { register, user } = useAuth();
-  const [formData, setFormData] = useState<RegisterFormType>({
-    name: "",
-    email: "",
-    password: "",
+  const { userRegister, user } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterInput>({
+    resolver: zodResolver(registerSchema),
   });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+
+  const onSubmit = async (data: RegisterInput) => {
+    await userRegister(data);
   };
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    register(formData);
-  };
+
+  if (user) {
+    return <Navigate to={user.role === "ADMIN" ? "/admin" : "/"} />;
+  }
+
   if (user) return <Navigate to={"/"} />;
   return (
     <div className="min-h-screen bg-[#FAFAFA] px-4 pt-24 flex items-center justify-center">
@@ -37,7 +39,7 @@ export default function Register() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="block text-sm font-semibold text-[#3A3A3A] mb-1">
               Full Name
@@ -45,11 +47,12 @@ export default function Register() {
             <input
               type="text"
               placeholder="John Doe"
-              value={formData.name}
-              name="name"
-              onChange={handleChange}
+              {...register("fullName")}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
+            {errors.fullName && (
+              <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+            )}
           </div>
 
           <div>
@@ -58,12 +61,13 @@ export default function Register() {
             </label>
             <input
               type="email"
-              value={formData.email}
-              name="email"
-              onChange={handleChange}
+              {...register("email")}
               placeholder="you@example.com"
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
 
           <div>
@@ -72,12 +76,13 @@ export default function Register() {
             </label>
             <input
               type="password"
-              name="password"
               placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
+              {...register("password")}
               className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:border-[#B88E2F]"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password.message}</p>
+            )}
           </div>
 
           <button

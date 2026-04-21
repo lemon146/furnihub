@@ -1,13 +1,13 @@
 import axios from "axios";
 import api from "./axios";
-import { Login } from "@/types/auth";
+import { LoginInput, RegisterInput } from "@/schema/auth";
 
-export const loginUser = async (data: Login) => {
+export const loginUser = async (data: LoginInput) => {
   const res = await api.post("/users/login", data);
   return res.data;
 };
-export const register = async () => {
-  const res = await api.post("/users/register");
+export const register = async (data: RegisterInput) => {
+  const res = await api.post("/users/register", data);
   return res.data;
 };
 export const logOut = async () => {

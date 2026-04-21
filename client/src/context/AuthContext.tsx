@@ -1,15 +1,16 @@
-import {
-  AuthContextProviderProps,
-  AuthContextType,
-  Login,
-  RegisterFormType,
-  User,
-} from "@/types/auth";
+import { AuthContextProviderProps, AuthContextType, User } from "@/types/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, loginUser, logOut, refreshToken } from "@/api/auth";
+import {
+  getCurrentUser,
+  loginUser,
+  logOut,
+  refreshToken,
+  register,
+} from "@/api/auth";
 import { useLoading } from "./LoadingContext";
+import { LoginInput, RegisterInput } from "@/schema/auth";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
@@ -21,7 +22,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const { setLoading } = useLoading();
   const navigate = useNavigate();
 
-  const login = async (data: Login) => {
+  const login = async (data: LoginInput) => {
     if (!data.email || !data.password) return;
 
     try {
@@ -43,10 +44,23 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       setLoading(false);
     }
   };
+
+  const userRegister = async (formData: RegisterInput) => {
+    try {
+      setLoading(true);
+      await register(formData);
+      toast.success("user register successful \n Please Login to Continue");
+      navigate("/login");
+    } catch (err: any) {
+      toast.error(err.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // always verify with server, not localStorage
         const res = await getCurrentUser();
         setUser(res.user);
         localStorage.setItem("user", JSON.stringify(res.user));
@@ -71,10 +85,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     initAuth();
   }, []);
 
-  const register = (formData: RegisterFormType) => {
-    console.log(formData);
-  };
-
   const logout = async () => {
     await logOut();
     localStorage.removeItem("user");
@@ -84,7 +94,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register, initializing }}
+      value={{ user, login, logout, userRegister, initializing }}
     >
       {children}
     </AuthContext.Provider>
