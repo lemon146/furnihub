@@ -1,12 +1,14 @@
 import { ReactNode } from "react";
+import { LoginInput, RegisterInput } from "@/schema/auth";
 
 export interface AuthContextType {
-  login: (data: Login) => void;
+  login: (data: LoginInput) => void;
   logout: () => void;
-  register: (formData: RegisterFormType) => void;
+  userRegister: (formData: RegisterInput) => void;
   user: User | null;
-  initializing: any;
+  initializing: boolean;
 }
+
 export interface AuthContextProviderProps {
   children: ReactNode;
 }
@@ -21,19 +23,6 @@ export type User = {
   updatedAt: string;
   __v: number;
 };
-
-export interface RegisterFormType {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface Login {
-  email: string;
-  password: string;
-}
-
-// loading
 
 export interface LoadingContextType {
   loading: boolean;
