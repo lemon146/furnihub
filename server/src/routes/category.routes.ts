@@ -31,6 +31,6 @@ router
     upload.single("image"),
     updateCategory,
   );
-router.route("/").get(isAuthenticated, getAllCategory);
+router.route("/").get( getAllCategory);
 
 export default router;
