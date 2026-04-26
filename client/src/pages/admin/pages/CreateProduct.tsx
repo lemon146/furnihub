@@ -2,14 +2,10 @@ import { ArrowLeft } from "lucide-react";
 import { ProductForm } from "./ProductForm";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
 export function CreateProductPage() {
   const navigate = useNavigate();
 
-  const handleCreate = async (data: any) => {
-    console.log("CREATE:", data);
-    // API CALL: POST /products
-  };
+
 
   return (
     <div className="space-y-6">
@@ -42,7 +38,7 @@ export function CreateProductPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <ProductForm onSubmit={handleCreate} />
+        <ProductForm />
       </motion.div>
     </div>
   );
