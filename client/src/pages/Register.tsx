@@ -2,7 +2,7 @@
 
 import AuthNavbar from "@/components/layout/AuthNavBar";
 import { useAuth } from "@/context/AuthContext";
-import { RegisterInput, registerSchema } from "@/schema/auth";
+import { RegisterInput, registerSchema } from "@/schema/auth.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, Navigate } from "react-router-dom";

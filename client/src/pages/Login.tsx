@@ -2,7 +2,7 @@ import AuthNavbar from "@/components/layout/AuthNavBar";
 import { useAuth } from "@/context/AuthContext";
 import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { LoginInput, loginSchema } from "@/schema/auth";
+import { LoginInput, loginSchema } from "@/schema/auth.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Login() {
