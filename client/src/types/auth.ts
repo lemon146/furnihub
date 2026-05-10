@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { LoginInput, RegisterInput } from "@/schema/auth";
+import { LoginInput, RegisterInput } from "@/schema/auth.schema.";
 
 export interface AuthContextType {
   login: (data: LoginInput) => void;
