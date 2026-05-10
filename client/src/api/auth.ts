@@ -1,6 +1,6 @@
 import axios from "axios";
 import api from "./axios";
-import { LoginInput, RegisterInput } from "@/schema/auth";
+import { LoginInput, RegisterInput } from "@/schema/auth.schema.";
 
 export const loginUser = async (data: LoginInput) => {
   const res = await api.post("/users/login", data);
