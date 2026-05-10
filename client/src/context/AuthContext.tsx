@@ -10,7 +10,7 @@ import {
   register,
 } from "@/api/auth";
 import { useLoading } from "./LoadingContext";
-import { LoginInput, RegisterInput } from "@/schema/auth";
+import { LoginInput, RegisterInput } from "@/schema/auth.schema.";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
