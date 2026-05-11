@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { HtmlHTMLAttributes, ReactHTMLElement, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Edit, Trash2, Grid3X3, X, Image } from "lucide-react";
+import { CategorySchema, CategoryType } from "@/schema/category.schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createCategory } from "@/api/category.api";
+import toast from "react-hot-toast";
 
 export function CategoriesPage() {
   const [open, setOpen] = useState(false);
@@ -90,16 +95,29 @@ export function CategoriesPage() {
 /* ---------------- MODAL ---------------- */
 
 function CategoryModal({ close, data }: any) {
-  const [form, setForm] = useState(
-    data || {
-      name: "",
-      description: "",
-      image: "",
-    },
-  );
-
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<CategoryType>({
+    resolver: zodResolver(CategorySchema),
+  });
+  const fileSelected = watch("image");
+  const onSubmit = async (data: CategoryType) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    if (data.image && data.image[0]) {
+      formData.append("image", data.image[0]);
+    }
+    try {
+      const res = await createCategory(formData);
+      toast.success(res.data);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "An error occurred");
+    }
   };
 
   return (
@@ -127,55 +145,70 @@ function CategoryModal({ close, data }: any) {
         </div>
 
         {/* FORM */}
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Category Name"
-          className="w-full px-4 py-2 border rounded-xl"
-        />
-
-        <textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="w-full px-4 py-2 border rounded-xl"
-        />
-
-        {/* IMAGE */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Image size={16} /> Image URL
-          </div>
-
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
-            name="image"
-            value={form.image}
-            onChange={handleChange}
-            placeholder="https://..."
+            {...register("title")}
+            placeholder="Category Name"
             className="w-full px-4 py-2 border rounded-xl"
           />
-        </div>
+          {errors.title && (
+            <p className="text-sm text-red-500 mt-1">{errors.title.message}</p>
+          )}
 
-        {/* PREVIEW */}
-        {form.image && (
-          <img
-            src={form.image}
-            className="h-32 w-full object-cover rounded-xl"
+          <textarea
+            {...register("description")}
+            placeholder="Description"
+            className="w-full px-4 py-2 border rounded-xl"
           />
-        )}
+          {errors.description && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.description.message}
+            </p>
+          )}
 
-        {/* ACTIONS */}
-        <div className="flex justify-end gap-2 pt-3">
-          <button onClick={close} className="px-4 py-2 rounded-xl border">
-            Cancel
-          </button>
+          {/* IMAGE */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Image size={16} /> Image URL
+            </div>
 
-          <button className="px-4 py-2 bg-black text-white rounded-xl hover:scale-105 transition">
-            {data ? "Update" : "Create"}
-          </button>
-        </div>
+            <input
+              type="file"
+              {...register("image")}
+              placeholder="https://..."
+              className="w-full px-4 py-2 border rounded-xl"
+            />
+            {errors.image?.message && (
+              <p className="text-sm text-red-500 mt-1">
+                {String(errors.image.message)}
+              </p>
+            )}
+          </div>
+
+          {/* PREVIEW */}
+          {fileSelected?.[0] && (
+            <img
+              src={URL.createObjectURL(fileSelected[0])}
+              className="h-32 w-full object-cover rounded-xl"
+            />
+          )}
+
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-2 pt-3">
+            <button onClick={close} className="px-4 py-2 rounded-xl border">
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-black text-white rounded-xl hover:scale-105 transition"
+            >
+              {/* {data ? "Update" : "Create"} */}
+              {isSubmitting ? "creacting in..." : "create"}
+            </button>
+          </div>
+        </form>
       </motion.div>
     </motion.div>
   );

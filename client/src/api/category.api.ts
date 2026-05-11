@@ -1,4 +1,4 @@
-import { CategoryType } from "@/types/category";
+import { CategoryType } from "@/schema/category.schema";
 import api from "./axios";
 
 export const getCategory = async () => {
@@ -6,7 +6,7 @@ export const getCategory = async () => {
   return res.data;
 };
 
-export const createCategory = async (data: CategoryType) => {
-  const res = await api.post("/category", data);
+export const createCategory = async (data: FormData) => {
+  const res = await api.post("/category/create", data);
   return res;
 };

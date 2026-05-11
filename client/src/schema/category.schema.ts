@@ -8,9 +8,7 @@ export const CategorySchema = z.object({
     .trim()
     .min(10, "Description must be at least 10 characters"),
 
-  image: z.instanceof(File, {
-    message: "Image is required",
-  }),
+  image: z.any().refine((files) => files?.length === 1, "Image is required"),
 });
 
 export type CategoryType = z.infer<typeof CategorySchema>;
