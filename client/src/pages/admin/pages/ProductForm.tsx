@@ -2,7 +2,7 @@ import {
   ProductFormType,
   ProductSchema,
   ProductType,
-} from "@/schema/product.Schema";
+} from "@/schema/product.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Package,
