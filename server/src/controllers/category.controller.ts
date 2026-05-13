@@ -5,7 +5,7 @@ import {
   deleteFileOnCloudinary,
   updateNewFileOnCloudinary,
   uploadFileOnCloudinary,
-} from "../utils/coudinary";
+} from "../utils/cloudinary";
 
 const createCategory = asyncHandler(async (req, res) => {
   const { title } = req.body;
