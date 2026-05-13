@@ -5,7 +5,7 @@ import { ApiError } from "../utils/apiError";
 import {
   deleteFileOnCloudinary,
   uploadFileOnCloudinary,
-} from "../utils/coudinary";
+} from "../utils/cloudinary";
 
 const createProduct = asyncHandler(async (req, res) => {
   const {
