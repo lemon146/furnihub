@@ -100,6 +100,7 @@ function CategoryModal({ close, data }: any) {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<CategoryType>({
     resolver: zodResolver(CategorySchema),
@@ -112,8 +113,11 @@ function CategoryModal({ close, data }: any) {
     if (data.image && data.image[0]) {
       formData.append("image", data.image[0]);
     }
+    console.log(data);
+    console.log([...formData.entries()]);
     try {
       const res = await createCategory(formData);
+      reset();
       toast.success(res.data);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "An error occurred");
