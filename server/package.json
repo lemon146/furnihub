@@ -3,20 +3,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "dev": "bun --watch src/index.ts",
-  "build": "tsc",
-  "start": "bun dist/index.js"
-},
+    "dev": "bun --watch src/index.ts",
+    "build": "tsc",
+    "start": "dotenvx run -- bun dist/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
