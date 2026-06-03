@@ -8,11 +8,14 @@ import {
 } from "../utils/cloudinary";
 
 const createCategory = asyncHandler(async (req, res) => {
-  const { title } = req.body;
+  const { title, description } = req.body;
   const image = req.file;
 
   if (!title) {
     throw new ApiError(400, "Title is required");
+  }
+  if (!description) {
+    throw new ApiError(400, "description is required");
   }
 
   if (!image) {
@@ -34,6 +37,7 @@ const createCategory = asyncHandler(async (req, res) => {
 
   const category = await Category.create({
     title,
+    description,
     image: {
       url: uploadedFile.url,
       public_id: uploadedFile.public_id,
@@ -73,7 +77,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
+  const { title, description } = req.body;
   const image = req.file;
 
   if (!id) {
@@ -86,6 +90,9 @@ const updateCategory = asyncHandler(async (req, res) => {
 
   if (title) {
     cat.title = title;
+  }
+  if (description) {
+    cat.description = description;
   }
 
   if (image) {
