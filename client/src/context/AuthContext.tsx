@@ -39,7 +39,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       toast.success("login successful");
       navigate(userData?.role === "ADMIN" ? "/admin" : "/");
     } catch (error: any) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "login failed!");
     } finally {
       setLoading(false);
     }
