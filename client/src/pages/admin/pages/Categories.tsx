@@ -1,15 +1,30 @@
-import { HtmlHTMLAttributes, ReactHTMLElement, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit, Trash2, Grid3X3, X, Image } from "lucide-react";
+import {
+  createCategory,
+  deleteCategory,
+  getCategory,
+  updateCategory,
+} from "@/api/category.api";
+import GlobalLoader from "@/components/GlobalLoader";
 import { CategorySchema, CategoryType } from "@/schema/category.schema";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createCategory } from "@/api/category.api";
+import { useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
+import { Edit, Grid3X3, Image, Plus, Trash2, X } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export function CategoriesPage() {
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState<any>(null);
+
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: ["category"],
+    queryFn: getCategory,
+  });
+
+  if (isPending) return <GlobalLoader />;
+  if (isError) return <div>Error: {error.message}</div>;
 
   const openCreate = () => {
     setEditData(null);
@@ -19,6 +34,17 @@ export function CategoriesPage() {
   const openEdit = (cat: any) => {
     setEditData(cat);
     setOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this category?")) return;
+    try {
+      await deleteCategory(id);
+      toast.success("Category deleted");
+      refetch();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Delete failed");
+    }
   };
 
   return (
@@ -44,26 +70,22 @@ export function CategoriesPage() {
 
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((cat, i) => (
+        {data.categories.map((cat: any) => (
           <motion.div
-            key={cat.id}
+            key={cat._id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
             whileHover={{ scale: 1.03 }}
             className="bg-white rounded-2xl shadow overflow-hidden"
           >
             {/* IMAGE */}
             <div className="h-32 bg-gray-100 relative">
-              <img src={cat.image} className="w-full h-full object-cover" />
-              <span className="absolute top-2 right-2 bg-white px-2 py-1 text-xs rounded-lg shadow">
-                {cat.products} products
-              </span>
+              <img src={cat.image.url} className="w-full h-full object-cover" />
             </div>
 
             {/* CONTENT */}
             <div className="p-4 space-y-3">
-              <h3 className="text-lg font-semibold">{cat.name}</h3>
+              <h3 className="text-lg font-semibold">{cat.title}</h3>
               <p className="text-sm text-gray-500">{cat.description}</p>
 
               {/* ACTIONS */}
@@ -75,7 +97,10 @@ export function CategoriesPage() {
                   <Edit size={16} /> Edit
                 </button>
 
-                <button className="flex items-center gap-1 text-red-600 hover:scale-105 transition">
+                <button
+                  onClick={() => handleDelete(cat._id)}
+                  className="flex items-center gap-1 text-red-600 hover:scale-105 transition"
+                >
                   <Trash2 size={16} /> Delete
                 </button>
               </div>
@@ -86,7 +111,13 @@ export function CategoriesPage() {
 
       {/* MODAL */}
       <AnimatePresence>
-        {open && <CategoryModal close={() => setOpen(false)} data={editData} />}
+        {open && (
+          <CategoryModal
+            close={() => setOpen(false)}
+            data={editData}
+            refetch={refetch}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
@@ -94,33 +125,44 @@ export function CategoriesPage() {
 
 /* ---------------- MODAL ---------------- */
 
-function CategoryModal({ close, data }: any) {
+function CategoryModal({ close, data, refetch }: any) {
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CategoryType>({
     resolver: zodResolver(CategorySchema),
+    defaultValues: data
+      ? { title: data.title, description: data.description }
+      : {},
   });
+
   const fileSelected = watch("image");
-  const onSubmit = async (data: CategoryType) => {
+
+  const onSubmit = async (formValues: CategoryType) => {
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    if (data.image && data.image[0]) {
-      formData.append("image", data.image[0]);
+    formData.append("title", formValues.title);
+    formData.append("description", formValues.description);
+    if (formValues.image && formValues.image[0]) {
+      formData.append("image", formValues.image[0]);
     }
-    console.log(data);
-    console.log([...formData.entries()]);
+
     try {
-      const res = await createCategory(formData);
+      if (data) {
+        const res = await updateCategory(data._id, formData);
+        toast.success(res.data?.message || "Category updated");
+      } else {
+        const res = await createCategory(formData);
+        toast.success(res.data?.message || "Category created");
+      }
+
       reset();
-      toast.success(res.data);
+      refetch(); // re-sync the list
+      close(); // close modal
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "An error occurred");
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -142,44 +184,48 @@ function CategoryModal({ close, data }: any) {
           <h2 className="text-lg font-bold">
             {data ? "Edit Category" : "Create Category"}
           </h2>
-
           <button onClick={close}>
             <X />
           </button>
         </div>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            {...register("title")}
-            placeholder="Category Name"
-            className="w-full px-4 py-2 border rounded-xl"
-          />
-          {errors.title && (
-            <p className="text-sm text-red-500 mt-1">{errors.title.message}</p>
-          )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <div>
+            <input
+              {...register("title")}
+              placeholder="Category Name"
+              className="w-full px-4 py-2 border rounded-xl"
+            />
+            {errors.title && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
 
-          <textarea
-            {...register("description")}
-            placeholder="Description"
-            className="w-full px-4 py-2 border rounded-xl"
-          />
-          {errors.description && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.description.message}
-            </p>
-          )}
+          <div>
+            <textarea
+              {...register("description")}
+              placeholder="Description"
+              className="w-full px-4 py-2 border rounded-xl"
+            />
+            {errors.description && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
 
           {/* IMAGE */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Image size={16} /> Image URL
+              <Image size={16} /> Upload Image
             </div>
-
             <input
               type="file"
+              accept="image/*"
               {...register("image")}
-              placeholder="https://..."
               className="w-full px-4 py-2 border rounded-xl"
             />
             {errors.image?.message && (
@@ -189,7 +235,7 @@ function CategoryModal({ close, data }: any) {
             )}
           </div>
 
-          {/* PREVIEW */}
+          {/* PREVIEW — new file selected */}
           {fileSelected?.[0] && (
             <img
               src={URL.createObjectURL(fileSelected[0])}
@@ -197,19 +243,35 @@ function CategoryModal({ close, data }: any) {
             />
           )}
 
+          {data?.image?.url && !fileSelected?.[0] && (
+            <img
+              src={data.image.url}
+              className="h-32 w-full object-cover rounded-xl opacity-70"
+            />
+          )}
+
           {/* ACTIONS */}
           <div className="flex justify-end gap-2 pt-3">
-            <button onClick={close} className="px-4 py-2 rounded-xl border">
+            <button
+              type="button"
+              onClick={close}
+              className="px-4 py-2 rounded-xl border"
+            >
               Cancel
             </button>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-black text-white rounded-xl hover:scale-105 transition"
+              className="px-4 py-2 bg-black text-white rounded-xl hover:scale-105 transition disabled:opacity-50"
             >
-              {/* {data ? "Update" : "Create"} */}
-              {isSubmitting ? "creacting in..." : "create"}
+              {isSubmitting
+                ? data
+                  ? "Updating..."
+                  : "Creating..."
+                : data
+                  ? "Update"
+                  : "Create"}
             </button>
           </div>
         </form>
@@ -217,29 +279,3 @@ function CategoryModal({ close, data }: any) {
     </motion.div>
   );
 }
-
-/* ---------------- MOCK DATA ---------------- */
-
-const categories = [
-  {
-    id: 1,
-    name: "Sofas",
-    description: "Comfortable modern sofas",
-    products: 24,
-    image: "https://images.unsplash.com/photo-1540574163026-643ea20ade25",
-  },
-  {
-    id: 2,
-    name: "Beds",
-    description: "Luxury bedroom furniture",
-    products: 18,
-    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
-  },
-  {
-    id: 3,
-    name: "Chairs",
-    description: "Ergonomic stylish chairs",
-    products: 30,
-    image: "https://images.unsplash.com/photo-1582582494700-9a8b0c8f3a8c",
-  },
-];
