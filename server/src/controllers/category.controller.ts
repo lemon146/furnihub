@@ -26,7 +26,6 @@ const createCategory = asyncHandler(async (req, res) => {
   if (existingCategory) {
     throw new ApiError(409, "Category already exists");
   }
-
   const uploadedFile = await uploadFileOnCloudinary(image.path, "Categories");
 
   if (!uploadedFile?.url || !uploadedFile?.public_id) {
