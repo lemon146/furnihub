@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 interface Category {
   title: string;
+  description: string;
   image: {
     url: string;
     public_id: string;
@@ -16,6 +17,11 @@ const categorySchema = new mongoose.Schema<Category>(
       required: true,
       trim: true,
       unique: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
     },
     image: {
       url: {
