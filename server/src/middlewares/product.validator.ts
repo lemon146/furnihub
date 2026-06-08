@@ -19,7 +19,7 @@ export const createProductSchema = z.object({
 
   color: z.string().min(1, "Color is required"),
 
-  weight: z.string().min(1, "Weight is required"),
+  weight: z.coerce.number().min(1, "Weight is required"),
 
   dimension: z.string().min(1, "Dimension is required"),
 
