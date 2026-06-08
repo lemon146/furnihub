@@ -14,7 +14,7 @@ interface Product {
   additionalInfo: {
     material: string;
     color: string;
-    weight: string;
+    weight: number;
     dimension: string;
   };
   averageRating: number;
@@ -56,7 +56,7 @@ const productSchema = new mongoose.Schema<Product>(
     additionalInfo: {
       material: { type: String, required: true },
       color: { type: String, required: true },
-      weight: { type: String, required: true },
+      weight: { type: Number, required: true },
       dimension: { type: String, required: true },
     },
     averageRating: {
