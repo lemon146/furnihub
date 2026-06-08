@@ -1,35 +1,86 @@
-import {
-  ProductFormType,
-  ProductSchema,
-  ProductType,
-} from "@/schema/product.schema.";
+import { getCategory } from "@/api/category.api";
+import { createProduct, getProduct } from "@/api/product";
+import { useLoading } from "@/context/LoadingContext";
+import { ProductFormType, ProductSchema } from "@/schema/product.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import {
-  Package,
   DollarSign,
+  Image as ImageIcon,
   Info,
   Layers,
-  Image as ImageIcon,
+  Package,
   X,
 } from "lucide-react";
-import { ReactHTMLElement, useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export function ProductForm() {
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
+  //use loadin
+  const { setLoading } = useLoading();
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
-  } = useForm<ProductFormType>({
+  } = useForm({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
-      images: [],
+      image: [],
     },
   });
-  const onSubmit = (data: ProductFormType) => console.log(data);
+  // get categories
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategory,
+  });
+  // get product
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
+
+  if (productsLoading) return <p>Loading...</p>;
+
+  if (products.length === 0) {
+    return <p>No products found 😐</p>;
+  }
+  const onSubmit = async (data: ProductFormType) => {
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== "image") {
+          formData.append(key, value as any);
+        }
+      });
+
+      // append files
+      data.image.forEach((file) => {
+        formData.append("image", file);
+      });
+
+      const res = (await createProduct(formData as any)) as any;
+
+      toast.success(res?.message || "Product created");
+      reset();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
@@ -53,7 +104,7 @@ export function ProductForm() {
       const updatedImages = [...prevImages, ...formattedFiles];
 
       setValue(
-        "images",
+        "image",
         updatedImages.map((img) => img.file),
         {
           shouldValidate: true,
@@ -75,7 +126,7 @@ export function ProductForm() {
       const updated = prev.filter((_, i) => i !== index);
 
       setValue(
-        "images",
+        "image",
         updated.map((img) => img.file),
       );
 
@@ -156,7 +207,7 @@ export function ProductForm() {
               type="number"
               placeholder="Price"
               className={inputClass}
-              {...(register("price"), { valueAsNumber: true })}
+              {...register("price")}
             />
 
             {errors.price && (
@@ -205,10 +256,14 @@ export function ProductForm() {
         </h3>
 
         <div>
-          <select {...register("category")} className={inputClass}>
+          <select className={inputClass} {...register("category")}>
             <option value="">Select Category</option>
-            <option value="cat1">Category 1</option>
-            <option value="cat2">Category 2</option>
+
+            {categories?.categories?.map((category: any) => (
+              <option key={category._id} value={category._id}>
+                {category.title}
+              </option>
+            ))}
           </select>
 
           {errors.category && (
@@ -255,6 +310,7 @@ export function ProductForm() {
           </div>
 
           <div>
+            <label className="text-sm text-gray-600">Weight (grams)</label>
             <input
               type="number"
               placeholder="Weight"
@@ -303,8 +359,8 @@ export function ProductForm() {
           <input type="file" multiple accept="image/*" onChange={handleImage} />
         </label>
 
-        {errors.images && (
-          <p className="text-sm text-red-500 mt-1">{errors.images.message}</p>
+        {errors.image && (
+          <p className="text-sm text-red-500 mt-1">{errors.image.message}</p>
         )}
 
         {/* PREVIEW */}
