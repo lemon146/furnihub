@@ -1,6 +1,5 @@
-import axios from "axios";
-import api from "./axios";
 import { ProductType } from "@/schema/product.schema.";
+import api from "./axios";
 
 export const getProduct = async () => {
   const res = await api.get("product/");
@@ -8,5 +7,5 @@ export const getProduct = async () => {
 };
 
 export const createProduct = async (data: ProductType) => {
-  console.log(data);
+  const res = await api.post("product/", data);
 };
