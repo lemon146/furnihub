@@ -14,19 +14,17 @@ export const ProductSchema = z
     category: z.string().min(1, "Category is required"),
     material: z.string().min(1, "Material is required"),
     color: z.string().min(1, "Color is required"),
-    weight: z.number().min(0, "Weight must be >= 0"),
+    weight: z.coerce.number().min(0, "Weight must be >= 0"),
     dimension: z.string().min(1, "Dimension is required"),
-    price: z.number().min(0, "Price must be greater than or equal to 0"),
-    originalPrice: z
+    price: z.coerce.number().min(0, "Price must be greater than or equal to 0"),
+    originalPrice: z.coerce
       .number()
       .min(0, "Original price must be greater than or equal to 0"),
-    stock: z
+    stock: z.coerce
       .number()
       .int("Stock must be a whole number")
       .min(0, "Stock cannot be negative"),
-    images: z
-      .array(z.instanceof(File))
-      .min(1, "At least one image is required"),
+    image: z.array(z.instanceof(File)).min(1, "At least one image is required"),
   })
   .refine((data) => data.originalPrice >= data.price, {
     message: "Original price must be greater than or equal to price",
@@ -35,5 +33,5 @@ export const ProductSchema = z
 
 export type ProductType = z.infer<typeof ProductSchema>;
 export type ProductFormType = ProductType & {
-  images: File[];
+  image: File[];
 };
