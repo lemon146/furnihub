@@ -25,6 +25,9 @@ export function CategoriesPage() {
 
   if (isPending) return <GlobalLoader />;
   if (isError) return <div>Error: {error.message}</div>;
+  if (data.length === 0) {
+    return <p>No products found 😐</p>;
+  }
 
   const openCreate = () => {
     setEditData(null);
