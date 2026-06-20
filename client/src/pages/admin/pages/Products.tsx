@@ -1,8 +1,9 @@
-import { getProduct } from "@/api/product";
+import { deleteProduct, getProduct } from "@/api/product";
 import GlobalLoader from "@/components/GlobalLoader";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export function ProductsPage() {
@@ -17,7 +18,17 @@ export function ProductsPage() {
   if (data.length === 0) {
     return <p>No products found 😐</p>;
   }
-  console.log(data);
+  const handleDelete = async (id: string) => {
+    console.log(id);
+    if (!confirm("Delete this category?")) return;
+    try {
+      await deleteProduct(id);
+      toast.success("Product Delete deleted");
+      refetch();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Delete failed");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -107,7 +118,10 @@ export function ProductsPage() {
                     <Edit size={18} />
                   </button>
 
-                  <button className="text-red-600 hover:scale-110 transition">
+                  <button
+                    className="text-red-600 hover:scale-110 transition"
+                    onClick={() => handleDelete(product._id)}
+                  >
                     <Trash2 size={18} />
                   </button>
                 </div>

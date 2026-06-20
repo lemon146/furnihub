@@ -8,4 +8,10 @@ export const getProduct = async () => {
 
 export const createProduct = async (data: ProductType) => {
   const res = await api.post("product/", data);
+  return res;
+};
+
+export const deleteProduct = async (id: string) => {
+  const res = await api.delete(`product/${id}`);
+  return res.data;
 };
