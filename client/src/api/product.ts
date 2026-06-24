@@ -11,6 +11,11 @@ export const createProduct = async (data: ProductType) => {
   return res;
 };
 
+export const updateProduct = async (id: string, formData: any) => {
+  const res = await api.patch(`product/${id}`, formData);
+  return res;
+};
+
 export const deleteProduct = async (id: string) => {
   const res = await api.delete(`product/${id}`);
   return res.data;
