@@ -19,7 +19,6 @@ export function ProductsPage() {
     return <p>No products found 😐</p>;
   }
   const handleDelete = async (id: string) => {
-    console.log(id);
     if (!confirm("Delete this category?")) return;
     try {
       await deleteProduct(id);
