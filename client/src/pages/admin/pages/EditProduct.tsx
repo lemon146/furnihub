@@ -1,17 +1,54 @@
-import { ArrowLeft } from "lucide-react";
-import { ProductForm } from "./ProductForm";
-import { useNavigate, useParams } from "react-router-dom";
+import { getProduct, updateProduct } from "@/api/product";
+import { useLoading } from "@/context/LoadingContext";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { ProductForm } from "./ProductForm";
 
 export function EditProductPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { setLoading } = useLoading();
 
-  const product = mockProduct;
+  // ── Fetch the single product by id ────────────────────────────────────────
+  const { data: productsData, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
 
-  const handleUpdate = async (data: any) => {
-    console.log("UPDATE:", id, data);
-    // API CALL: PUT /products/:id
+  const product = (productsData?.products as any[])?.find(
+    (p: any) => p._id === id,
+  );
+
+  // ── Update handler passed into ProductForm ────────────────────────────────
+  const handleUpdate = async (formData: FormData) => {
+    try {
+      setLoading(true);
+      const res = (await updateProduct(id!, formData)) as any;
+      toast.success(res?.message || "Product updated");
+      navigate(-1);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (isLoading) return <p className="p-4">Loading...</p>;
+  if (!product) return <p className="p-4">Product not found.</p>;
+
+  const initialData = {
+    title: product.title,
+    description: product.description,
+    short_desc: product.short_desc,
+    price: product.price,
+    originalPrice: product.originalPrice,
+    stock: product.stock,
+    category: product.category?.$oid ?? product.category, // ← fix
+    additionalInfo: product.additionalInfo, // ← already nested correctly
+    images: product.images?.map((img: any) => img.url) ?? [], // ← fix
   };
 
   return (
@@ -23,7 +60,6 @@ export function EditProductPage() {
         transition={{ duration: 0.3 }}
         className="flex items-center justify-between bg-white p-4 rounded-2xl shadow"
       >
-        {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-gray-600 hover:text-black transition hover:scale-105"
@@ -32,10 +68,8 @@ export function EditProductPage() {
           <span className="text-sm font-medium">Back</span>
         </button>
 
-        {/* Title */}
         <h2 className="text-xl font-bold text-gray-800">Edit Product</h2>
 
-        {/* Right placeholder */}
         <div className="w-10" />
       </motion.div>
 
@@ -45,27 +79,8 @@ export function EditProductPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <ProductForm initialData={product} onSubmit={handleUpdate} />
+        <ProductForm initialData={initialData} onSubmit={handleUpdate} />
       </motion.div>
     </div>
   );
 }
-
-/* ---------------- MOCK DATA ---------------- */
-
-const mockProduct = {
-  title: "Accent Chair",
-  description: "Stylish accent chair for living room.",
-  short_desc: "Accent chair",
-  price: 10000,
-  originalPrice: 12000,
-  stock: 12,
-  category: "69c47de930d82d5675a5ba2f",
-  additionalInfo: {
-    material: "Fabric & Wood",
-    color: "Beige",
-    weight: "15kg",
-    dimension: "70 x 70 x 90",
-  },
-  images: [],
-};
