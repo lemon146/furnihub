@@ -1,9 +1,9 @@
-import { deleteProduct, getProduct } from "@/api/product";
+import { getProduct } from "@/api/product";
 import GlobalLoader from "@/components/GlobalLoader";
+import { handleDelete } from "@/hooks/product.delete.hook";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export function ProductsPage() {
@@ -18,16 +18,6 @@ export function ProductsPage() {
   if (data.length === 0) {
     return <p>No products found 😐</p>;
   }
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this category?")) return;
-    try {
-      await deleteProduct(id);
-      toast.success("Product Delete deleted");
-      refetch();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Delete failed");
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -101,7 +91,9 @@ export function ProductsPage() {
               {/* Actions */}
               <div className="flex justify-between pt-2">
                 <button
-                  onClick={() => navigate(`/admin/products/${product._id}`)}
+                  onClick={() =>
+                    navigate(`/admin/products/${product._id}/view`)
+                  }
                   className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
                 >
                   <Eye size={16} /> View
@@ -119,7 +111,13 @@ export function ProductsPage() {
 
                   <button
                     className="text-red-600 hover:scale-110 transition"
-                    onClick={() => handleDelete(product._id)}
+                    onClick={async () => {
+                      const success: any = await handleDelete(product._id);
+
+                      if (success) {
+                        refetch();
+                      }
+                    }}
                   >
                     <Trash2 size={18} />
                   </button>
