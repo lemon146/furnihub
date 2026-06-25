@@ -1,33 +1,32 @@
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
+import AdminLayout from "./components/admin/AdminLayout";
+import GlobalLoader from "./components/GlobalLoader";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import About from "./pages/About";
+import { Dashboard } from "./pages/admin/Dashboard";
+import AnalyticsPage from "./pages/admin/pages/Analytics";
+import { CategoriesPage } from "./pages/admin/pages/Categories";
+import { CreateProductPage } from "./pages/admin/pages/CreateProduct";
+import CustomersPage from "./pages/admin/pages/Customer";
+import { EditProductPage } from "./pages/admin/pages/EditProduct";
+import MessagesPage from "./pages/admin/pages/Message";
+import OrdersPage from "./pages/admin/pages/Order";
+import { ProductViewPage } from "./pages/admin/pages/Product_view";
+import { ProductsPage } from "./pages/admin/pages/Products";
+import { ReviewsPage } from "./pages/admin/pages/Reviews";
+import { SettingsPage } from "./pages/admin/pages/Setting";
 import Cart from "./pages/Cart";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import Product_detail from "./pages/Product_detail";
 import Register from "./pages/Register";
 import Shop from "./pages/Shop";
-import AdminLayout from "./components/admin/AdminLayout";
-import { Dashboard } from "./pages/admin/Dashboard";
-import { ProductsPage } from "./pages/admin/pages/Products";
-import { ProductViewPage } from "./pages/admin/pages/Product_view";
-import { CreateProductPage } from "./pages/admin/pages/CreateProduct";
-import { EditProductPage } from "./pages/admin/pages/EditProduct";
-import { CategoriesPage } from "./pages/admin/pages/Categories";
-import { SettingsPage } from "./pages/admin/pages/Setting";
-import { ReviewsPage } from "./pages/admin/pages/Reviews";
-import CustomersPage from "./pages/admin/pages/Customer";
-import OrdersPage from "./pages/admin/pages/Order";
-import AnalyticsPage from "./pages/admin/pages/Analytics";
-import MessagesPage from "./pages/admin/pages/Message";
-import GlobalLoader from "./components/GlobalLoader";
 import Unauthorized from "./pages/Unauthorized";
-import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RoleRoute from "./routes/RoleRoute";
-import { useAuth } from "./context/AuthContext";
 
 const App = () => {
   return (
@@ -70,6 +69,10 @@ const App = () => {
               <Route
                 path="/admin/products/:id/edit"
                 element={<EditProductPage />}
+              />
+              <Route
+                path="/admin/products/:id/view"
+                element={<ProductViewPage />}
               />
             </Route>
           </Route>
