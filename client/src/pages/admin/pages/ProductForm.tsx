@@ -35,13 +35,7 @@ export interface ProductInitialData {
 }
 
 interface ProductFormProps {
-  /** Pre-fill data for edit mode */
   initialData?: ProductInitialData;
-  /**
-   * Called on submit with FormData.
-   * - Create page: calls createProduct internally (no onSubmit needed)
-   * - Edit page: pass your updateProduct handler here
-   */
   onSubmit?: (formData: FormData) => Promise<void>;
 }
 
