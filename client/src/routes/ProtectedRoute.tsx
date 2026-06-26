@@ -1,17 +1,15 @@
-import GlobalLoader from "@/components/GlobalLoader";
+import Loader from "@/components/ui/Loader";
 import { useAuth } from "@/context/AuthContext";
-import { useLoading } from "@/context/LoadingContext";
-import { Outlet, Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const { user, initializing } = useAuth();
-  const { loading } = useLoading();
 
   const storedUser = localStorage.getItem("user");
   const resolvedUser = user || (storedUser ? JSON.parse(storedUser) : null);
 
-  if (loading || initializing) {
-    return <GlobalLoader />;
+  if (initializing) {
+    return <Loader />;
   }
 
   if (!resolvedUser) {

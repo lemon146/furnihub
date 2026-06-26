@@ -1,21 +1,18 @@
-import GlobalLoader from "@/components/GlobalLoader";
+import Loader from "@/components/ui/Loader";
 import { useAuth } from "@/context/AuthContext";
-import { useLoading } from "@/context/LoadingContext";
-import React from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 type Props = {
   allowedRole: string[];
 };
 const RoleRoute = ({ allowedRole }: Props) => {
   const { user, initializing } = useAuth();
-  const { loading } = useLoading();
 
   const storedUser = localStorage.getItem("user");
   const resolvedUser = user || (storedUser ? JSON.parse(storedUser) : null);
 
-  if (loading || initializing) {
-    return <GlobalLoader />;
+  if (initializing) {
+    return <Loader />;
   }
 
   if (!resolvedUser) {

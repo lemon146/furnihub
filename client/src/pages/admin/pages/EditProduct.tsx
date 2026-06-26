@@ -1,8 +1,8 @@
 import { getProduct, updateProduct } from "@/api/product";
-import { useLoading } from "@/context/LoadingContext";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductForm } from "./ProductForm";
@@ -10,7 +10,7 @@ import { ProductForm } from "./ProductForm";
 export function EditProductPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { setLoading } = useLoading();
+  const [loading, setLoading] = useState(false);
 
   // ── Fetch the single product by id ────────────────────────────────────────
   const { data: productsData, isLoading } = useQuery({

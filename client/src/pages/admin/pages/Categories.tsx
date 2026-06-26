@@ -4,7 +4,7 @@ import {
   getCategory,
   updateCategory,
 } from "@/api/category.api";
-import GlobalLoader from "@/components/GlobalLoader";
+import Loader from "@/components/ui/Loader";
 import { CategorySchema, CategoryType } from "@/schema/category.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +23,7 @@ export function CategoriesPage() {
     queryFn: getCategory,
   });
 
-  if (isPending) return <GlobalLoader />;
+  if (isPending) return <Loader />;
   if (isError) return <div>Error: {error.message}</div>;
   if (data.length === 0) {
     return <p>No products found 😐</p>;

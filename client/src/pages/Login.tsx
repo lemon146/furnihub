@@ -1,9 +1,9 @@
 import AuthNavbar from "@/components/layout/AuthNavBar";
 import { useAuth } from "@/context/AuthContext";
-import { Link, Navigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { LoginInput, loginSchema } from "@/schema/auth.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Link, Navigate } from "react-router-dom";
 
 export default function Login() {
   const { login, user } = useAuth();
@@ -72,9 +72,15 @@ export default function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-[#B88E2F] text-white py-3 rounded-xl font-semibold hover:bg-[#a17a24] transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#B88E2F] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#a17a24] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
           >
-            {isSubmitting ? "Logging in..." : "Login"}
+            {isSubmitting ? (
+              <>
+                <span>Logging in...</span>
+              </>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

@@ -87,9 +87,16 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-[#B88E2F] text-white py-3 rounded-xl font-semibold hover:bg-[#a17a24] transition-colors"
+            disabled={isSubmitting}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#B88E2F] px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#a17a24] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
           >
-            Create Account
+            {isSubmitting ? (
+              <>
+                <span>Registering...</span>
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
 

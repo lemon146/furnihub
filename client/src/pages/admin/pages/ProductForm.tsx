@@ -1,6 +1,5 @@
 import { getCategory } from "@/api/category.api";
 import { createProduct } from "@/api/product";
-import { useLoading } from "@/context/LoadingContext";
 import { ProductFormType, ProductSchema } from "@/schema/product.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -51,14 +50,14 @@ export function ProductForm({
     initialData?.images ?? [],
   );
 
-  const { setLoading } = useLoading();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ProductFormType>({
     resolver: zodResolver(ProductSchema) as any,
     defaultValues: { image: [] },
@@ -115,7 +114,6 @@ export function ProductForm({
       const formData = buildFormData(data);
 
       if (externalSubmit) {
-        // Edit mode — parent handles the API call
         await externalSubmit(formData);
       } else {
         // Create mode — handle internally
@@ -187,6 +185,15 @@ export function ProductForm({
       className="space-y-8 bg-white p-8 rounded-2xl shadow-md"
       onSubmit={handleSubmit(onSubmit)}
     >
+      {loading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm rounded-2xl">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin" />
+
+            <p className="font-medium text-gray-700">Creating Product...</p>
+          </div>
+        </div>
+      )}
       {/* HEADER */}
       <div className="flex items-center gap-3 border-b pb-4">
         <Package className="text-gray-700" />
@@ -433,11 +440,24 @@ export function ProductForm({
       </div>
 
       <div className="pt-4 border-t flex justify-end">
-        <button
+        {/* <button
           type="submit"
           className="px-6 py-2.5 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition"
         >
           {isEditMode ? "Save Changes" : "Create Product"}
+        </button> */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-4 py-2 bg-black text-white rounded-xl hover:scale-105 transition disabled:opacity-50"
+        >
+          {isSubmitting
+            ? isEditMode
+              ? "Updating..."
+              : "Creating..."
+            : isEditMode
+              ? "Update"
+              : "Create"}
         </button>
       </div>
     </form>

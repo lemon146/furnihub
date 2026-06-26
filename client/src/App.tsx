@@ -1,7 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import AdminLayout from "./components/admin/AdminLayout";
-import GlobalLoader from "./components/GlobalLoader";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import About from "./pages/About";
 import { Dashboard } from "./pages/admin/Dashboard";
@@ -32,7 +31,6 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
-      <GlobalLoader />
 
       <Routes>
         {/* Public Routes */}

@@ -1,5 +1,5 @@
 import { getProduct } from "@/api/product";
-import GlobalLoader from "@/components/GlobalLoader";
+import Loader from "@/components/ui/Loader";
 import { handleDelete } from "@/hooks/product.delete.hook";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -13,7 +13,7 @@ export function ProductsPage() {
     queryFn: getProduct,
   });
 
-  if (isPending) return <GlobalLoader />;
+  if (isPending) return <Loader />;
   if (isError) return <div>Error: {error.message}</div>;
   if (!data?.products?.length) {
     return (
