@@ -1,11 +1,9 @@
-import { ArrowLeft } from "lucide-react";
-import { ProductForm } from "./ProductForm";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { ProductForm } from "./ProductForm";
 export function CreateProductPage() {
   const navigate = useNavigate();
-
-
 
   return (
     <div className="space-y-6">
@@ -28,7 +26,6 @@ export function CreateProductPage() {
         {/* Title */}
         <h2 className="text-xl font-bold text-gray-800">Create Product</h2>
 
-        {/* Right placeholder (for symmetry) */}
         <div className="w-10" />
       </motion.div>
 

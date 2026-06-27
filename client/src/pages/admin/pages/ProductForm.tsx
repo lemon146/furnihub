@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ProductInitialData {
@@ -30,7 +31,7 @@ export interface ProductInitialData {
     weight?: string;
     dimension?: string;
   };
-  images?: string[]; // existing Cloudinary URLs
+  images?: string[];
 }
 
 interface ProductFormProps {
@@ -49,8 +50,6 @@ export function ProductForm({
   const [existingImages, setExistingImages] = useState<string[]>(
     initialData?.images ?? [],
   );
-
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -106,11 +105,11 @@ export function ProductForm({
 
     return formData;
   };
+  const navigate = useNavigate();
 
   // ── Submit ─────────────────────────────────────────────────────────────────
   const onSubmit = async (data: ProductFormType) => {
     try {
-      setLoading(true);
       const formData = buildFormData(data);
 
       if (externalSubmit) {
@@ -119,6 +118,8 @@ export function ProductForm({
         // Create mode — handle internally
         const res = (await createProduct(formData as any)) as any;
         toast.success(res?.message || "Product created");
+        navigate(-1);
+
         reset();
         setImages([]);
         setExistingImages([]);
@@ -126,7 +127,6 @@ export function ProductForm({
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
-      setLoading(false);
     }
   };
 
@@ -185,15 +185,6 @@ export function ProductForm({
       className="space-y-8 bg-white p-8 rounded-2xl shadow-md"
       onSubmit={handleSubmit(onSubmit)}
     >
-      {loading && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-sm rounded-2xl">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-gray-200 border-t-black rounded-full animate-spin" />
-
-            <p className="font-medium text-gray-700">Creating Product...</p>
-          </div>
-        </div>
-      )}
       {/* HEADER */}
       <div className="flex items-center gap-3 border-b pb-4">
         <Package className="text-gray-700" />
@@ -440,12 +431,6 @@ export function ProductForm({
       </div>
 
       <div className="pt-4 border-t flex justify-end">
-        {/* <button
-          type="submit"
-          className="px-6 py-2.5 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition"
-        >
-          {isEditMode ? "Save Changes" : "Create Product"}
-        </button> */}
         <button
           type="submit"
           disabled={isSubmitting}
