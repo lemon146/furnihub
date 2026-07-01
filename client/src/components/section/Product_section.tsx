@@ -198,7 +198,15 @@ export default function ProductsSection() {
                       >
                         <DecimalsArrowRight /> Details
                       </button>
-                      <WishListBtn productId={item.id} />
+                      <WishListBtn
+                        product={{
+                          id: item.id,
+                          title: item.title,
+                          image: item.image,
+                          price: item.price,
+                          originalPrice: item.originalPrice,
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -231,7 +239,15 @@ export default function ProductsSection() {
                       >
                         <DecimalsArrowRight size={12} /> Details
                       </button>
-                      <WishListBtn productId={item.id} />
+                      <WishListBtn
+                        product={{
+                          id: item.id,
+                          title: item.title,
+                          image: item.image,
+                          price: item.price,
+                          originalPrice: item.originalPrice,
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
