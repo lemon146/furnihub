@@ -1,9 +1,7 @@
-import { error } from "console";
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { Product } from "../models/product.models";
 import { Review } from "../models/reviews.model";
 import { ApiError } from "../utils/apiError";
-import { success } from "zod";
 
 const createReviews = asyncHandler(async (req, res) => {
   const product_id = req.params.id;
@@ -163,4 +161,4 @@ const getReviews = asyncHandler(async (req, res) => {
   });
 });
 
-export { createReviews, updateReviews, deleteReviews, getReviews };
+export { createReviews, deleteReviews, getReviews, updateReviews };
