@@ -1,5 +1,9 @@
+import { getOneProductById, getProduct } from "@/api/product";
+import { getReviews } from "@/api/reviews";
 import { useCartContext } from "@/context/CartContext";
 import { useWishListContext } from "@/context/WishlistContext";
+import { Product } from "@/types/product";
+import { useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, HeartOff, ShoppingCart, Star } from "lucide-react";
@@ -7,10 +11,11 @@ import { useEffect, useRef } from "react";
 import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
-import { All_Products } from "../../utils/products_data";
 import AddToCartBtn from "../ui/AddToCartBtn";
+import Loader from "../ui/Loader";
 import WishListBtn from "../ui/WishListBtn";
 import ProductNotFound from "./ProductNotFound";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const Product_details = () => {
@@ -21,36 +26,42 @@ const Product_details = () => {
   const proRef = useRef(null);
   const container = useRef(null);
 
-  // is product exist on cart
-  const isProductInCart = cartItems.some((item) => item.id === Number(id));
-  // is product exist on Wishlist
-  const isProductInWishList = savedProducts.some(
-    (item) => item.id === Number(id),
-  );
+  const {
+    data: productRes,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getOneProductById(id as string),
+    enabled: !!id,
+  });
 
-  // Find product
-  const product = All_Products.find((p) => p.id === Number(id));
+  const { data: allProductsRes } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
 
-  // Handle invalid product
-  if (!product) return <ProductNotFound />;
+  const { data: reviewsRes } = useQuery({
+    queryKey: ["reviews", id],
+    queryFn: () => getReviews(id as string),
+    enabled: !!id,
+  });
 
-  // Related products
-  const relatedProducts = All_Products.filter(
-    (p) => p.category === product.category && p.id !== product.id,
-  ).slice(0, 4);
+  const product: Product | undefined = productRes?.data?.product;
+  const reviews = reviewsRes?.reviews ?? [];
 
-  // Calculation for average rating
-  const reviewCount = product?.reviews?.length || 0;
-  const avgRating =
-    reviewCount > 0
-      ? (product?.reviews?.reduce((acc, r) => acc + r.rating, 0) ??
-        0 / reviewCount)
-      : 0;
+  const isProductInCart = cartItems.some((item) => item.id === id);
+  const isProductInWishList = savedProducts.some((item) => item.id === id);
 
-  // GSAP animation
+  const relatedProducts: Product[] =
+    allProductsRes?.products?.filter(
+      (p: Product) =>
+        p.category?._id === product?.category?._id && p._id !== product?._id,
+    ) ?? [];
+  console.log(allProductsRes.products);
   useEffect(() => {
+    if (!product) return;
     const ctx = gsap.context(() => {
-      // Main product details animation
       gsap.from(".anim-item", {
         opacity: 0,
         y: 20,
@@ -58,22 +69,19 @@ const Product_details = () => {
         duration: 0.8,
         ease: "power2.out",
       });
-
-      // Related products animation
       gsap.from(".card", {
-        scrollTrigger: {
-          trigger: proRef.current,
-          start: "top 85%",
-        },
+        scrollTrigger: { trigger: proRef.current, start: "top 85%" },
         opacity: 0,
         y: 30,
         stagger: 0.2,
         duration: 0.8,
       });
     }, container);
-
     return () => ctx.revert();
-  }, [id]);
+  }, [product]);
+
+  if (isPending) return <Loader />;
+  if (isError || !product) return <ProductNotFound />;
 
   return (
     <>
@@ -83,11 +91,10 @@ const Product_details = () => {
       >
         <div className="max-w-7xl px-4 mx-auto">
           <div className="lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-20">
-            {/* Product Image with Hover Effect */}
             <div className="anim-item shrink-0 max-w-md lg:max-w-lg mx-auto bg-[#F9F1E7] rounded-2xl p-6 sm:p-10">
               <img
                 className="w-full h-auto object-contain mix-blend-multiply hover:scale-105 transition-transform duration-500"
-                src={product.image}
+                src={product.images?.[0]?.url}
                 alt={product.title}
               />
             </div>
@@ -101,9 +108,7 @@ const Product_details = () => {
                 <p className="text-3xl font-semibold text-[#B88E2F]">
                   ${product.price}
                 </p>
-
                 <div className="hidden sm:block h-6 w-[1px] bg-gray-300 mx-2" />
-
                 <div className="flex items-center gap-3">
                   <div className="flex items-center text-yellow-400">
                     {Array.from({ length: 5 }, (_, i) => (
@@ -111,23 +116,25 @@ const Product_details = () => {
                         key={i}
                         size={18}
                         fill={
-                          i < Math.round(avgRating) ? "currentColor" : "none"
+                          i < Math.round(product.averageRating)
+                            ? "currentColor"
+                            : "none"
                         }
                         strokeWidth={1.5}
                       />
                     ))}
                   </div>
                   <span className="text-sm font-medium text-[#9F9F9F]">
-                    {reviewCount} Customer Review{reviewCount !== 1 ? "s" : ""}
+                    {product.numReviews} Customer Review
+                    {product.numReviews !== 1 ? "s" : ""}
                   </span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="anim-item mt-10 flex flex-col sm:flex-row gap-4">
                 <button
                   type="button"
-                  onClick={() => addToCart(product.id)}
+                  onClick={() => addToCart(product._id)}
                   disabled={isProductInCart}
                   className={`flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-bold text-sm transition-all active:scale-95 border-2 ${
                     isProductInCart
@@ -141,7 +148,15 @@ const Product_details = () => {
 
                 <button
                   type="button"
-                  onClick={() => toggleFavorite(product.id)}
+                  onClick={() =>
+                    toggleFavorite({
+                      id: product._id,
+                      title: product.title,
+                      image: product.images?.[0]?.url ?? "",
+                      price: product.price,
+                      originalPrice: product.originalPrice,
+                    })
+                  }
                   className="flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-gray-300 hover:bg-red-50 transition-colors"
                 >
                   {isProductInWishList ? (
@@ -161,7 +176,6 @@ const Product_details = () => {
                 {product.description}
               </p>
 
-              {/* Specifications List */}
               <div className="anim-item space-y-4 pt-4 border-t border-gray-100">
                 {[
                   {
@@ -172,7 +186,7 @@ const Product_details = () => {
                   { label: "Weight", value: product.additionalInfo?.weight },
                   {
                     label: "Dimensions",
-                    value: product.additionalInfo?.dimensions,
+                    value: product.additionalInfo?.dimension,
                   },
                 ].map((info, idx) => (
                   <div key={idx} className="flex text-sm">
@@ -193,25 +207,21 @@ const Product_details = () => {
       <section className="py-12 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
-            Customer Reviews ({product?.reviews?.length || 0})
+            Customer Reviews ({product.numReviews ?? 0})
           </h2>
 
-          {(product?.reviews?.length ?? 0) > 0 ? (
+          {reviews.length > 0 ? (
             <div
-              className={`space-y-6 ${
-                (product?.reviews?.length ?? 0) > 2
-                  ? "max-h-96 overflow-y-auto pr-2"
-                  : ""
-              }`}
+              className={`space-y-6 ${reviews.length > 2 ? "max-h-96 overflow-y-auto pr-2" : ""}`}
             >
-              {product?.reviews?.map((review, index) => (
+              {reviews.map((review: any) => (
                 <div
-                  key={index}
+                  key={review._id}
                   className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md"
                 >
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium text-gray-900 dark:text-white">
-                      {review.user}
+                      {review.user?.fullName ?? "Anonymous"}
                     </h3>
                     <span className="text-yellow-400 text-sm">
                       {"⭐".repeat(review.rating)}
@@ -239,45 +249,49 @@ const Product_details = () => {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mt-6">
-          {relatedProducts.map((item, index) => (
+          {relatedProducts.slice(0, 4).map((item) => (
             <div
-              key={index}
+              key={item._id}
               className="card relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
             >
               <div className="relative aspect-4/5 overflow-hidden">
                 <img
-                  src={item.image}
-                  alt={item.description}
+                  src={item.images?.[0]?.url}
+                  alt={item.title}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-
-                {/* Desktop Overlay (Hidden on Mobile/Touch) */}
                 <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <AddToCartBtn productId={item.id} />
+                  <AddToCartBtn productId={item._id} />
                   <div className="flex justify-between items-center text-white">
                     <button className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300">
                       <IoShareSocialOutline /> Share
                     </button>
                     <button
-                      onClick={() => navigate(`/product/${item.id}`)}
+                      onClick={() => navigate(`/product/${item._id}`)}
                       className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300"
                     >
                       <ArrowRight /> Details
                     </button>
-                    <WishListBtn productId={item.id} />
+                    <WishListBtn
+                      product={{
+                        id: item._id,
+                        title: item.title,
+                        image: item.images?.[0]?.url ?? "",
+                        price: item.price,
+                        originalPrice: item.originalPrice,
+                      }}
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Product Info */}
               <div className="p-3 flex flex-col grow">
                 <h2 className="text-grey-1 font-semibold text-sm md:text-lg truncate">
                   {item.title}
                 </h2>
                 <p className="text-grey-2 font-medium text-xs md:text-sm mt-1 line-clamp-1">
-                  {item.shortDesc}
+                  {item.short_desc}
                 </p>
-
                 <div className="flex items-center gap-2 mt-2">
                   <p className="text-grey-1 font-bold text-sm md:text-base">
                     ${item.price}
@@ -288,17 +302,24 @@ const Product_details = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
-                  <AddToCartBtn productId={item.id} />
+                  <AddToCartBtn productId={item._id} />
                   <div className="flex justify-between">
                     <button
-                      onClick={() => navigate(`/product/${item.id}`)}
+                      onClick={() => navigate(`/product/${item._id}`)}
                       className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
                     >
                       <ArrowRight size={12} /> Details
                     </button>
-                    <WishListBtn productId={item.id} />
+                    <WishListBtn
+                      product={{
+                        id: item._id,
+                        title: item.title,
+                        image: item.images?.[0]?.url ?? "",
+                        price: item.price,
+                        originalPrice: item.originalPrice,
+                      }}
+                    />
                   </div>
                 </div>
               </div>
