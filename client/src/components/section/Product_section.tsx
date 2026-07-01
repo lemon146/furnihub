@@ -8,7 +8,7 @@ import {
 } from "@/utils/products_data";
 import { gsap } from "gsap";
 import { ChevronDown, DecimalsArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import AddToCartBtn from "../ui/AddToCartBtn";
@@ -25,6 +25,9 @@ export default function ProductsSection() {
     setActiveFilter,
     materialToggle,
     priceToggle,
+    isPending,
+    isError,
+    error,
   } = useShopFilter();
   const productsRef = useRef<HTMLElement[]>([]);
   productsRef.current = [];
@@ -34,19 +37,12 @@ export default function ProductsSection() {
       productsRef.current.push(el);
     }
   };
-  const [price, setPrice] = useState("");
 
   useEffect(() => {
     gsap.fromTo(
       productsRef.current,
       { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: "power3.out",
-      },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" },
     );
   }, [filterProduct]);
 
@@ -54,13 +50,12 @@ export default function ProductsSection() {
     <section className="max-w-309 w-full mx-auto mt-14 px-4">
       <h2 className="text-heading font-semibold">Our Products</h2>
 
-      <div className="mt-6   flex flex-wrap items-center gap-3">
+      <div className="mt-6 flex flex-wrap items-center gap-3">
         <details className="relative group">
           <summary className="filter-btn">
             Category
             <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
           </summary>
-
           <div className="filter-panel w-52">
             {CATEGORY_FILTER.items.map((item) => (
               <label key={item} className="filter-item">
@@ -74,12 +69,12 @@ export default function ProductsSection() {
             ))}
           </div>
         </details>
+
         <details className="relative group">
           <summary className="filter-btn">
             Material
             <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
           </summary>
-
           <div className="filter-panel w-60">
             {MATERIAL_FILTER.items.map((item) => (
               <label key={item} className="filter-item">
@@ -109,13 +104,7 @@ export default function ProductsSection() {
               />
             </svg>
           </summary>
-
-          <div
-            className="absolute z-30 mt-3 w-64 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 space-y-4
-      opacity-0 scale-95 translate-y-2 pointer-events-none
-      group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
-      transition-all duration-300 ease-out"
-          >
+          <div className="absolute z-30 mt-3 w-64 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 space-y-4 opacity-0 scale-95 translate-y-2 pointer-events-none group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto transition-all duration-300 ease-out">
             <input
               type="range"
               min="0"
@@ -146,28 +135,18 @@ export default function ProductsSection() {
               />
             </svg>
           </summary>
-
-          <div
-            className="absolute z-30 mt-3 w-48 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 flex gap-3 flex-wrap
-      opacity-0 scale-95 translate-y-2 pointer-events-none
-      group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto
-      transition-all duration-300 ease-out"
-          >
+          <div className="absolute z-30 mt-3 w-48 rounded-xl border bg-white/95 backdrop-blur shadow-2xl p-4 flex gap-3 flex-wrap opacity-0 scale-95 translate-y-2 pointer-events-none group-open:opacity-100 group-open:scale-100 group-open:translate-y-0 group-open:pointer-events-auto transition-all duration-300 ease-out">
             {allColors.map(({ name, hex }) => {
               const isActive = activeFilter.color.includes(name);
-
               return (
                 <button
                   key={name}
                   onClick={() => colorToggle(name)}
-                  className={`
-          w-8 h-8 rounded-full border transition
-          ${
-            isActive
-              ? "ring-2 ring-[#B88E2F] scale-110"
-              : "hover:scale-110 hover:ring-2 hover:ring-[#B88E2F]/50"
-          }
-        `}
+                  className={`w-8 h-8 rounded-full border transition ${
+                    isActive
+                      ? "ring-2 ring-[#B88E2F] scale-110"
+                      : "hover:scale-110 hover:ring-2 hover:ring-[#B88E2F]/50"
+                  }`}
                   style={{ backgroundColor: hex }}
                   aria-pressed={isActive}
                 />
@@ -182,19 +161,29 @@ export default function ProductsSection() {
       </div>
 
       <div className="mt-6">
-        {filterProduct.length > 0 ? (
+        {isPending ? (
+          <div className="flex justify-center items-center py-20 text-gray-500">
+            Loading products...
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center space-y-2">
+            <p className="text-red-600 font-medium">Failed to load products</p>
+            <p className="text-sm text-gray-500">
+              {error instanceof Error ? error.message : "Something went wrong"}
+            </p>
+          </div>
+        ) : filterProduct.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filterProduct.map((item, index) => (
+            {filterProduct.map((item) => (
               <div
                 ref={addToRefs}
-                key={index}
+                key={item.id}
                 className="relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
               >
-                {/* Image + hover overlay */}
                 <div className="relative aspect-square overflow-hidden">
                   <img
                     src={item.image}
-                    alt={item.description}
+                    alt={item.title}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -214,7 +203,6 @@ export default function ProductsSection() {
                   </div>
                 </div>
 
-                {/* Product info */}
                 <div className="p-3 md:p-4 flex flex-col grow">
                   <h2 className="font-semibold text-sm md:text-lg truncate">
                     {item.title}
@@ -281,12 +269,7 @@ export default function ProductsSection() {
       </div>
 
       <div className="flex justify-center flex-wrap mt-6">
-        {" "}
-        <PaginationDemo
-          totalPages={3}
-          currentPage={2}
-          // setCurrentPage={10}
-        />
+        <PaginationDemo totalPages={3} currentPage={2} />
       </div>
     </section>
   );
