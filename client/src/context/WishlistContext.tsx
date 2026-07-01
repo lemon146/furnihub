@@ -1,5 +1,4 @@
-import { Product } from "@/types";
-import { All_Products } from "@/utils/products_data";
+import { WishlistItem } from "@/types/wishlist";
 import {
   createContext,
   ReactNode,
@@ -10,59 +9,66 @@ import {
 import toast from "react-hot-toast";
 
 interface WishListContextType {
-  savedProducts: Product[];
-  toggleFavorite: (id: number | string) => void;
+  savedProducts: WishlistItem[];
+  toggleFavorite: (product: WishlistItem) => void;
+  isWishlisted: (id: string) => boolean;
 }
+
 export const WishListContext = createContext<WishListContextType | undefined>(
   undefined,
 );
 
-type WishListContextProivderType = {
-  children: ReactNode;
-};
+type WishListContextProviderType = { children: ReactNode };
+
 export const WishListContextProvider = ({
   children,
-}: WishListContextProivderType) => {
-  const [savedProducts, setSavedProducts] = useState<Product[]>([]);
+}: WishListContextProviderType) => {
+  const [savedProducts, setSavedProducts] = useState<WishlistItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const toggleFavorite = (id: number | string) => {
-    const product = All_Products.find((item) => item.id === id);
-
-    if (!product) {
+  const toggleFavorite = (product: WishlistItem) => {
+    if (!product?.id) {
       toast.error("Product not found!");
       return;
     }
-    setSavedProducts((prev) => {
-      const exists = prev.some((item) => item.id === product.id);
 
-      if (exists) {
-        return prev.filter((item) => item.id !== product.id);
-      }
+    const exists = savedProducts.some((item) => item.id === product.id);
 
-      return [...prev, product];
-    });
-  };
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem("wishlist", JSON.stringify(savedProducts));
+    setSavedProducts((prev) =>
+      exists
+        ? prev.filter((item) => item.id !== product.id)
+        : [...prev, product],
+    );
+
+    if (exists) {
+      toast.success("Removed from wishlist");
+    } else {
+      toast.success("Added to wishlist");
     }
+  };
+
+  const isWishlisted = (id: string) =>
+    savedProducts.some((item) => item.id === id);
+
+  useEffect(() => {
+    if (isLoaded)
+      localStorage.setItem("wishlist", JSON.stringify(savedProducts));
   }, [savedProducts, isLoaded]);
+
   useEffect(() => {
     const storeItem = localStorage.getItem("wishlist");
-    if (storeItem) {
-      setSavedProducts(JSON.parse(storeItem));
-    }
+    if (storeItem) setSavedProducts(JSON.parse(storeItem));
     setIsLoaded(true);
   }, []);
 
   return (
-    <WishListContext.Provider value={{ savedProducts, toggleFavorite }}>
+    <WishListContext.Provider
+      value={{ savedProducts, toggleFavorite, isWishlisted }}
+    >
       {children}
     </WishListContext.Provider>
   );
 };
-// custom hooks
 
 export const useWishListContext = () => {
   const context = useContext(WishListContext);
