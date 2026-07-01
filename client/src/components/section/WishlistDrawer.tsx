@@ -26,14 +26,12 @@ export default function WishlistDrawer() {
         </button>
       </DrawerTrigger>
 
-      {/* Drawer Content */}
       <DrawerContent className="w-full sm:max-w-100 ml-auto rounded-t-2xl p-6">
         <DrawerHeader>
           <DrawerTitle className="text-xl font-semibold">Wishlist</DrawerTitle>
           <DrawerDescription>Save items you love ❤️</DrawerDescription>
         </DrawerHeader>
 
-        {/* Wishlist products */}
         <ScrollArea className="h-75 pr-2">
           <div className="space-y-4">
             {savedProducts.length > 0 ? (
@@ -42,7 +40,6 @@ export default function WishlistDrawer() {
                   key={item.id}
                   className="flex items-center justify-between border rounded-lg p-3"
                 >
-                  {/* Image */}
                   <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
                     <img
                       src={item.image}
@@ -51,15 +48,13 @@ export default function WishlistDrawer() {
                     />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 ml-3">
                     <p className="font-medium">{item.title}</p>
                     <p className="text-sm text-gray-500">${item.price}</p>
                   </div>
 
-                  {/* Remove */}
                   <button
-                    onClick={() => toggleFavorite(item.id)}
+                    onClick={() => toggleFavorite(item)}
                     className="ml-3 text-gray-400 hover:text-red-500"
                   >
                     <Trash2 size={18} />
