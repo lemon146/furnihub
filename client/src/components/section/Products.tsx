@@ -85,7 +85,15 @@ const Products = () => {
                   >
                     <DecimalsArrowRight /> Details
                   </button>
-                  <WishListBtn productId={item._id} />
+                  <WishListBtn
+                    product={{
+                      id: item._id,
+                      title: item.title,
+                      image: item.images[0]?.url ?? "",
+                      price: item.price,
+                      originalPrice: item.originalPrice,
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -118,7 +126,15 @@ const Products = () => {
                   >
                     <DecimalsArrowRight size={12} /> Details
                   </button>
-                  <WishListBtn productId={item._id} />
+                  <WishListBtn
+                    product={{
+                      id: item._id,
+                      title: item.title,
+                      image: item.images[0]?.url ?? "",
+                      price: item.price,
+                      originalPrice: item.originalPrice,
+                    }}
+                  />
                 </div>
               </div>
             </div>
