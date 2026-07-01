@@ -1,14 +1,31 @@
+import { getProduct } from "@/api/product";
+import { Product } from "@/types/product";
 import {
   ActiveFilter,
+  MappedProduct,
   ShopFilterContextType,
   ShopFilterProviderProps,
 } from "@/types/shopfilter";
-import { All_Products } from "@/utils/products_data";
+import { useQuery } from "@tanstack/react-query";
 import { createContext, useContext, useMemo, useState } from "react";
 
 export const ShopFilterContext = createContext<
   ShopFilterContextType | undefined
 >(undefined);
+
+function mapProduct(p: Product): MappedProduct {
+  return {
+    id: p._id,
+    title: p.title,
+    shortDesc: p.short_desc,
+    image: p.images?.[0]?.url ?? "",
+    category: p.category?.title?.toLowerCase() ?? "",
+    color: p.additionalInfo?.color ?? "",
+    material: p.additionalInfo?.material ?? "",
+    price: p.price,
+    originalPrice: p.originalPrice,
+  };
+}
 
 export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({
@@ -18,39 +35,43 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
     price: 0,
   });
 
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
+
+  const allProducts = useMemo(() => {
+    if (!data?.products) return [];
+    return data.products.map(mapProduct);
+  }, [data]);
+
   const filterProduct = useMemo(() => {
-    let data = All_Products;
+    let result = allProducts;
     if (activeFilter.category.length) {
-      data = data.filter(
-        (p) => p.category && activeFilter.category.includes(p.category),
+      result = result.filter((p: { category: string }) =>
+        activeFilter.category.includes(p.category),
       );
     }
     if (activeFilter.color.length) {
-      data = data.filter(
-        (c) => c.color && activeFilter.color.includes(c.color),
+      result = result.filter((p: { color: string }) =>
+        activeFilter.color.includes(p.color),
       );
     }
     if (activeFilter.material.length) {
-      data = data.filter(
-        (e) => e.material && activeFilter.material.includes(e.material),
+      result = result.filter((p: { material: string }) =>
+        activeFilter.material.includes(p.material),
       );
     }
     if (activeFilter.price > 0) {
-      data = data.filter((e) => e.price && e.price <= activeFilter.price);
+      result = result.filter(
+        (p: { price: number }) => p.price <= activeFilter.price,
+      );
     }
-    return data;
-  }, [
-    activeFilter.category,
-    activeFilter.color,
-    activeFilter.material,
-    activeFilter.price,
-  ]);
+    return result;
+  }, [allProducts, activeFilter]);
+
   const priceToggle = (value: string) => {
-    const price = Number(value);
-    setActiveFilter((prev) => ({
-      ...prev,
-      price: price,
-    }));
+    setActiveFilter((prev) => ({ ...prev, price: Number(value) }));
   };
   const categoryToggle = (category: string, checked: boolean) => {
     setActiveFilter((prev) => ({
@@ -87,6 +108,9 @@ export const ShopFilterProvider = ({ children }: ShopFilterProviderProps) => {
         setActiveFilter,
         materialToggle,
         priceToggle,
+        isPending,
+        isError,
+        error,
       }}
     >
       {children}
