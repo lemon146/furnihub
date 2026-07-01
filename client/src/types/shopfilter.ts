@@ -1,18 +1,15 @@
-import { Product } from "@/types";
 import { ReactNode } from "react";
 
-export type ShopFilterContextType = {
-  categoryToggle: (category: string, checked: boolean) => void;
-  materialToggle: (material: string, checked: boolean) => void;
-  colorToggle: (color: string) => void;
-  priceToggle: (price: string) => void;
-  filterProduct: Product[];
-  activeFilter: ActiveFilter;
-  setActiveFilter: React.Dispatch<React.SetStateAction<ActiveFilter>>;
-};
-
-export interface ShopFilterProviderProps {
-  children: ReactNode;
+export interface MappedProduct {
+  id: string;
+  title: string;
+  shortDesc: string;
+  image: string;
+  category: string;
+  color: string;
+  material: string;
+  price: number;
+  originalPrice?: number;
 }
 
 export type ActiveFilter = {
@@ -21,3 +18,20 @@ export type ActiveFilter = {
   price: number;
   material: string[];
 };
+
+export type ShopFilterContextType = {
+  categoryToggle: (category: string, checked: boolean) => void;
+  materialToggle: (material: string, checked: boolean) => void;
+  colorToggle: (color: string) => void;
+  priceToggle: (price: string) => void;
+  filterProduct: MappedProduct[];
+  activeFilter: ActiveFilter;
+  setActiveFilter: React.Dispatch<React.SetStateAction<ActiveFilter>>;
+  isPending: boolean;
+  isError: boolean;
+  error: unknown;
+};
+
+export interface ShopFilterProviderProps {
+  children: ReactNode;
+}
