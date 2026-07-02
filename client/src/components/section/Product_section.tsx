@@ -187,7 +187,15 @@ export default function ProductsSection() {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <AddToCartBtn productId={item.id} />
+                    <AddToCartBtn
+                      product={{
+                        id: item.id,
+                        title: item.title,
+                        image: item.image,
+                        price: item.price,
+                        originalPrice: item.originalPrice,
+                      }}
+                    />
                     <div className="flex items-center gap-3 text-white">
                       <button className="flex items-center gap-1 hover:text-neutral-300">
                         <IoShareSocialOutline /> Share
@@ -231,7 +239,15 @@ export default function ProductsSection() {
                   </div>
 
                   <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
-                    <AddToCartBtn productId={item.id} />
+                    <AddToCartBtn
+                      product={{
+                        id: item.id,
+                        title: item.title,
+                        image: item.image,
+                        price: item.price,
+                        originalPrice: item.originalPrice,
+                      }}
+                    />
                     <div className="flex justify-between">
                       <button
                         onClick={() => navigate(`/product/${item.id}`)}

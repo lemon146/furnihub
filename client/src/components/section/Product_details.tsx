@@ -3,6 +3,7 @@ import { getReviews } from "@/api/reviews";
 import { useCartContext } from "@/context/CartContext";
 import { useWishListContext } from "@/context/WishlistContext";
 import { Product } from "@/types/product";
+import { Review } from "@/types/review";
 import { useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,7 +13,6 @@ import { FaHeart } from "react-icons/fa";
 import { IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import AddToCartBtn from "../ui/AddToCartBtn";
-import Loader from "../ui/Loader";
 import WishListBtn from "../ui/WishListBtn";
 import ProductNotFound from "./ProductNotFound";
 
@@ -36,7 +36,7 @@ const Product_details = () => {
     enabled: !!id,
   });
 
-  const { data: allProductsRes } = useQuery({
+  const { data: allProductsRes, isPending: relatedPending } = useQuery({
     queryKey: ["products"],
     queryFn: getProduct,
   });
@@ -58,6 +58,7 @@ const Product_details = () => {
       (p: Product) =>
         p.category?._id === product?.category?._id && p._id !== product?._id,
     ) ?? [];
+
   useEffect(() => {
     if (!product) return;
     const ctx = gsap.context(() => {
@@ -79,7 +80,25 @@ const Product_details = () => {
     return () => ctx.revert();
   }, [product]);
 
-  if (isPending) return <Loader />;
+  if (isPending) {
+    return (
+      <section className="py-12 bg-white md:py-20 antialiased overflow-hidden">
+        <div className="max-w-7xl px-4 mx-auto">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-20">
+            <div className="shrink-0 max-w-md lg:max-w-lg mx-auto bg-[#F9F1E7] rounded-2xl p-6 sm:p-10">
+              <div className="w-full aspect-square rounded-xl bg-gray-200 animate-pulse" />
+            </div>
+            <div className="mt-8 lg:mt-0 flex flex-col justify-center gap-4">
+              <div className="h-10 w-3/4 rounded bg-gray-200 animate-pulse" />
+              <div className="h-8 w-1/3 rounded bg-gray-200 animate-pulse" />
+              <div className="h-12 w-full rounded bg-gray-200 animate-pulse mt-6" />
+              <div className="h-24 w-full rounded bg-gray-200 animate-pulse mt-6" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   if (isError || !product) return <ProductNotFound />;
 
   return (
@@ -107,7 +126,7 @@ const Product_details = () => {
                 <p className="text-3xl font-semibold text-[#B88E2F]">
                   ${product.price}
                 </p>
-                <div className="hidden sm:block h-6 w-[1px] bg-gray-300 mx-2" />
+                <div className="hidden sm:block h-6 w-px bg-gray-300 mx-2" />
                 <div className="flex items-center gap-3">
                   <div className="flex items-center text-yellow-400">
                     {Array.from({ length: 5 }, (_, i) => (
@@ -133,7 +152,15 @@ const Product_details = () => {
               <div className="anim-item mt-10 flex flex-col sm:flex-row gap-4">
                 <button
                   type="button"
-                  onClick={() => addToCart(product._id)}
+                  onClick={() =>
+                    addToCart({
+                      id: product._id,
+                      title: product.title,
+                      image: product.images?.[0]?.url ?? "",
+                      price: product.price,
+                      originalPrice: product.originalPrice,
+                    })
+                  }
                   disabled={isProductInCart}
                   className={`flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-bold text-sm transition-all active:scale-95 border-2 ${
                     isProductInCart
@@ -213,7 +240,7 @@ const Product_details = () => {
             <div
               className={`space-y-6 ${reviews.length > 2 ? "max-h-96 overflow-y-auto pr-2" : ""}`}
             >
-              {reviews.map((review: any) => (
+              {reviews.map((review: Review) => (
                 <div
                   key={review._id}
                   className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md"
@@ -248,30 +275,31 @@ const Product_details = () => {
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mt-6">
-          {relatedProducts.slice(0, 4).map((item) => (
-            <div
-              key={item._id}
-              className="card relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
-            >
-              <div className="relative aspect-4/5 overflow-hidden">
-                <img
-                  src={item.images?.[0]?.url}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <AddToCartBtn productId={item._id} />
-                  <div className="flex justify-between items-center text-white">
-                    <button className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300">
-                      <IoShareSocialOutline /> Share
-                    </button>
-                    <button
-                      onClick={() => navigate(`/product/${item._id}`)}
-                      className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300"
-                    >
-                      <ArrowRight /> Details
-                    </button>
-                    <WishListBtn
+          {relatedPending ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex flex-col">
+                <div className="aspect-4/5 rounded-lg bg-gray-200 animate-pulse" />
+                <div className="mt-3 h-4 w-3/4 rounded bg-gray-200 animate-pulse" />
+              </div>
+            ))
+          ) : relatedProducts.length === 0 ? (
+            <p className="col-span-full text-center text-gray-500">
+              No related products found.
+            </p>
+          ) : (
+            relatedProducts.slice(0, 4).map((item) => (
+              <div
+                key={item._id}
+                className="card relative flex flex-col bg-card rounded-lg overflow-hidden group border border-gray-100 shadow-sm"
+              >
+                <div className="relative aspect-4/5 overflow-hidden">
+                  <img
+                    src={item.images?.[0]?.url}
+                    alt={item.title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <AddToCartBtn
                       product={{
                         id: item._id,
                         title: item.title,
@@ -280,37 +308,48 @@ const Product_details = () => {
                         originalPrice: item.originalPrice,
                       }}
                     />
+                    <div className="flex justify-between items-center text-white">
+                      <button className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300">
+                        <IoShareSocialOutline /> Share
+                      </button>
+                      <button
+                        onClick={() => navigate(`/product/${item._id}`)}
+                        className="flex items-center gap-2 px-2 py-2 rounded font-semibold hover:text-neutral-300"
+                      >
+                        <ArrowRight /> Details
+                      </button>
+                      <WishListBtn
+                        product={{
+                          id: item._id,
+                          title: item.title,
+                          image: item.images?.[0]?.url ?? "",
+                          price: item.price,
+                          originalPrice: item.originalPrice,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="p-3 flex flex-col grow">
-                <h2 className="text-grey-1 font-semibold text-sm md:text-lg truncate">
-                  {item.title}
-                </h2>
-                <p className="text-grey-2 font-medium text-xs md:text-sm mt-1 line-clamp-1">
-                  {item.short_desc}
-                </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <p className="text-grey-1 font-bold text-sm md:text-base">
-                    ${item.price}
+                <div className="p-3 flex flex-col grow">
+                  <h2 className="text-grey-1 font-semibold text-sm md:text-lg truncate">
+                    {item.title}
+                  </h2>
+                  <p className="text-grey-2 font-medium text-xs md:text-sm mt-1 line-clamp-1">
+                    {item.short_desc}
                   </p>
-                  {item.originalPrice && (
-                    <p className="text-grey-2 line-through text-xs opacity-60">
-                      ${item.originalPrice}
+                  <div className="flex items-center gap-2 mt-2">
+                    <p className="text-grey-1 font-bold text-sm md:text-base">
+                      ${item.price}
                     </p>
-                  )}
-                </div>
-                <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
-                  <AddToCartBtn productId={item._id} />
-                  <div className="flex justify-between">
-                    <button
-                      onClick={() => navigate(`/product/${item._id}`)}
-                      className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
-                    >
-                      <ArrowRight size={12} /> Details
-                    </button>
-                    <WishListBtn
+                    {item.originalPrice && (
+                      <p className="text-grey-2 line-through text-xs opacity-60">
+                        ${item.originalPrice}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
+                    <AddToCartBtn
                       product={{
                         id: item._id,
                         title: item.title,
@@ -319,11 +358,28 @@ const Product_details = () => {
                         originalPrice: item.originalPrice,
                       }}
                     />
+                    <div className="flex justify-between">
+                      <button
+                        onClick={() => navigate(`/product/${item._id}`)}
+                        className="text-[10px] uppercase tracking-wider font-bold flex items-center gap-1"
+                      >
+                        <ArrowRight size={12} /> Details
+                      </button>
+                      <WishListBtn
+                        product={{
+                          id: item._id,
+                          title: item.title,
+                          image: item.images?.[0]?.url ?? "",
+                          price: item.price,
+                          originalPrice: item.originalPrice,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         <div className="flex justify-center items-center w-full mt-10">

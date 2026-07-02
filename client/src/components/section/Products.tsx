@@ -74,7 +74,15 @@ const Products = () => {
               />
 
               <div className="hidden md:flex absolute inset-0 bg-black/50 backdrop-blur-sm flex-col justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <AddToCartBtn productId={item._id} />
+                <AddToCartBtn
+                  product={{
+                    id: item._id,
+                    title: item.title,
+                    image: item.images?.[0]?.url ?? "",
+                    price: item.price,
+                    originalPrice: item.originalPrice,
+                  }}
+                />
                 <div className="flex justify-between items-center gap-3 text-white">
                   <button className="flex items-center gap-1 hover:text-neutral-300">
                     <IoShareSocialOutline /> Share
@@ -118,7 +126,15 @@ const Products = () => {
               </div>
 
               <div className="flex md:hidden flex-col gap-2 mt-3 pt-3 border-t">
-                <AddToCartBtn productId={item._id} />
+                <AddToCartBtn
+                  product={{
+                    id: item._id,
+                    title: item.title,
+                    image: item.images?.[0]?.url ?? "",
+                    price: item.price,
+                    originalPrice: item.originalPrice,
+                  }}
+                />
                 <div className="flex justify-between">
                   <button
                     onClick={() => navigate(`/product/${item._id}`)}
