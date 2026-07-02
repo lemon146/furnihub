@@ -1,15 +1,15 @@
 import { useCartContext } from "@/context/CartContext";
+import { CartItem } from "@/types/cart";
 import toast from "react-hot-toast";
 
 interface AddToCartProps {
-  productId: string | number;
+  product: Omit<CartItem, "quantity">;
 }
 
-const AddToCartBtn = ({ productId }: AddToCartProps) => {
+const AddToCartBtn = ({ product }: AddToCartProps) => {
   const { addToCart, cartItems } = useCartContext();
 
-  // Checking if item is already in cart
-  const isAdded = cartItems.find((item) => item.id === productId);
+  const isAdded = cartItems.some((item) => item.id === product.id);
 
   return (
     <button
@@ -28,11 +28,11 @@ const AddToCartBtn = ({ productId }: AddToCartProps) => {
             },
           });
         } else {
-          addToCart(productId);
+          addToCart(product);
         }
       }}
       className={`
-        btn-primary px-4 py-2 font-semibold rounded cursor-pointer 
+        btn-primary px-4 py-2 font-semibold rounded cursor-pointer
         transition-all duration-300 active:scale-95
         w-full md:w-auto text-sm md:text-base
         ${isAdded ? "opacity-80" : "opacity-100"}
