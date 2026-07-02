@@ -126,7 +126,7 @@ const Product_details = () => {
                 <p className="text-3xl font-semibold text-[#B88E2F]">
                   ${product.price}
                 </p>
-                <div className="hidden sm:block h-6 w-[1px] bg-gray-300 mx-2" />
+                <div className="hidden sm:block h-6 w-px bg-gray-300 mx-2" />
                 <div className="flex items-center gap-3">
                   <div className="flex items-center text-yellow-400">
                     {Array.from({ length: 5 }, (_, i) => (
