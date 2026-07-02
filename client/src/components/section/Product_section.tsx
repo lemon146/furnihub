@@ -1,11 +1,11 @@
 "use client";
 
+import { getCategory } from "@/api/category.api";
 import { useShopFilter } from "@/context/ShopFilterContext";
-import {
-  allColors,
-  CATEGORY_FILTER,
-  MATERIAL_FILTER,
-} from "@/utils/products_data";
+import { CategoryType } from "@/schema/category.schema";
+import { MappedProduct } from "@/types/shopfilter";
+import { allColors } from "@/utils/color_options";
+import { useQuery } from "@tanstack/react-query";
 import { gsap } from "gsap";
 import { ChevronDown, DecimalsArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -37,7 +37,20 @@ export default function ProductsSection() {
       productsRef.current.push(el);
     }
   };
+  const { data: categoriesRes } = useQuery({
+    queryKey: ["category"],
+    queryFn: getCategory,
+  });
 
+  const categoryItems: string[] =
+    categoriesRes?.categories?.map((c: CategoryType) => c.title) ?? [];
+  const materialItems: string[] = Array.from(
+    new Set(
+      (filterProduct as MappedProduct[])
+        .map((p) => p.material)
+        .filter((m): m is string => Boolean(m)),
+    ),
+  );
   useEffect(() => {
     gsap.fromTo(
       productsRef.current,
@@ -45,7 +58,6 @@ export default function ProductsSection() {
       { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power3.out" },
     );
   }, [filterProduct]);
-
   return (
     <section className="max-w-309 w-full mx-auto mt-14 px-4">
       <h2 className="text-heading font-semibold">Our Products</h2>
@@ -57,7 +69,7 @@ export default function ProductsSection() {
             <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
           </summary>
           <div className="filter-panel w-52">
-            {CATEGORY_FILTER.items.map((item) => (
+            {categoryItems.map((item: any) => (
               <label key={item} className="filter-item">
                 <input
                   type="checkbox"
@@ -76,7 +88,7 @@ export default function ProductsSection() {
             <ChevronDown className="ml-auto h-4 w-4 transition group-open:rotate-180" />
           </summary>
           <div className="filter-panel w-60">
-            {MATERIAL_FILTER.items.map((item) => (
+            {materialItems.map((item: any) => (
               <label key={item} className="filter-item">
                 <input
                   type="checkbox"
