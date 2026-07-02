@@ -58,7 +58,6 @@ const Product_details = () => {
       (p: Product) =>
         p.category?._id === product?.category?._id && p._id !== product?._id,
     ) ?? [];
-  console.log(allProductsRes.products);
   useEffect(() => {
     if (!product) return;
     const ctx = gsap.context(() => {
