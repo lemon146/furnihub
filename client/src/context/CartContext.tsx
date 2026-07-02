@@ -5,42 +5,38 @@ import {
 } from "@/types/cart";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { All_Products } from "../utils/products_data";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartContextProvider = ({ children }: CartContextProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [hasLoaded, SetHasLoaded] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const addToCart = (id: number | string) => {
-    const product = All_Products.find((item) => item.id === id);
-    if (!product) return toast.error("product not found");
-    const check = cartItems.find((item) => item.id === product.id);
-    if (check) {
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.id === check.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        ),
-      );
-      SetHasLoaded(true);
-    } else {
-      setCartItems((prev) => [...prev, { ...product, quantity: 1 }]);
-      SetHasLoaded(true);
+  const addToCart = (product: Omit<CartItem, "quantity">) => {
+    if (!product?.id) {
+      toast.error("Product not found");
+      return;
     }
-    return toast.success("Added to cart successfully!", {
+
+    const exists = cartItems.some((item) => item.id === product.id);
+
+    setCartItems((prev) =>
+      exists
+        ? prev.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
+          )
+        : [...prev, { ...product, quantity: 1 }],
+    );
+
+    toast.success("Added to cart successfully!", {
       icon: "✨",
-      style: {
-        borderRadius: "8px",
-        background: "#B88E2F",
-        color: "#fff",
-      },
+      style: { borderRadius: "8px", background: "#B88E2F", color: "#fff" },
     });
   };
-  // remove Cart
-  const removeFromCart = (id: number | string) => {
+
+  const removeFromCart = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
     toast.success("Product removed from cart", {
       icon: "🗑️",
@@ -51,28 +47,25 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
         backdropFilter: "blur(10px)",
         border: "1px solid rgba(239, 68, 68, 0.2)",
         color: "#3A3A3A",
-
         padding: "16px 24px",
         borderRadius: "12px",
         boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)",
-
         fontSize: "14px",
         fontWeight: "600",
         letterSpacing: "0.01em",
       },
     });
-    SetHasLoaded(true);
   };
+
   useEffect(() => {
     if (!hasLoaded) return;
-    localStorage.setItem("data", JSON.stringify(cartItems));
+    localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems, hasLoaded]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("data");
-    if (stored) {
-      setCartItems(JSON.parse(stored));
-    }
+    const stored = localStorage.getItem("cart");
+    if (stored) setCartItems(JSON.parse(stored));
+    setHasLoaded(true);
   }, []);
 
   return (
@@ -82,7 +75,6 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
   );
 };
 
-// custom hook
 export const useCartContext = () => {
   const context = useContext(CartContext);
   if (!context) {
