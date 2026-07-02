@@ -38,5 +38,5 @@ router
   );
 
 router.route("/").get(fetchAllProduct);
-router.route("/:id").get(isAuthenticated, fetchSingleProduct);
+router.route("/:id").get(fetchSingleProduct);
 export default router;
