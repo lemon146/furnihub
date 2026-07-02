@@ -1,21 +1,21 @@
-import { Product } from "@/types";
+// types/cart.ts
 import { ReactNode } from "react";
+
+export interface CartItem {
+  id: string;
+  title: string;
+  image: string;
+  price: number;
+  originalPrice?: number | undefined;
+  quantity: number;
+}
 
 export interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (id: string | number) => void;
-  removeFromCart: (id: string | number) => void;
-  //   incrementQuantity: (id: string | number) => void;
-  //   decrementQuantity: (id: string | number) => void;
-  //   clearCart: () => void;
-  //   getCartTotal: () => number;
-  //   getCartCount: () => number;
-  //   isInCart: (id: string | number) => boolean;
-}
-export interface CartContextProviderProps {
-  children: ReactNode;
+  addToCart: (item: Omit<CartItem, "quantity">) => void;
+  removeFromCart: (id: string) => void;
 }
 
-export interface CartItem extends Product {
-  quantity: number;
+export interface CartContextProviderProps {
+  children: ReactNode;
 }
