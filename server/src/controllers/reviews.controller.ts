@@ -78,6 +78,13 @@ const updateReviews = asyncHandler(async (req, res) => {
   const review = await Review.findById(reviewsId);
   if (!review) throw new ApiError(404, "Review not found!");
 
+  // check ownership
+  if (
+    review.user.toString() !== user_id.toString() &&
+    req.user.role !== "ADMIN"
+  ) {
+    throw new ApiError(403, "You are not allowed to update this review");
+  }
   // old rating
   const oldRating = review.rating;
 
@@ -152,6 +159,7 @@ const getReviews = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   const reviews = await Review.find({ product: productId })
     .populate("user", "fullName")
+    .populate("reply.user", "fullName")
     .populate("product", "title")
     .sort({ createdAt: -1 });
   res.status(200).json({
@@ -161,4 +169,102 @@ const getReviews = asyncHandler(async (req, res) => {
   });
 });
 
-export { createReviews, deleteReviews, getReviews, updateReviews };
+// reply review
+const replyReview = asyncHandler(async (req, res) => {
+  const reviewId = req.params.id;
+  const { message } = req.body;
+
+  if (!message?.trim()) {
+    throw new ApiError(400, "Reply message is required");
+  }
+
+  const review = await Review.findById(reviewId);
+
+  if (!review) {
+    throw new ApiError(404, "Review not found");
+  }
+
+  if (review.reply) {
+    throw new ApiError(409, "Reply already exists. Please update it instead.");
+  }
+
+  review.reply = {
+    user: req.user._id,
+    message,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  await review.save();
+
+  await review.populate("reply.user", "fullName");
+
+  res.status(201).json({
+    success: true,
+    message: "Reply added successfully",
+    review,
+  });
+});
+// update reply review
+const updateReplyReview = asyncHandler(async (req, res) => {
+  const reviewId = req.params.id;
+  const { message } = req.body;
+
+  if (!message?.trim()) {
+    throw new ApiError(400, "Reply message is required");
+  }
+
+  const review = await Review.findById(reviewId);
+
+  if (!review) {
+    throw new ApiError(404, "Review not found");
+  }
+
+  if (!review.reply) {
+    throw new ApiError(404, "Reply not found");
+  }
+
+  review.reply.message = message;
+  review.reply.updatedAt = new Date();
+
+  await review.save();
+
+  await review.populate("reply.user", "fullName");
+
+  res.status(200).json({
+    success: true,
+    message: "Reply updated successfully",
+    review,
+  });
+});
+// delete reply reviews
+const deleteReplyReview = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id);
+
+  if (!review) {
+    throw new ApiError(404, "Review not found");
+  }
+
+  if (!review.reply) {
+    throw new ApiError(404, "Reply not found");
+  }
+
+  review.reply = undefined;
+
+  await review.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Reply deleted successfully",
+  });
+});
+
+export {
+  createReviews,
+  deleteReplyReview,
+  deleteReviews,
+  getReviews,
+  replyReview,
+  updateReplyReview,
+  updateReviews,
+};
