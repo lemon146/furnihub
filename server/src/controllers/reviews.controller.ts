@@ -162,9 +162,11 @@ const getReviews = asyncHandler(async (req, res) => {
     .populate("reply.user", "fullName")
     .populate("product", "title")
     .sort({ createdAt: -1 });
+
   res.status(200).json({
     success: true,
     message: "Reviews fetched successfully",
+    totalReviews: reviews.length,
     reviews,
   });
 });
