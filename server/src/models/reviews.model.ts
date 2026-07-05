@@ -44,7 +44,7 @@ const reviewSchema = new mongoose.Schema<Review>(
     reply: {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // Admin who replied
+        ref: "User",
       },
       message: {
         type: String,
