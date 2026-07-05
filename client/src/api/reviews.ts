@@ -59,3 +59,16 @@ export const deleteReplyReview = async (reviewId: string) => {
   const res = await api.delete(`reviews/${reviewId}/reply`);
   return res.data;
 };
+
+//get all reviews
+export const getAllReviews = async () => {
+  const res = await api.get(`reviews/`);
+  return res.data;
+};
+
+// get review stats
+
+export const getReviewStats = async () => {
+  const res = await api.get(`reviews/stats`);
+  return res.data;
+};
