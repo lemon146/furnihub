@@ -170,6 +170,52 @@ const getReviews = asyncHandler(async (req, res) => {
     reviews,
   });
 });
+// get all reviews
+const getAllReviews = asyncHandler(async (req, res) => {
+  const reviews = await Review.find()
+    .populate("user", "fullName")
+    .populate("reply.user", "fullName")
+    .populate("product", "title averageRating numReviews")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    message: "Reviews fetched successfully",
+    reviews,
+  });
+});
+
+// review stats
+const getReviewStats = asyncHandler(async (req, res) => {
+  const totalReviews = await Review.countDocuments();
+
+  const reviews = await Review.find().select("rating");
+
+  const totalRating = reviews.reduce((sum, review) => {
+    return sum + review.rating;
+  }, 0);
+
+  const averageRating = totalReviews > 0 ? totalRating / totalReviews : 0;
+
+  const pendingReplies = await Review.countDocuments({
+    "reply.message": { $exists: false },
+  });
+
+  const fiveStarReviews = await Review.countDocuments({
+    rating: 5,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Review stats fetched successfully",
+    stats: {
+      totalReviews,
+      averageRating: Number(averageRating.toFixed(1)),
+      pendingReplies,
+      fiveStarReviews,
+    },
+  });
+});
 
 // reply review
 const replyReview = asyncHandler(async (req, res) => {
@@ -186,7 +232,7 @@ const replyReview = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Review not found");
   }
 
-  if (review.reply) {
+  if (review.reply?.message) {
     throw new ApiError(409, "Reply already exists. Please update it instead.");
   }
 
@@ -265,7 +311,9 @@ export {
   createReviews,
   deleteReplyReview,
   deleteReviews,
+  getAllReviews,
   getReviews,
+  getReviewStats,
   replyReview,
   updateReplyReview,
   updateReviews,
