@@ -3,7 +3,9 @@ import {
   createReviews,
   deleteReplyReview,
   deleteReviews,
+  getAllReviews,
   getReviews,
+  getReviewStats,
   replyReview,
   updateReplyReview,
   updateReviews,
@@ -13,18 +15,22 @@ import { authorizeRoles } from "../middlewares/role.middleware";
 
 const router = Router();
 
-// Review CRUD
-router.route("/:id").post(isAuthenticated, createReviews);
+// Admin routes
+router.get("/", isAuthenticated, authorizeRoles("ADMIN"), getAllReviews);
+router.get("/stats", isAuthenticated, authorizeRoles("ADMIN"), getReviewStats);
 
-router.route("/:id").patch(isAuthenticated, updateReviews);
+// Product review routes
+router.post("/:id", isAuthenticated, createReviews);
+router.patch("/:id", isAuthenticated, updateReviews);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  authorizeRoles("USER", "ADMIN"),
+  deleteReviews,
+);
+router.get("/:id", getReviews);
 
-router
-  .route("/:id")
-  .delete(isAuthenticated, authorizeRoles("USER", "ADMIN"), deleteReviews);
-
-router.route("/:id").get(getReviews);
-
-// Reply CRUD (Admin only)
+// Reply routes
 router
   .route("/:id/reply")
   .post(isAuthenticated, authorizeRoles("ADMIN"), replyReview)
