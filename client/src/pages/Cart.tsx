@@ -12,11 +12,9 @@ const formatUSD = (amount: number) =>
   })}`;
 
 const Cart = () => {
-  const { cartItems } = useCartContext();
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  );
+  const { cartItems, incrementProduct, decrementProduct, subtotal } =
+    useCartContext();
+
   return (
     <MainLayout>
       <Nav />
@@ -84,9 +82,20 @@ const Cart = () => {
 
                   <div className="flex justify-center">
                     <div className="flex items-center border rounded-full">
-                      <button className="px-3 py-1">−</button>
+                      <button
+                        className="px-3 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => decrementProduct(item.id)}
+                        disabled={item.quantity <= 1}
+                      >
+                        −
+                      </button>
                       <span className="px-4 font-medium">{item.quantity}</span>
-                      <button className="px-3 py-1">+</button>
+                      <button
+                        className="px-3 py-1"
+                        onClick={() => incrementProduct(item.id)}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
 
@@ -116,11 +125,22 @@ const Cart = () => {
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center border rounded-full">
-                        <button className="px-3 py-1">−</button>
+                        <button
+                          className="px-3 py-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                          onClick={() => decrementProduct(item.id)}
+                          disabled={item.quantity <= 1}
+                        >
+                          −
+                        </button>
                         <span className="px-4 font-medium">
                           {item.quantity}
                         </span>
-                        <button className="px-3 py-1">+</button>
+                        <button
+                          className="px-3 py-1"
+                          onClick={() => incrementProduct(item.id)}
+                        >
+                          +
+                        </button>
                       </div>
 
                       <button className="text-[#B88E2F]">
