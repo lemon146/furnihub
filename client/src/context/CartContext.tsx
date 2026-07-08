@@ -3,7 +3,7 @@ import {
   CartContextType,
   CartItem,
 } from "@/types/cart";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -56,7 +56,26 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
       },
     });
   };
-
+  const incrementProduct = (id: string) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id == id ? { ...item, quantity: item.quantity + 1 } : item,
+      ),
+    );
+  };
+  const decrementProduct = (id: string) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+          : item,
+      ),
+    );
+  };
+  const subtotal = useMemo(
+    () => cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    [cartItems],
+  );
   useEffect(() => {
     if (!hasLoaded) return;
     localStorage.setItem("cart", JSON.stringify(cartItems));
@@ -69,7 +88,16 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
   }, []);
 
   return (
-    <CartContext.Provider value={{ addToCart, cartItems, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        addToCart,
+        cartItems,
+        removeFromCart,
+        incrementProduct,
+        decrementProduct,
+        subtotal,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
