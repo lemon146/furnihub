@@ -16,7 +16,7 @@ import { CiShoppingCart } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
 export default function CartDrawer() {
-  const { cartItems, removeFromCart } = useCartContext();
+  const { cartItems, removeFromCart, subtotal } = useCartContext();
   const navigate = useNavigate();
   return (
     <Drawer>
@@ -87,7 +87,7 @@ export default function CartDrawer() {
           <DrawerFooter>
             <div className="flex justify-between items-center">
               <p className="text-lg font-semibold">Subtotal:</p>
-              <p className="text-lg font-bold">Rs. 520,000</p>
+              <p className="text-lg font-bold">${subtotal}</p>
             </div>
             <Button
               onClick={() => navigate("/cart")}
