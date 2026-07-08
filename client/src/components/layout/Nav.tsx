@@ -3,7 +3,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { TextAlignJustify, UserRoundPen, X } from "lucide-react";
+import { ChevronRight, TextAlignJustify, UserRoundPen, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
@@ -25,7 +25,7 @@ const navItems: NavItem[] = [
 
 const Nav: React.FC = () => {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
-  const toggleNavbar = () => setMobileMenu(!mobileMenu);
+  const toggleNavbar = () => setMobileMenu((prev) => !prev);
   const { logout, user } = useAuth();
 
   const navRef = useRef<HTMLElement | null>(null);
@@ -68,34 +68,44 @@ const Nav: React.FC = () => {
     { scope: navRef },
   );
 
+  // Mobile menu open/close, properly animated both directions
   useGSAP(() => {
+    if (!mobileMenuRef.current) return;
+
     if (mobileMenu) {
+      gsap.set(mobileMenuRef.current, { display: "block" });
       gsap.fromTo(
         mobileMenuRef.current,
         { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.4, ease: "power3.inOut" },
+        { height: "auto", opacity: 1, duration: 0.35, ease: "power3.inOut" },
       );
       gsap.from(".mobile-link", {
         opacity: 0,
-        x: -20,
-        stagger: 0.1,
+        x: -16,
+        stagger: 0.06,
         duration: 0.3,
-        delay: 0.2,
+        delay: 0.15,
+      });
+    } else {
+      gsap.to(mobileMenuRef.current, {
+        height: 0,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power3.inOut",
+        onComplete: () => gsap.set(mobileMenuRef.current, { display: "none" }),
       });
     }
   }, [mobileMenu]);
-  const isLoggedIn = false;
 
   return (
     <header
       ref={navRef}
       className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100"
     >
-      <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4 md:py-6">
-        {/* Desktop & Mobile Logo */}
-        <div className="nav-logo flex items-center gap-2 select-none">
+      <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-4 md:py-6">
+        <div className="nav-logo flex items-center gap-2 select-none shrink-0">
           <img src={logo} alt="logo" className="h-8 w-10 object-contain" />
-          <h1 className="font-bold text-2xl md:text-3xl tracking-tight text-[#333]">
+          <h1 className="font-bold text-xl md:text-3xl tracking-tight text-[#333]">
             Furniro
           </h1>
         </div>
@@ -142,8 +152,6 @@ const Nav: React.FC = () => {
               <button className="nav-icons text-[#3A3A3A] hover:text-[#B88E2F]">
                 <UserRoundPen size={24} strokeWidth={1.5} />
               </button>
-
-              {/* Profile Dropdown */}
               <div className="absolute right-0 top-full mt-4 w-48 rounded-xl bg-white shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <Link
                   to="/profile"
@@ -175,67 +183,99 @@ const Nav: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Toggle Button */}
-        <button
-          className="lg:hidden p-2 text-[#333] active:scale-90 transition-transform"
-          onClick={toggleNavbar}
-          aria-label="Toggle Menu"
-        >
-          {mobileMenu ? <X size={28} /> : <TextAlignJustify size={28} />}
-        </button>
-
-        {/* Mobile Menu Overlay */}
-        {mobileMenu && (
-          <div
-            ref={mobileMenuRef}
-            className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl overflow-hidden"
+        {/* Mobile Top Bar Icons — always visible, no need to open hamburger */}
+        <div className="flex items-center gap-1 lg:hidden">
+          <button
+            className="p-2 text-[#3A3A3A] active:scale-90 transition-transform"
+            aria-label="Search"
           >
-            <div className="flex flex-col p-8 gap-8">
-              <ul className="flex flex-col gap-6">
-                {navItems.map((item) => (
-                  <li
-                    key={item.name}
-                    className="mobile-link"
-                    onClick={() => setMobileMenu(false)}
-                  >
-                    <Link
-                      to={item.path}
-                      className="text-xl font-bold text-[#3A3A3A] hover:text-[#B88E2F]"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <CiSearch size={22} />
+          </button>
+          <WishlistDrawer />
+          <CartDrawer />
+          <button
+            className="p-2 text-[#333] active:scale-90 transition-transform"
+            onClick={toggleNavbar}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenu ? <X size={26} /> : <TextAlignJustify size={26} />}
+          </button>
+        </div>
 
-              <div className="mobile-link pt-6 border-t border-gray-100 flex justify-between items-center">
-                {!user ? (
+        {/* Mobile Menu Dropdown — nav links + auth only, no duplicated icons */}
+        <div
+          ref={mobileMenuRef}
+          style={{ display: "none", height: 0, overflow: "hidden" }}
+          className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl"
+        >
+          <div className="flex flex-col p-6 gap-2">
+            <ul className="flex flex-col">
+              {navItems.map((item) => (
+                <li
+                  key={item.name}
+                  className="mobile-link border-b border-gray-50 last:border-none"
+                  onClick={() => setMobileMenu(false)}
+                >
+                  <Link
+                    to={item.path}
+                    className="flex items-center justify-between py-4 text-lg font-semibold text-[#3A3A3A] hover:text-[#B88E2F] transition-colors"
+                  >
+                    {item.name}
+                    <ChevronRight size={18} className="text-gray-300" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mobile-link pt-4 mt-2 border-t border-gray-100">
+              {!user ? (
+                <div className="flex items-center gap-3">
                   <Link
                     to="/login"
                     onClick={() => setMobileMenu(false)}
-                    className="text-lg font-semibold text-[#3A3A3A]"
+                    className="flex-1 text-center py-3 rounded-xl bg-[#B88E2F] text-white font-semibold"
                   >
                     Login
                   </Link>
-                ) : (
+                  <Link
+                    to="/register"
+                    onClick={() => setMobileMenu(false)}
+                    className="flex-1 text-center py-3 rounded-xl border border-[#B88E2F] text-[#B88E2F] font-semibold"
+                  >
+                    Register
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-1">
                   <Link
                     to="/profile"
                     onClick={() => setMobileMenu(false)}
-                    className="p-2 text-[#3A3A3A]"
+                    className="flex items-center gap-3 py-3 text-[#3A3A3A] font-medium"
                   >
-                    <UserRoundPen size={26} />
+                    <UserRoundPen size={20} />
+                    My Profile
                   </Link>
-                )}
-
-                <button className="p-2 text-[#3A3A3A]">
-                  <CiSearch size={28} />
-                </button>
-                <WishlistDrawer />
-                <CartDrawer />
-              </div>
+                  <Link
+                    to="/orders"
+                    onClick={() => setMobileMenu(false)}
+                    className="flex items-center gap-3 py-3 text-[#3A3A3A] font-medium"
+                  >
+                    Orders
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenu(false);
+                    }}
+                    className="flex items-center gap-3 py-3 text-red-500 font-medium text-left"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
