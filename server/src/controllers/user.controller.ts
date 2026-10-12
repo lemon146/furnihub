@@ -195,8 +195,20 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   });
 });
 
+// get all users except admin
+
+const getAllUser = asyncHandler(async (req, res) => {
+  const user = await User.find();
+  return res.status(200).json({
+    message: "fetched users successfully",
+    success: true,
+    user: user,
+  });
+});
+
 export {
   changeCurrentPassword,
+  getAllUser,
   getCurrentUser,
   loginUser,
   logOutUser,
