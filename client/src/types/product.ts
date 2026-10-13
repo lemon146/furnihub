@@ -19,6 +19,7 @@ export interface ProductCategory {
 }
 
 export interface Product {
+  count: number;
   _id: string;
   title: string;
   description: string;

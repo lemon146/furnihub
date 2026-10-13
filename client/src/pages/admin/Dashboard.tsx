@@ -1,15 +1,24 @@
+import { getProduct } from "@/api/product";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
-  Package,
-  ShoppingCart,
-  Users,
   DollarSign,
-  Plus,
   Eye,
+  Package,
+  Plus,
+  ShoppingCart,
   Truck,
+  Users,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Dashboard() {
+  const navigate = useNavigate();
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+  });
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -29,7 +38,10 @@ export function Dashboard() {
         </div>
 
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:scale-105 transition">
+          <button
+            onClick={() => navigate("/admin/products/create")}
+            className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl hover:scale-105 transition"
+          >
             <Plus size={18} /> Add Product
           </button>
 
@@ -48,7 +60,7 @@ export function Dashboard() {
       >
         <StatCard
           title="Total Products"
-          value="124"
+          value={data.count}
           icon={<Package className="text-blue-600" />}
           bg="bg-blue-50"
         />
@@ -180,9 +192,27 @@ const container = {
 };
 
 const orders = [
-  { id: "#1001", customer: "Ali Khan", product: "Wooden Chair", status: "Delivered", price: "$120" },
-  { id: "#1002", customer: "Ahmed Raza", product: "Modern Sofa", status: "Pending", price: "$560" },
-  { id: "#1003", customer: "Fatima Noor", product: "Dining Table", status: "Shipped", price: "$320" },
+  {
+    id: "#1001",
+    customer: "Ali Khan",
+    product: "Wooden Chair",
+    status: "Delivered",
+    price: "$120",
+  },
+  {
+    id: "#1002",
+    customer: "Ahmed Raza",
+    product: "Modern Sofa",
+    status: "Pending",
+    price: "$560",
+  },
+  {
+    id: "#1003",
+    customer: "Fatima Noor",
+    product: "Dining Table",
+    status: "Shipped",
+    price: "$320",
+  },
 ];
 
 const products = [
