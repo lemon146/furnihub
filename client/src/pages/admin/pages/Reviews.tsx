@@ -6,6 +6,7 @@ import {
   replyReview,
   updateReplyReview,
 } from "@/api/reviews";
+import ReviewsSkeleton from "@/components/admin/ReviewsSkeleton";
 import { Review, ReviewStats } from "@/types/review";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
@@ -37,7 +38,11 @@ export function ReviewsPage() {
     queryFn: getAllReviews,
   });
 
-  const { data: statsRes } = useQuery({
+  const {
+    data: statsRes,
+    isPending: isStatsPending,
+    isError: isStatsError,
+  } = useQuery({
     queryKey: ["review-stats"],
     queryFn: getReviewStats,
   });
@@ -82,21 +87,36 @@ export function ReviewsPage() {
         <h2 className="text-xl font-bold text-gray-800">Reviews Management</h2>
       </motion.div>
 
-      {/* KPI CARDS - real data only, no fake charts */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Reviews" value={stats?.totalReviews ?? "—"} />
-        <StatCard
-          label="Average Rating"
-          value={stats ? `${stats.averageRating} ⭐` : "—"}
-        />
-        <StatCard
-          label="Pending Replies"
-          value={stats?.pendingReplies ?? "—"}
-        />
-        <StatCard
-          label="5-Star Reviews"
-          value={stats?.fiveStarReviews ?? "—"}
-        />
+      {/* KPI CARDS */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {isStatsPending ? (
+          Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+        ) : isStatsError ? (
+          <div className="col-span-full rounded-xl border border-red-100 bg-white p-4">
+            <p className="text-sm text-red-600">
+              Failed to load review statistics.
+            </p>
+          </div>
+        ) : (
+          <>
+            <StatCard label="Total Reviews" value={stats?.totalReviews ?? 0} />
+
+            <StatCard
+              label="Average Rating"
+              value={`${stats?.averageRating ?? 0} ⭐`}
+            />
+
+            <StatCard
+              label="Pending Replies"
+              value={stats?.pendingReplies ?? 0}
+            />
+
+            <StatCard
+              label="5-Star Reviews"
+              value={stats?.fiveStarReviews ?? 0}
+            />
+          </>
+        )}
       </div>
 
       {/* SEARCH */}
@@ -118,20 +138,24 @@ export function ReviewsPage() {
 
       {/* LIST */}
       {isPending ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-40 rounded-2xl bg-gray-100 animate-pulse"
-            />
-          ))}
-        </div>
+        <ReviewsSkeleton />
       ) : isError ? (
-        <p className="text-center text-red-600 py-10">
-          Failed to load reviews.
-        </p>
+        <div className="rounded-2xl border border-red-100 bg-white px-6 py-12 text-center">
+          <p className="font-medium text-red-600">Failed to load reviews.</p>
+
+          <button
+            onClick={() =>
+              queryClient.invalidateQueries({
+                queryKey: ["admin-reviews"],
+              })
+            }
+            className="mt-4 rounded-xl bg-[#B88E2F] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#a47d25]"
+          >
+            Try Again
+          </button>
+        </div>
       ) : paginated.length === 0 ? (
-        <p className="text-center text-gray-500 py-10">No reviews found.</p>
+        <p className="py-10 text-center text-gray-500">No reviews found.</p>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2">
           <AnimatePresence>
@@ -325,5 +349,13 @@ function ReviewCard({
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+function StatCardSkeleton() {
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-5">
+      <div className="mb-3 h-4 w-24 animate-pulse rounded bg-gray-200" />
+      <div className="h-8 w-16 animate-pulse rounded bg-gray-200" />
+    </div>
   );
 }

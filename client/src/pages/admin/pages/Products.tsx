@@ -1,5 +1,5 @@
 import { getProduct } from "@/api/product";
-import Loader from "@/components/ui/Loader";
+import CategorySkeleton from "@/components/admin/CategorySkeleton";
 import { handleDelete } from "@/hooks/product.delete.hook";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -13,8 +13,24 @@ export function ProductsPage() {
     queryFn: getProduct,
   });
 
-  if (isPending) return <Loader />;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isPending) return <CategorySkeleton />;
+
+  if (isError) {
+    return (
+      <div className="rounded-2xl border border-red-200 bg-white p-8 text-center">
+        <p className="font-medium text-red-600">Failed to load Products</p>
+
+        <p className="mt-2 text-sm text-gray-500">{error.message}</p>
+
+        <button
+          onClick={() => refetch()}
+          className="mt-4 rounded-xl bg-[#B88E2F] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#a47d25]"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
   if (!data?.products?.length) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center text-center">

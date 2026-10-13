@@ -4,9 +4,10 @@ import express from "express";
 import path from "path";
 import { errorHandler } from "./middlewares/errorHandler";
 import categoryRouter from "./routes/category.routes";
+import dashboardRouter from "./routes/dashboard.routes";
 import productRouter from "./routes/product.routes";
-import userRouter from "./routes/user.routes";
 import reviewRouter from "./routes/review.routes";
+import userRouter from "./routes/user.routes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/dashboard/stats", dashboardRouter);
 
 app.use(errorHandler);
 

@@ -1,4 +1,4 @@
-import { getProduct } from "@/api/product";
+import { dashboardStats } from "@/api/dashboard.api";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -11,13 +11,40 @@ import {
   Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import StatCardSkeleton from "../../components/admin/StatCardSkeleton";
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { data, isPending, isError, error, refetch } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProduct,
+    queryKey: ["stats"],
+    queryFn: dashboardStats,
   });
+  if (isPending) {
+    return (
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <StatCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <p className="text-red-600">
+          {error.message || "Failed to load dashboard stats"}
+        </p>
+
+        <button
+          onClick={() => refetch()}
+          className="mt-3 rounded-lg bg-[#B88E2F] px-4 py-2 text-white transition hover:bg-[#a47d25]"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -60,7 +87,7 @@ export function Dashboard() {
       >
         <StatCard
           title="Total Products"
-          value={data.count}
+          value={data.stats.totalProducts}
           icon={<Package className="text-blue-600" />}
           bg="bg-blue-50"
         />
@@ -71,8 +98,8 @@ export function Dashboard() {
           bg="bg-green-50"
         />
         <StatCard
-          title="Customers"
-          value="89"
+          title="Total Customers"
+          value={data.stats.totalCustomers}
           icon={<Users className="text-purple-600" />}
           bg="bg-purple-50"
         />

@@ -4,7 +4,7 @@ import {
   getCategory,
   updateCategory,
 } from "@/api/category.api";
-import Loader from "@/components/ui/Loader";
+import CategorySkeleton from "@/components/admin/CategorySkeleton";
 import { CategorySchema, CategoryType } from "@/schema/category.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -23,10 +23,27 @@ export function CategoriesPage() {
     queryFn: getCategory,
   });
 
-  if (isPending) return <Loader />;
-  if (isError) return <div>Error: {error.message}</div>;
-  if (data.length === 0) {
-    return <p>No products found 😐</p>;
+  if (isPending) return <CategorySkeleton />;
+
+  if (isError) {
+    return (
+      <div className="rounded-2xl border border-red-200 bg-white p-8 text-center">
+        <p className="font-medium text-red-600">Failed to load categories</p>
+
+        <p className="mt-2 text-sm text-gray-500">{error.message}</p>
+
+        <button
+          onClick={() => refetch()}
+          className="mt-4 rounded-xl bg-[#B88E2F] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#a47d25]"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  if (data.categories.length === 0) {
+    return <p className="text-gray-500">No categories found 😐</p>;
   }
 
   const openCreate = () => {
