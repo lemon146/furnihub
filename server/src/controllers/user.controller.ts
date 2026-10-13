@@ -203,6 +203,7 @@ const getAllUser = asyncHandler(async (req, res) => {
     message: "fetched users successfully",
     success: true,
     user: user,
+    count: user.length,
   });
 });
 
