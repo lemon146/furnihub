@@ -11,7 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import StatCardSkeleton from "./pages/StatCardSkeleton";
+import StatCardSkeleton from "../../components/admin/StatCardSkeleton";
 
 export function Dashboard() {
   const navigate = useNavigate();
