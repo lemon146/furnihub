@@ -4,9 +4,8 @@ import { Review } from "../models/reviews.model";
 import { ApiError } from "../utils/apiError";
 
 const createReviews = asyncHandler(async (req, res) => {
-  const product_id = req.params.id;
   const user_id = req.user._id;
-
+  const product_id = String(req.params.id);
   const { comment } = req.body;
   const rating = Number(req.body.rating);
 
