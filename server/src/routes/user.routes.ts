@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
   changeCurrentPassword,
-  getAllUser,
+  deleteCustomer,
+  getAllUsers,
   getCurrentUser,
   loginUser,
   logOutUser,
@@ -23,8 +24,9 @@ router.route("/logout").post(isAuthenticated, logOutUser);
 router.route("/refresh/token").post(refreshAccessToken);
 router.route("/change/password").patch(isAuthenticated, changeCurrentPassword);
 router.route("/current/user").get(isAuthenticated, getCurrentUser);
+router.route("/").get(isAuthenticated, authorizeRoles("ADMIN"), getAllUsers);
 router
-  .route("/user/users")
-  .get(isAuthenticated, authorizeRoles("ADMIN"), getAllUser);
+  .route("/:id")
+  .delete(isAuthenticated, authorizeRoles("ADMIN"), deleteCustomer);
 
 export default router;
