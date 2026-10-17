@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { User } from "../models/user.models";
 import { ApiError } from "../utils/apiError";
@@ -197,19 +198,41 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 // get all users except admin
 
-const getAllUser = asyncHandler(async (req, res) => {
-  const user = await User.find();
+const getAllUsers = asyncHandler(async (req, res) => {
+  const user = await User.find({ role: "USER" })
+    .select("-password -refreshToken")
+    .sort({ createdAt: -1 })
+    .lean();
+
   return res.status(200).json({
-    message: "fetched users successfully",
     success: true,
-    user: user,
+    message: "Users fetched successfully",
+    user,
     count: user.length,
   });
 });
+const deleteCustomer = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
+  if (!mongoose.isValidObjectId(id)) {
+    throw new ApiError(400, "Invalid customer ID");
+  }
+
+  const customer = await User.findOneAndDelete({ _id: id, role: "USER" });
+
+  if (!customer) {
+    throw new ApiError(404, "Customer not found");
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Customer deleted successfully",
+  });
+});
 export {
   changeCurrentPassword,
-  getAllUser,
+  deleteCustomer,
+  getAllUsers,
   getCurrentUser,
   loginUser,
   logOutUser,
