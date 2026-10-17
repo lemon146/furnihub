@@ -1,89 +1,107 @@
+import { deleteCustomer, getAllUsers } from "@/api/customer.api";
+import CustomersSkeleton from "@/components/admin/CustomersSkeleton";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import { Eye, Search, ShoppingBag, Trash2, Users, X } from "lucide-react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, Users, ShoppingBag, Eye, Ban, Trash2, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 /* ================= TYPES ================= */
-type Order = {
-  id: string;
-  amount: number;
-};
-
 type Customer = {
-  id: string;
-  name: string;
+  _id: string;
+  fullName: string;
   email: string;
-  orders: number;
-  totalSpent: number;
-  status: "active" | "blocked";
-  phone: string;
-  address: string;
-  recentOrders: Order[];
+  phone?: string;
+  address?: string;
 };
 
-/* ================= DATA ================= */
-const dummyCustomers: Customer[] = [
-  {
-    id: "1",
-    name: "Ali Khan",
-    email: "ali@example.com",
-    orders: 5,
-    totalSpent: 320,
-    status: "active",
-    phone: "+92 300 1234567",
-    address: "Karachi, Pakistan",
-    recentOrders: [
-      { id: "#101", amount: 120 },
-      { id: "#102", amount: 200 },
-    ],
-  },
-  {
-    id: "2",
-    name: "Sara Ahmed",
-    email: "sara@example.com",
-    orders: 2,
-    totalSpent: 90,
-    status: "blocked",
-    phone: "+92 321 9876543",
-    address: "Lahore, Pakistan",
-    recentOrders: [{ id: "#103", amount: 90 }],
-  },
-];
+// No orders exist yet, so these are 0 for now
+const ORDERS_COUNT = 0;
+const TOTAL_SPENT = 0;
+
+/* ================= HELPERS ================= */
+const getErrorMessage = (err: unknown, fallback: string) => {
+  if (isAxiosError(err)) {
+    return err.response?.data?.message || err.message || fallback;
+  }
+  if (err instanceof Error) return err.message;
+  return fallback;
+};
+
+const getInitials = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
 
 /* ================= COMPONENT ================= */
 export default function CustomersPage() {
   const [search, setSearch] = useState("");
-  const [customers, setCustomers] = useState<Customer[]>(dummyCustomers);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null,
   );
-  const [tab, setTab] = useState<"overview" | "orders">("overview");
+
+  const queryClient = useQueryClient();
+
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: ["customers"],
+    queryFn: getAllUsers,
+  });
+
+  // Hooks must stay ABOVE the early returns
+  const {
+    mutate: removeCustomer,
+    isPending: isDeleting,
+    variables: deletingId,
+  } = useMutation({
+    mutationFn: deleteCustomer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setSelectedCustomer(null);
+    },
+    onError: (err) => {
+      toast.error(getErrorMessage(err, "Failed to delete customer"));
+    },
+  });
+
+  const handleDelete = (customer: Customer) => {
+    if (
+      !window.confirm(`Delete ${customer.fullName}? This cannot be undone.`)
+    ) {
+      return;
+    }
+    removeCustomer(customer._id);
+    toast.success("Customer deleted successfully");
+  };
+
+  if (isPending) return <CustomersSkeleton />;
+
+  if (isError) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+        <p className="text-red-600">
+          {getErrorMessage(error, "Failed to load customers")}
+        </p>
+        <button
+          onClick={() => refetch()}
+          className="mt-3 rounded-lg bg-[#B88E2F] px-4 py-2 text-white transition hover:bg-[#a47d25]"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  const customers: Customer[] = data?.user ?? [];
 
   const filtered = customers.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()),
+    c.fullName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const getInitials = (name: string) =>
-    name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-
-  const toggleStatus = (id: string) => {
-    setCustomers((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? { ...c, status: c.status === "active" ? "blocked" : "active" }
-          : c,
-      ),
-    );
-
-    setSelectedCustomer((prev) =>
-      prev && prev.id === id
-        ? { ...prev, status: prev.status === "active" ? "blocked" : "active" }
-        : prev,
-    );
-  };
+  const isDeletingThis = (id: string) => isDeleting && deletingId === id;
 
   return (
     <motion.div className="p-4 sm:p-6 space-y-6">
@@ -104,6 +122,10 @@ export default function CustomersPage() {
         </div>
       </div>
 
+      {filtered.length === 0 && (
+        <p className="text-center text-gray-500">No customers found.</p>
+      )}
+
       {/* ================= DESKTOP TABLE ================= */}
       <div className="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
         <table className="w-full min-w-[800px] text-sm">
@@ -112,54 +134,44 @@ export default function CustomersPage() {
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
               <th className="p-3">Orders</th>
-              <th className="p-3">Status</th>
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {filtered.map((customer) => (
-              <tr key={customer.id} className="border-t hover:bg-gray-50">
-                <td className="p-3 font-medium">{customer.name}</td>
+              <tr
+                key={customer._id}
+                className={`border-t hover:bg-gray-50 ${
+                  isDeletingThis(customer._id) ? "opacity-50" : ""
+                }`}
+              >
+                <td className="p-3 font-medium">{customer.fullName}</td>
                 <td className="p-3 text-gray-600">{customer.email}</td>
 
-                <td className="p-3 flex items-center gap-1">
-                  <ShoppingBag size={14} />
-                  {customer.orders}
-                </td>
-
                 <td className="p-3">
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      customer.status === "active"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
-                  >
-                    {customer.status}
+                  <span className="flex items-center gap-1">
+                    <ShoppingBag size={14} />
+                    {ORDERS_COUNT}
                   </span>
                 </td>
 
                 <td className="p-3">
                   <div className="flex justify-center gap-2">
                     <button
-                      onClick={() => {
-                        setSelectedCustomer(customer);
-                        setTab("overview");
-                      }}
+                      onClick={() => setSelectedCustomer(customer)}
+                      aria-label={`View ${customer.fullName}`}
                       className="p-1.5 bg-blue-100 text-blue-600 rounded"
                     >
                       <Eye size={16} />
                     </button>
 
                     <button
-                      onClick={() => toggleStatus(customer.id)}
-                      className="p-1.5 bg-yellow-100 text-yellow-600 rounded"
+                      onClick={() => handleDelete(customer)}
+                      disabled={isDeletingThis(customer._id)}
+                      aria-label={`Delete ${customer.fullName}`}
+                      className="p-1.5 bg-red-100 text-red-600 rounded disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      <Ban size={16} />
-                    </button>
-
-                    <button className="p-1.5 bg-red-100 text-red-600 rounded">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -174,26 +186,16 @@ export default function CustomersPage() {
       <div className="grid gap-4 md:hidden">
         {filtered.map((customer) => (
           <div
-            key={customer.id}
-            className="bg-white shadow rounded-xl p-4 space-y-3"
+            key={customer._id}
+            className={`bg-white shadow rounded-xl p-4 space-y-3 ${
+              isDeletingThis(customer._id) ? "opacity-50" : ""
+            }`}
           >
-            <div className="flex justify-between">
-              <p className="font-semibold">{customer.name}</p>
-              <span
-                className={`text-xs px-2 py-1 rounded ${
-                  customer.status === "active"
-                    ? "bg-green-100 text-green-600"
-                    : "bg-red-100 text-red-600"
-                }`}
-              >
-                {customer.status}
-              </span>
-            </div>
-
+            <p className="font-semibold">{customer.fullName}</p>
             <p className="text-sm text-gray-500">{customer.email}</p>
 
             <p className="text-sm flex items-center gap-1">
-              <ShoppingBag size={14} /> {customer.orders} orders
+              <ShoppingBag size={14} /> {ORDERS_COUNT} orders
             </p>
 
             <div className="flex gap-2">
@@ -205,10 +207,11 @@ export default function CustomersPage() {
               </button>
 
               <button
-                onClick={() => toggleStatus(customer.id)}
-                className="flex-1 bg-yellow-100 text-yellow-600 py-2 rounded text-sm"
+                onClick={() => handleDelete(customer)}
+                disabled={isDeletingThis(customer._id)}
+                className="flex-1 bg-red-100 text-red-600 py-2 rounded text-sm disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Toggle
+                {isDeletingThis(customer._id) ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
@@ -219,80 +222,72 @@ export default function CustomersPage() {
       <AnimatePresence>
         {selectedCustomer && (
           <>
-            {/* BACKDROP */}
             <motion.div
               className="fixed inset-0 bg-black/40 z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setSelectedCustomer(null)}
             />
 
-            {/* PANEL (FULL MOBILE + SIDE DESKTOP) */}
             <motion.div
               className="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-xl flex flex-col"
               initial={{ x: 400 }}
               animate={{ x: 0 }}
               exit={{ x: 400 }}
             >
-              {/* HEADER */}
               <div className="p-4 border-b flex justify-between">
                 <h2 className="font-semibold">Customer Profile</h2>
-                <button onClick={() => setSelectedCustomer(null)}>
+                <button
+                  onClick={() => setSelectedCustomer(null)}
+                  aria-label="Close"
+                >
                   <X />
                 </button>
               </div>
 
-              {/* PROFILE */}
               <div className="p-4 flex items-center gap-3 border-b">
                 <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold">
-                  {getInitials(selectedCustomer.name)}
+                  {getInitials(selectedCustomer.fullName)}
                 </div>
-
                 <div>
-                  <p className="font-semibold">{selectedCustomer.name}</p>
+                  <p className="font-semibold">{selectedCustomer.fullName}</p>
                   <p className="text-sm text-gray-500">
                     {selectedCustomer.email}
                   </p>
                 </div>
               </div>
 
-              {/* STATS */}
               <div className="p-4 grid grid-cols-2 gap-3 border-b">
                 <div className="bg-gray-50 p-3 rounded">
                   <p className="text-xs text-gray-500">Orders</p>
-                  <p className="font-semibold">{selectedCustomer.orders}</p>
+                  <p className="font-semibold">{ORDERS_COUNT}</p>
                 </div>
-
                 <div className="bg-gray-50 p-3 rounded">
                   <p className="text-xs text-gray-500">Spent</p>
-                  <p className="font-semibold">
-                    ${selectedCustomer.totalSpent}
-                  </p>
+                  <p className="font-semibold">${TOTAL_SPENT}</p>
                 </div>
               </div>
 
-              {/* ACTION */}
-              <div className="p-4">
-                <button
-                  onClick={() => toggleStatus(selectedCustomer.id)}
-                  className={`w-full py-2 rounded text-sm font-medium ${
-                    selectedCustomer.status === "active"
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {selectedCustomer.status === "active"
-                    ? "Block Customer"
-                    : "Activate Customer"}
-                </button>
+              <div className="p-4 text-sm space-y-2 flex-1 overflow-y-auto">
+                <p>
+                  <b>Phone:</b> {selectedCustomer.phone ?? "—"}
+                </p>
+                <p>
+                  <b>Address:</b> {selectedCustomer.address ?? "—"}
+                </p>
               </div>
 
-              {/* CONTENT */}
-              <div className="p-4 text-sm space-y-2 overflow-y-auto">
-                <p>
-                  <b>Phone:</b> {selectedCustomer.phone}
-                </p>
-                <p>
-                  <b>Address:</b> {selectedCustomer.address}
-                </p>
+              <div className="p-4 border-t">
+                <button
+                  onClick={() => handleDelete(selectedCustomer)}
+                  disabled={isDeletingThis(selectedCustomer._id)}
+                  className="w-full py-2 rounded text-sm font-medium bg-red-100 text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isDeletingThis(selectedCustomer._id)
+                    ? "Deleting..."
+                    : "Delete Customer"}
+                </button>
               </div>
             </motion.div>
           </>
