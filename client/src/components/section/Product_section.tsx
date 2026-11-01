@@ -5,6 +5,7 @@ import { useShopFilter } from "@/context/ShopFilterContext";
 import { CategoryType } from "@/schema/category.schema";
 import { MappedProduct } from "@/types/shopfilter";
 import { allColors } from "@/utils/color_options";
+import { formatCurrency } from "@/utils/currency";
 import { useQuery } from "@tanstack/react-query";
 import { gsap } from "gsap";
 import { ChevronDown, DecimalsArrowRight } from "lucide-react";
@@ -241,11 +242,11 @@ export default function ProductsSection() {
 
                   <div className="flex items-center gap-2 mt-2">
                     <span className="font-bold text-sm md:text-base">
-                      ${item.price}
+                      {formatCurrency(item.price)}
                     </span>
                     {item.originalPrice && (
                       <span className="line-through opacity-50 text-xs">
-                        ${item.originalPrice}
+                        {formatCurrency(item.originalPrice)}
                       </span>
                     )}
                   </div>

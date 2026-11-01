@@ -4,7 +4,7 @@ import { ProductFormType, ProductSchema } from "@/schema/product.schema.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
-  DollarSign,
+  Currency,
   Image as ImageIcon,
   Info,
   Layers,
@@ -237,7 +237,7 @@ export function ProductForm({
       {/* PRICING */}
       <div className="space-y-4">
         <h3 className="flex items-center gap-2 font-medium text-gray-700">
-          <DollarSign size={16} /> Pricing & Stock
+          <Currency size={16} /> Pricing & Stock
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>

@@ -58,7 +58,7 @@ export default function CartDrawer() {
                   <div className="flex-1 ml-3">
                     <p className="font-medium">{item.title}</p>
                     <p className="text-sm text-gray-500">
-                      {`${item.quantity} × $${(item.price ?? 0) * item.quantity}`}
+                      {`${item.quantity} × Rs ${(item.price ?? 0) * item.quantity}`}
                     </p>
                   </div>
 
@@ -87,7 +87,7 @@ export default function CartDrawer() {
           <DrawerFooter>
             <div className="flex justify-between items-center">
               <p className="text-lg font-semibold">Subtotal:</p>
-              <p className="text-lg font-bold">${subtotal}</p>
+              <p className="text-lg font-bold">Rs {subtotal}</p>
             </div>
             <Button
               onClick={() => navigate("/cart")}

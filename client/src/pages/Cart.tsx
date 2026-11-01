@@ -2,15 +2,10 @@ import Footers from "@/components/layout/Footers";
 import MainLayout from "@/components/layout/MainLayout";
 import Nav from "@/components/layout/Nav";
 import { useCartContext } from "@/context/CartContext";
+import { formatCurrency } from "@/utils/currency";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import banner from "../assets/images/shop-banner.png";
-
-const formatUSD = (amount: number) =>
-  `$${amount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
 
 const Cart = () => {
   const {
@@ -86,7 +81,7 @@ const Cart = () => {
                     </div>
 
                     <span className="text-gray-500">
-                      {formatUSD(item.price)}
+                      {formatCurrency(item.price)}
                     </span>
 
                     <div className="flex justify-center">
@@ -112,7 +107,7 @@ const Cart = () => {
 
                     <div className="flex justify-end items-center gap-4">
                       <span className="font-semibold">
-                        {formatUSD(item.price * item.quantity)}
+                        {formatCurrency(item.price * item.quantity)}
                       </span>
                       <button
                         onClick={() => removeFromCart(item.id)}
@@ -134,7 +129,7 @@ const Cart = () => {
                       <h3 className="font-medium">{item.title}</h3>
 
                       <p className="text-gray-500 text-sm">
-                        {formatUSD(item.price)}
+                        {formatCurrency(item.price)}
                       </p>
 
                       <div className="flex items-center justify-between">
@@ -163,7 +158,7 @@ const Cart = () => {
                       </div>
 
                       <p className="font-semibold text-right">
-                        {formatUSD(item.price * item.quantity)}
+                        {formatCurrency(item.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -180,12 +175,12 @@ const Cart = () => {
 
             <div className="flex justify-between text-gray-700 mb-3">
               <span>Subtotal</span>
-              <span>{formatUSD(subtotal)}</span>
+              <span>{formatCurrency(subtotal)}</span>
             </div>
 
             <div className="flex justify-between font-semibold text-[#B88E2F] text-lg mb-8">
               <span>Total</span>
-              <span>{formatUSD(subtotal)}</span>
+              <span>{formatCurrency(subtotal)}</span>
             </div>
 
             <button className="w-full border border-[#B88E2F] py-3 rounded-full font-medium hover:bg-[#B88E2F] hover:text-white transition">

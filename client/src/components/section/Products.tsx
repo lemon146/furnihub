@@ -116,11 +116,11 @@ const Products = () => {
 
               <div className="flex items-center gap-2 mt-2">
                 <span className="font-bold text-sm md:text-base">
-                  ${item.price}
+                  Rs{item.price}
                 </span>
                 {item.originalPrice && (
                   <span className="line-through opacity-50 text-xs">
-                    ${item.originalPrice}
+                    Rs{item.originalPrice}
                   </span>
                 )}
               </div>
