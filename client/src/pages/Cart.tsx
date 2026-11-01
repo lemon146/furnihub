@@ -188,8 +188,11 @@ const Cart = () => {
               <span>{formatUSD(subtotal)}</span>
             </div>
 
-            <button className="w-full border border-[#B88E2F] py-3 rounded-full font-medium hover:bg-[#B88E2F] hover:text-white transition">
-              Check Out
+            <button
+              onClick={() => navigate("/checkout")}
+              className="w-full border border-[#B88E2F] py-3 rounded-full font-medium hover:bg-[#B88E2F] hover:text-white transition"
+            >
+              Proceed to Checkout
             </button>
           </div>
         </section>
