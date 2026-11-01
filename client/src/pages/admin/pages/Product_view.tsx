@@ -154,13 +154,13 @@ export function ProductViewPage() {
           {/* PRICE */}
           <div className="flex items-center gap-4 flex-wrap">
             <span className="text-3xl font-bold text-green-600">
-              ${product.price}
+              Rs{product.price}
             </span>
 
             {product.originalPrice > product.price && (
               <>
                 <span className="text-xl text-gray-400 line-through">
-                  ${product.originalPrice}
+                  Rs{product.originalPrice}
                 </span>
 
                 <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium">

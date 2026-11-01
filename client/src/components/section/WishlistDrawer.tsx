@@ -50,7 +50,7 @@ export default function WishlistDrawer() {
 
                   <div className="flex-1 ml-3">
                     <p className="font-medium">{item.title}</p>
-                    <p className="text-sm text-gray-500">${item.price}</p>
+                    <p className="text-sm text-gray-500">Rs {item.price}</p>
                   </div>
 
                   <button

@@ -112,7 +112,7 @@ export function ProductsPage() {
             <div className="p-4 space-y-3">
               <div className="flex justify-between items-start">
                 <h3 className="font-semibold text-lg">{product.title}</h3>
-                <span className="font-bold">${product.price}</span>
+                <span className="font-bold">Rs{product.price}</span>
               </div>
 
               <p className="text-sm text-gray-500 line-clamp-2">

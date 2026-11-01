@@ -4,6 +4,7 @@ import { useCartContext } from "@/context/CartContext";
 import { useWishListContext } from "@/context/WishlistContext";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
+import { formatCurrency } from "@/utils/currency";
 import { useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -124,7 +125,7 @@ const Product_details = () => {
 
               <div className="anim-item mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
                 <p className="text-3xl font-semibold text-[#B88E2F]">
-                  ${product.price}
+                  {formatCurrency(product.price)}
                 </p>
                 <div className="hidden sm:block h-6 w-px bg-gray-300 mx-2" />
                 <div className="flex items-center gap-3">
@@ -340,11 +341,11 @@ const Product_details = () => {
                   </p>
                   <div className="flex items-center gap-2 mt-2">
                     <p className="text-grey-1 font-bold text-sm md:text-base">
-                      ${item.price}
+                      {formatCurrency(item.price)}
                     </p>
                     {item.originalPrice && (
                       <p className="text-grey-2 line-through text-xs opacity-60">
-                        ${item.originalPrice}
+                        {formatCurrency(item.originalPrice)}
                       </p>
                     )}
                   </div>
